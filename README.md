@@ -112,7 +112,7 @@ Rock the Vote is an application that provides election data at a local, state, a
     
 ## Wireframes
 ##### **Note: **Wireframe uses a different name
-<img src="wireframe.png" width=600>
+<img src="wireframe.jpg" width=600>
 
 ### Interactive Prototype
 [Figma Prototype](https://www.figma.com/file/wIlXR1uDPIofdl1Rl2WvwW/iElection?node-id=0%3A1)
