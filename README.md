@@ -1,4 +1,4 @@
-# Rock-the-Vote
+# Rock the Vote
 
 ## Alternative Titles
 - VoteBoat
@@ -38,6 +38,10 @@ Rock the Vote is an application that provides election data at a local, state, a
     * Current representatives
     * Candidates w/ links to pages
     * Polling dates/times/locations 
+        * Registration
+        * Early voting
+        * Election day
+        * Absentee ballots
 * Add election to calendar
 * Set/receive reminders for added elections
 * Show polling location/details w/ respect to user
@@ -54,6 +58,8 @@ Rock the Vote is an application that provides election data at a local, state, a
 * Check of elections/track progess 
     * Almost gamifying voting
 * Share on social media
+* Add registration deadlines + reminders
+* State requirements/id requirements
 
 ### 2. Screen Archetypes
 
@@ -81,7 +87,7 @@ Rock the Vote is an application that provides election data at a local, state, a
 **Tab Navigation** (Tab to Screen)
 
 * Stream (Home Feed)
-* Map View
+* Map View (should move somewhere else)
 * Calendar
 
 **Flow Navigation** (Screen to Screen)
@@ -104,7 +110,18 @@ Rock the Vote is an application that provides election data at a local, state, a
 * Profile
     => **Optional:** Settings
     
-## [Wireframes](https://www.figma.com/file/wIlXR1uDPIofdl1Rl2WvwW/)
+## Wireframes
 ##### **Note: **Wireframe uses a different name
+<img src="wireframe.png" width=600>
 
+### Interactive Prototype
+[Figma Prototype](https://www.figma.com/file/wIlXR1uDPIofdl1Rl2WvwW/iElection?node-id=0%3A1)
 
+## Schema 
+[This section will be completed in Unit 9]
+### Models
+[Add table of models]
+### Networking
+- [Add list of network requests by screen ]
+- [Create basic snippets for each Parse network request]
+- [OPTIONAL: List endpoints if using existing API such as Yelp]
