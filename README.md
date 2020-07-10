@@ -117,11 +117,24 @@ Rock the Vote is an application that provides election data at a local, state, a
 ### Interactive Prototype
 [Figma Prototype](https://www.figma.com/file/wIlXR1uDPIofdl1Rl2WvwW/iElection?node-id=0%3A1)
 
-## Schema 
-[This section will be completed in Unit 9]
-### Models
-[Add table of models]
-### Networking
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
+## Data Models
+* User
+    - objectId
+    - createdAt
+    - updatedAt
+    - username
+    - Array<Election>
+    - Array<CalendarEvent>
+* Election
+    - electionId
+    - electionDate
+    - Array<Candidate>
+    - Array<EarlyPoll>
+    - Array<ElectionDayPoll>
+    - Array<AbsenteeBallot>
+    - registrationLink
+* Candidate
+    - candidateId
+    - name
+    - party
+    - websiteLink
