@@ -128,10 +128,10 @@ Rock the Vote is an application that provides election data at a local, state, a
 * Election
     - electionId
     - electionDate
-    - Array<Candidate>
-    - Array<EarlyPoll>
-    - Array<ElectionDayPoll>
-    - Array<AbsenteeBallot>
+    - Array< Candidate >
+    - Array< EarlyPoll >
+    - Array< ElectionDayPoll >
+    - Array< AbsenteeBallot >
     - registrationLink
 * Candidate
     - candidateId
