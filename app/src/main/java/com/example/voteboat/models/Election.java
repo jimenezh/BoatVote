@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Election {
+    String title;
     String googleId;
     Date electionDate;
     List<Candidate> candidates;
@@ -11,6 +12,15 @@ public class Election {
     List<Poll> electionDayPolls;
     List<Poll> absenteeBallotLocations;
     String registrationLink;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Election(String title, Date electionDate) {
+        this.title = title;
+        this.electionDate = electionDate;
+    }
 
     public String getGoogleId() {
         return googleId;
