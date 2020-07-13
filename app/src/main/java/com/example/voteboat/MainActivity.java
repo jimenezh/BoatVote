@@ -43,13 +43,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
                         fragment = electionFeedFragment;
-                        Toast.makeText(MainActivity.this, "Clicked on home", Toast.LENGTH_SHORT).show();
                     case R.id.action_calendar:
                         fragment = electionFeedFragment;
-                        Toast.makeText(MainActivity.this, "Clicked on calendar", Toast.LENGTH_SHORT).show();
                     case R.id.action_profile:
                         fragment = electionFeedFragment;
-                        Toast.makeText(MainActivity.this, "Clicked on profile", Toast.LENGTH_SHORT).show();
                     default:
                         fragment = electionFeedFragment;
                         break;
