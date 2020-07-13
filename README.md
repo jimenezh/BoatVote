@@ -118,23 +118,54 @@ Rock the Vote is an application that provides election data at a local, state, a
 [Figma Prototype](https://www.figma.com/file/wIlXR1uDPIofdl1Rl2WvwW/iElection?node-id=0%3A1)
 
 ## Data Models
-* User
-    - objectId
-    - createdAt
-    - updatedAt
-    - username
-    - Array<Election>
-    - Array<CalendarEvent>
-* Election
-    - electionId
-    - electionDate
-    - Array< Candidate >
-    - Array< EarlyPoll >
-    - Array< ElectionDayPoll >
-    - Array< AbsenteeBallot >
-    - registrationLink
-* Candidate
-    - candidateId
-    - name
-    - party
-    - websiteLink
+
+#### User
+| Property  | Type |  Description | 
+| --- | --- | ---|
+| objectId | String | unique identifier for Parse |
+| createdAt | DateTime | default field |
+| updatedTime | DateTime | date when post is last updated (default field) |
+| username | String |  |
+| elections | Array | Pointers to elections that the user has starred | 
+| calendarEvents | Array | Pointers to events that the user will be notified of |
+
+#### Election
+| Property  | Type |  Description | 
+| --- | --- | --- |
+| objectId | String | unique identifier for Parse |
+| createdAt | DateTime | default field |
+| updatedTime | DateTime | date when post is last updated (default field) |
+| googleElectionId | String | unique identifier for Google civic API |
+| electionDate | DateTime | date of the election |
+| candidates | Array | pointers to candidate to all candidates running in the election |
+| earlyPolls | Array | pointers to Poll objects for early polls |
+| electionDayPolls | Array | pointers to Poll objects for election day |
+| absenteeBallotLocations | Array | pointers to Poll objects to drop off absentee ballots |
+| registrationLink | String | url to register for the election | 
+
+
+#### Candidate
+
+| Property  | Type |  Description | 
+| --- | --- | --- |
+| objectId | String | unique identifier for Parse |
+| createdAt | DateTime | default field |
+| updatedTime | DateTime | date when post is last updated (default field) |
+| candidateId | String | unique identifier for Google civic API|
+| name | String | name of candidate|
+| party | String | candidate's running party |
+| websiteUrl | String | link to candidate's website|
+| parseElectionId | String | election id in Parse for which the candidate is running for|
+| googleElectionId | String | election id (Google API) for which the candidate is running for|
+
+
+#### Poll
+| Property  | Type |  Description | 
+| --- | --- | --- |
+| objectId | String | unique identifier for Parse |
+| createdAt | DateTime | default field |
+| updatedTime | DateTime | date when post is last updated (default field) |
+| location| String | full address for polling location |
+| datesOpen | String | dates for which the polling location is available for |
+| openTime | DateTime | opening time of location|
+| closingTime | DateTime | closing time of location |
