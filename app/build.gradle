@@ -50,5 +50,6 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$googlePlayVersion"
     implementation "org.permissionsdispatcher:permissionsdispatcher:$permissionDispatcherVersion"
     annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:$permissionDispatcherVersion"
-
+    // For Async handling
+    implementation 'com.codepath.libraries:asynchttpclient:0.0.9'
 }
