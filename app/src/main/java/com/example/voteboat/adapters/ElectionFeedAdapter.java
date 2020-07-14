@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.Race;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapter.ViewHolder> {
@@ -21,12 +20,11 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
     public static final String TAG = "ElectionFeedAdapter";
 
     Context context;
-    List<Election> elections;
+    List<Race> races;
 
-    public ElectionFeedAdapter(Context context, List<Election> elections) {
+    public ElectionFeedAdapter(Context context, List<Race> races) {
         this.context = context;
-        // Dummy data
-        this.elections = elections;
+        this.races = races;
     }
 
     @NonNull
@@ -38,12 +36,12 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(elections.get(position));
+        holder.bind(races.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return elections.size();
+        return races.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -56,9 +54,9 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
             itemElectionBinding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(Election election) {
-            binding.tvTitle.setText(election.getTitle());
-            binding.tvDate.setText(election.getElectionDate().toString());
+        public void bind(Race race) {
+            binding.tvTitle.setText(race.getOffice());
+            binding.tvDate.setText("Today");
             // TODO: bind proper selector for star
         }
 

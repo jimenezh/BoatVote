@@ -1,14 +1,10 @@
 package com.example.voteboat.models;
 
 
-import android.util.Log;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Election {
@@ -22,12 +18,9 @@ public class Election {
     String registrationLink;
     String ocd_id;
 
-//    public static List<Election> fromJsonArray(JSONArray jsonArray) throws JSONException {
-//        List<Election> elections = new ArrayList<>();
-//        for(int i = 0; i < jsonArray.length(); i++)
-//            elections.add(Election.fromJson(jsonArray.getJSONObject(i)));
-//        return elections;
-//    }
+    public List<Race> getRaces() {
+        return races;
+    }
 
     public static Election basicInformationFromJson(JSONObject json) throws JSONException {
         Election election = new Election();
@@ -39,7 +32,7 @@ public class Election {
         return election;
     }
 
-    public static void fromJsonObject(JSONObject jsonObject) throws JSONException {
+    public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
         Election election = Election.basicInformationFromJson(electionBasicInfo);
 
@@ -47,16 +40,7 @@ public class Election {
                 new ArrayList<>();
         election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
-        Log.i("Election", " rcaes ");
-
-
-
-
-
-
-
-
-
+        return election;
 
     }
 

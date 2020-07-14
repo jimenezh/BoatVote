@@ -36,4 +36,20 @@ public class Race {
         }
         return races;
     }
+
+    public String getOffice() {
+        return office;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public List<Candidate> getCandidates() {
+        return candidates;
+    }
 }

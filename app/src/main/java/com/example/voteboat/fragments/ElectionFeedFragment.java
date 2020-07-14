@@ -21,6 +21,7 @@ import com.example.voteboat.adapters.ElectionFeedAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionFeedBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.Race;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,7 +50,7 @@ public class ElectionFeedFragment extends Fragment {
 
     FragmentElectionFeedBinding binding;
     ElectionFeedAdapter adapter;
-    List<Election> races;
+    List<Race> races;
     Election election;
     public static final String DUMMY_STATE = "wi";
 
@@ -167,7 +168,10 @@ public class ElectionFeedFragment extends Fragment {
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "Got races " + json.toString());
                         try {
-                            Election.fromJsonObject(json.jsonObject);
+                            election = Election.fromJsonObject(json.jsonObject);
+
+                            races.addAll(election.getRaces());
+                            adapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
