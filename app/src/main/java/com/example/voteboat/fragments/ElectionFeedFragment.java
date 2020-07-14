@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.MainActivity;
 import com.example.voteboat.adapters.ElectionFeedAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
@@ -25,10 +26,15 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Headers;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -90,11 +96,30 @@ public class ElectionFeedFragment extends Fragment {
                         // Getting address from Location Object
                         String address = getAddressfromLocation(location);
                         Log.i(TAG, "Address is " + address);
-
                         // Requesting elections
                         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-                        googleCivicClient.getElections(address);
-                        Log.i(TAG, "done with client");
+                        googleCivicClient.getElections(address, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                Log.i(TAG, "Elections are: " + json.toString());
+                                try {
+                                    JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
+                                    elections.addAll(Election.fromJsonArray(jsonArray));
+                                    Log.i(TAG,"Added all elections "+elections.size());
+                                } catch (JSONException e) {
+                                    Log.e(TAG,"Could not add elections");
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                                Log.e(TAG, "No elections " + response, throwable);
+
+                            }
+                        });
+
 
                     }
                 })

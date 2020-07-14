@@ -26,8 +26,6 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
     public ElectionFeedAdapter(Context context, List<Election> elections) {
         this.context = context;
         // Dummy data
-        Election e = new Election("An election", new Date());
-        elections.add(e);
         this.elections = elections;
     }
 

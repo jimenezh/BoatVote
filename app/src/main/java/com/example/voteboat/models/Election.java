@@ -1,32 +1,52 @@
 package com.example.voteboat.models;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Election {
     String title;
     String googleId;
-    Date electionDate;
+    String electionDate;
     List<Candidate> candidates;
     List<Poll> earlyPolls;
     List<Poll> electionDayPolls;
     List<Poll> absenteeBallotLocations;
     String registrationLink;
 
+    public static List<Election> fromJsonArray(JSONArray jsonArray) throws JSONException {
+        List<Election> elections = new ArrayList<>();
+        for(int i = 0; i < jsonArray.length(); i++)
+            elections.add(Election.fromJson(jsonArray.getJSONObject(i)));
+        return elections;
+    }
+
+    public static Election fromJson(JSONObject json) throws JSONException {
+        Election election = new Election();
+        election.title = json.getString("name");
+        election.electionDate = json.getString("electionDay");
+        election.googleId = json.getString("id");
+
+        return election;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public Election(String title, Date electionDate) {
-        this.title = title;
-        this.electionDate = electionDate;
+    public Election() {
     }
 
     public String getGoogleId() {
         return googleId;
     }
 
-    public Date getElectionDate() {
+    public String getElectionDate() {
         return electionDate;
     }
 

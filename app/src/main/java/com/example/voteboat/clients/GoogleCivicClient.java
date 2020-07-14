@@ -29,23 +29,12 @@ public class GoogleCivicClient {
     }
 
     // Function to get elections
-    public void getElections(String address){
+    public void getElections(String address, JsonHttpResponseHandler jsonHttpResponseHandler){
         RequestParams params = new RequestParams();
 //        params.put("address",DUMMY_ADDRESS );
         String url = String.format(BASE_URL, ELECTION_INFO_KEY, KEY);
         Log.i(TAG,"using url "+url);
-        client.get(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "Elections are: "+json.toString());
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG,"No elections "+response, throwable);
-            }
-        });
+        client.get(url, params, jsonHttpResponseHandler);
     }
 
 }
