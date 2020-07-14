@@ -20,14 +20,14 @@ public class Election {
     String registrationLink;
     String ocd_id;
 
-    public static List<Election> fromJsonArray(JSONArray jsonArray) throws JSONException {
-        List<Election> elections = new ArrayList<>();
-        for(int i = 0; i < jsonArray.length(); i++)
-            elections.add(Election.fromJson(jsonArray.getJSONObject(i)));
-        return elections;
-    }
+//    public static List<Election> fromJsonArray(JSONArray jsonArray) throws JSONException {
+//        List<Election> elections = new ArrayList<>();
+//        for(int i = 0; i < jsonArray.length(); i++)
+//            elections.add(Election.fromJson(jsonArray.getJSONObject(i)));
+//        return elections;
+//    }
 
-    public static Election fromJson(JSONObject json) throws JSONException {
+    public static Election basicInformationFromJson(JSONObject json) throws JSONException {
         Election election = new Election();
         election.title = json.getString("name");
         election.electionDate = json.getString("electionDay");
@@ -35,6 +35,27 @@ public class Election {
         election.ocd_id = json.getString("ocdDivisionId");
 
         return election;
+    }
+
+    public static void fromJsonObject(JSONObject jsonObject) throws JSONException {
+        JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
+        Election election = Election.basicInformationFromJson(electionBasicInfo);
+
+        election.electionDayPolls = new ArrayList<>();
+        JSONArray pollingInfo = jsonObject.getJSONArray("pollingLocations");
+        for(int i = 0; i < pollingInfo.length(); i++){
+            election.electionDayPolls.add(Poll.fromJsonArray(pollingInfo.getJSONObject(i)));
+        }
+
+        JSONArray contest = jsonObject.getJSONArray("contests");
+
+
+
+
+
+
+
+
     }
 
 

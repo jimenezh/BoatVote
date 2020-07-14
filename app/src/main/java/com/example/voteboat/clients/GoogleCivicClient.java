@@ -41,7 +41,7 @@ public class GoogleCivicClient {
         client.get(url, params, jsonHttpResponseHandler);
     }
 
-    public void voterInformationElections(String address, JsonHttpResponseHandler handler) {
+    public void voterInformationElections(String ocdId, String address, JsonHttpResponseHandler handler) {
         RequestParams params = new RequestParams();
         params.put("address",DUMMY_ADDRESS );
         params.put("electionId", ID);

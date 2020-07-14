@@ -166,7 +166,11 @@ public class ElectionFeedFragment extends Fragment {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "Got races " + json.toString());
-                        Election.fromJsonObject(json.jsonObject);
+                        try {
+                            Election.fromJsonObject(json.jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
