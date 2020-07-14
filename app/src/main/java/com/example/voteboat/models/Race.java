@@ -1,8 +1,12 @@
 package com.example.voteboat.models;
 
+import com.example.voteboat.R;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Race {
@@ -20,5 +24,13 @@ public class Race {
 
 
         return  race;
+    }
+
+    public static List<Race> fromJsonArray(JSONArray jsonArray) throws JSONException {
+        List<Race> races = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length() ; i++) {
+            races.add(Race.fromJsonObject(jsonArray.getJSONObject(i)));
+        }
+        return races;
     }
 }

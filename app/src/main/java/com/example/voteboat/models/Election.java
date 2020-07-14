@@ -41,17 +41,11 @@ public class Election {
         JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
         Election election = Election.basicInformationFromJson(electionBasicInfo);
 
-        election.electionDayPolls = new ArrayList<>();
-        JSONArray pollingInfo = jsonObject.getJSONArray("pollingLocations");
-        for(int i = 0; i < pollingInfo.length(); i++){
-            election.electionDayPolls.add(Poll.fromJsonArray(pollingInfo.getJSONObject(i)));
-        }
+        election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+                new ArrayList<>();
+        election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
-        JSONArray contest = jsonObject.getJSONArray("contests");
-        election.races = new ArrayList<>();
-        for (int i = 0; i < contest.length() ; i++) {
-            election.races.add(Race.fromJsonObject(contest.getJSONObject(i)));
-        }
+
 
 
 
