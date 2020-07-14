@@ -25,7 +25,7 @@ public class Poll {
         return location;
     }
 
-    public String getDartesOpen() {
+    public String getDatesOpen() {
         return datesOpen;
     }
 
