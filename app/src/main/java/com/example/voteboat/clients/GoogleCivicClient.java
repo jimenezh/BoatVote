@@ -9,10 +9,12 @@ import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.RequestParams;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.codepath.asynchttpclient.callback.TextHttpResponseHandler;
+import com.example.voteboat.BuildConfig;
 
 import java.util.List;
 
 import okhttp3.Headers;
+
 
 public class GoogleCivicClient {
     public static final String TAG = "GoogleCivicClient";
@@ -21,6 +23,7 @@ public class GoogleCivicClient {
     public static final String ELECTION_INFO_KEY = "elections";
     public static final String VOTER_INFO_KEY = "voterinfo";
 
+    public static final String KEY = BuildConfig.GOOGLE_API_KEY;
     public static final String DUMMY_ADDRESS = "50 Redding Ridge Dr, Gaithersburg, MD 20878";
     AsyncHttpClient client;
 

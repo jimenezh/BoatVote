@@ -4,7 +4,7 @@
 
 ## API keys
 app/src/main/res/values/keys.xml
-app/src/main/java/com/example/voteboat/clients/GoogleCivicClient.java
+apikey.properties
 
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
