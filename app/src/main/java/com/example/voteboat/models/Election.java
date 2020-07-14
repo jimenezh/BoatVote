@@ -1,6 +1,8 @@
 package com.example.voteboat.models;
 
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,8 @@ public class Election {
         election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
                 new ArrayList<>();
         election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
+
+        Log.i("Election", " rcaes ");
 
 
 

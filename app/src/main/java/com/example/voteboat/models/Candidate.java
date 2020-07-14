@@ -18,14 +18,20 @@ public class Candidate {
 
     public static List<Candidate> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Candidate> candidates = new ArrayList<>();
-        for (int i = 0; i <jsonArray.length() ; i++) {
-            Candidate.fromJsonObject(jsonArray.getJSONObject(i));
+        for (int i = 0; i < jsonArray.length(); i++) {
+            candidates.add(Candidate.fromJsonObject(jsonArray.getJSONObject(i)));
         }
-        return  candidates;
+        return candidates;
     }
 
-    public static  Candidate fromJsonObject(JSONObject jsonObject){
-        return new Candidate();
+    public static Candidate fromJsonObject(JSONObject jsonObject) throws JSONException {
+        Candidate candidate = new Candidate();
+        candidate.name = jsonObject.getString("name");
+        candidate.party = jsonObject.getString("party");
+        if(jsonObject.has("candidateUrl"))
+            candidate.websiteUrl = jsonObject.getString("candidateUrl");
+
+        return candidate;
     }
 
     public String getGoogleId() {

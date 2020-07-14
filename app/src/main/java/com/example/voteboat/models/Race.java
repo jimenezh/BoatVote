@@ -18,9 +18,12 @@ public class Race {
     public static Race fromJsonObject(JSONObject jsonObject) throws JSONException {
         Race race = new Race();
         race.office = jsonObject.getString("office");
-        race.level = jsonObject.getJSONArray("level").getString(0);
-        race.district = jsonObject.getJSONObject("district").getString("name");
-        race.candidates = Candidate.fromJsonArray(jsonObject.getJSONArray("candidates"));
+        if(jsonObject.has("level"))
+            race.level = jsonObject.getJSONArray("level").getString(0);
+        if(jsonObject.has("district"))
+            race.district = jsonObject.getJSONObject("district").getString("name");
+        if(jsonObject.has("candidates"))
+            race.candidates = Candidate.fromJsonArray(jsonObject.getJSONArray("candidates"));
 
 
         return  race;
