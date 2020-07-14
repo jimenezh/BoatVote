@@ -106,6 +106,7 @@ public class ElectionFeedFragment extends Fragment {
                                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
                                     elections.addAll(Election.fromJsonArray(jsonArray));
                                     Log.i(TAG,"Added all elections "+elections.size());
+                                    adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
                                     Log.e(TAG,"Could not add elections");
                                     e.printStackTrace();
