@@ -25,6 +25,12 @@ android {
     }
 }
 
+ext {
+    permissionDispatcherVersion = "4.7.0"
+    supportLibVersion = "1.0.0"
+    googlePlayVersion = "17.0.0"
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -36,7 +42,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.2'
+    implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.2' // Parse
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
+
+    // To get location
+    implementation "com.google.android.gms:play-services-maps:$googlePlayVersion"
+    implementation "com.google.android.gms:play-services-location:$googlePlayVersion"
+    implementation "org.permissionsdispatcher:permissionsdispatcher:$permissionDispatcherVersion"
+    annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:$permissionDispatcherVersion"
 
 }
