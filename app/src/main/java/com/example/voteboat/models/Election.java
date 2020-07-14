@@ -13,7 +13,7 @@ public class Election {
     String title;
     String googleId;
     String electionDate;
-    List<Candidate> candidates;
+    List<Race> races;
     List<Poll> earlyPolls;
     List<Poll> electionDayPolls;
     List<Poll> absenteeBallotLocations;
@@ -48,6 +48,10 @@ public class Election {
         }
 
         JSONArray contest = jsonObject.getJSONArray("contests");
+        election.races = new ArrayList<>();
+        for (int i = 0; i < contest.length() ; i++) {
+            election.races.add(Race.fromJsonObject(contest.getJSONObject(i)));
+        }
 
 
 
@@ -76,10 +80,6 @@ public class Election {
 
     public String getElectionDate() {
         return electionDate;
-    }
-
-    public List<Candidate> getCandidates() {
-        return candidates;
     }
 
     public List<Poll> getEarlyPolls() {
