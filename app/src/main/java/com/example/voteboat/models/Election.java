@@ -18,6 +18,7 @@ public class Election {
     List<Poll> electionDayPolls;
     List<Poll> absenteeBallotLocations;
     String registrationLink;
+    String ocd_id;
 
     public static List<Election> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Election> elections = new ArrayList<>();
@@ -31,8 +32,14 @@ public class Election {
         election.title = json.getString("name");
         election.electionDate = json.getString("electionDay");
         election.googleId = json.getString("id");
+        election.ocd_id = json.getString("ocdDivisionId");
 
         return election;
+    }
+
+
+    public String getOcd_id() {
+        return ocd_id;
     }
 
     public String getTitle() {

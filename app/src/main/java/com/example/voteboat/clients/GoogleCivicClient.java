@@ -24,7 +24,8 @@ public class GoogleCivicClient {
     public static final String VOTER_INFO_KEY = "voterinfo";
 
     public static final String KEY = BuildConfig.GOOGLE_API_KEY;
-    public static final String DUMMY_ADDRESS = "50 Redding Ridge Dr, Gaithersburg, MD 20878";
+    public static final String DUMMY_ADDRESS = "232 State Street, Madison, Wisconsin";
+    public static final int ID = 5009;
     AsyncHttpClient client;
 
     public GoogleCivicClient() {
@@ -32,7 +33,7 @@ public class GoogleCivicClient {
     }
 
     // Function to get elections
-    public void getElections(String address, JsonHttpResponseHandler jsonHttpResponseHandler){
+    public void getElections(JsonHttpResponseHandler jsonHttpResponseHandler){
         RequestParams params = new RequestParams();
 //        params.put("address",DUMMY_ADDRESS );
         String url = String.format(BASE_URL, ELECTION_INFO_KEY, KEY);
@@ -40,4 +41,12 @@ public class GoogleCivicClient {
         client.get(url, params, jsonHttpResponseHandler);
     }
 
+    public void voterInformationElections(String address, JsonHttpResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        params.put("address",DUMMY_ADDRESS );
+        params.put("electionId", ID);
+        String url = String.format(BASE_URL, VOTER_INFO_KEY, KEY);
+        Log.i(TAG,"using url "+url);
+        client.get(url, params, handler);
+    }
 }

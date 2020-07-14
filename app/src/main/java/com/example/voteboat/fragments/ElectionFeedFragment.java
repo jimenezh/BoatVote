@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.voteboat.MainActivity;
 import com.example.voteboat.adapters.ElectionFeedAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionFeedBinding;
@@ -32,7 +31,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Headers;
 import permissions.dispatcher.NeedsPermission;
@@ -48,6 +49,7 @@ public class ElectionFeedFragment extends Fragment {
     FragmentElectionFeedBinding binding;
     ElectionFeedAdapter adapter;
     List<Election> elections;
+    public static final String DUMMY_STATE = "wa";
 
     public FusedLocationProviderClient fusedLocationProviderClient;
     private final int MAX_LOCATION_RESULTS = 5;
@@ -94,19 +96,24 @@ public class ElectionFeedFragment extends Fragment {
                         Toast.makeText(getContext(), "Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object
-                        String address = getAddressfromLocation(location);
-                        Log.i(TAG, "Address is " + address);
-                        // Requesting elections
+                        Address address = getAddressFromLocation(location);
+                        // Getting state + id
+                        Map<String, String> states = getStateHashmap();
+                        String state = states.get(address.getAdminArea()).toLowerCase();
+                        // TODO: replace with actual state
+                        final String ocd_id = String.format("ocd-division/country:us/state:%s", DUMMY_STATE);
+
                         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-                        googleCivicClient.getElections(address, new JsonHttpResponseHandler() {
+                        googleCivicClient.getElections( new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
                                 Log.i(TAG, "Elections are: " + json.toString());
                                 try {
                                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
-                                    elections.addAll(Election.fromJsonArray(jsonArray));
-                                    Log.i(TAG,"Added all elections "+elections.size());
+                                    // Add the elections with the same id
+                                    addElectionsWithOcdIdOf(jsonArray, ocd_id);
                                     adapter.notifyDataSetChanged();
+
                                 } catch (JSONException e) {
                                     Log.e(TAG,"Could not add elections");
                                     e.printStackTrace();
@@ -134,22 +141,110 @@ public class ElectionFeedFragment extends Fragment {
                 });
     }
 
-    private String getAddressfromLocation(Location location) {
-        String address = "";
+    private void addElectionsWithOcdIdOf(JSONArray jsonArray, String ocd_id) throws JSONException {
+        for(int i = 0; i < jsonArray.length() ; i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if (jsonObject.getString("ocdDivisionId").equals(ocd_id))
+                elections.add(Election.fromJson(jsonObject));
+        }
+    }
+
+    private Address getAddressFromLocation(Location location) {
+        // Result
+        Address address = null;
+        // Coordinates
         double lat = location.getLatitude();
         double lng = location.getLongitude();
-        // Uses reverse geocoding
+        // Using reverse geocoding
         Geocoder geocoder = new Geocoder(getContext());
         try {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, MAX_LOCATION_RESULTS);
             Toast.makeText(getContext(), "Success in getting address", Toast.LENGTH_SHORT).show();
-            address = addressList.get(0).getAddressLine(0);
+            address = addressList.get(0);
         } catch (IOException e) {
             Toast.makeText(getContext(), "Could not get address", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "No addresses available");
             e.printStackTrace();
         }
+
         return address;
+    }
+
+
+    private Map<String, String> getStateHashmap() {
+        Map<String, String> states = new HashMap<String, String>();
+        states.put("Alabama","AL");
+        states.put("Alaska","AK");
+        states.put("Alberta","AB");
+        states.put("American Samoa","AS");
+        states.put("Arizona","AZ");
+        states.put("Arkansas","AR");
+        states.put("Armed Forces (AE)","AE");
+        states.put("Armed Forces Americas","AA");
+        states.put("Armed Forces Pacific","AP");
+        states.put("British Columbia","BC");
+        states.put("California","CA");
+        states.put("Colorado","CO");
+        states.put("Connecticut","CT");
+        states.put("Delaware","DE");
+        states.put("District Of Columbia","DC");
+        states.put("Florida","FL");
+        states.put("Georgia","GA");
+        states.put("Guam","GU");
+        states.put("Hawaii","HI");
+        states.put("Idaho","ID");
+        states.put("Illinois","IL");
+        states.put("Indiana","IN");
+        states.put("Iowa","IA");
+        states.put("Kansas","KS");
+        states.put("Kentucky","KY");
+        states.put("Louisiana","LA");
+        states.put("Maine","ME");
+        states.put("Manitoba","MB");
+        states.put("Maryland","MD");
+        states.put("Massachusetts","MA");
+        states.put("Michigan","MI");
+        states.put("Minnesota","MN");
+        states.put("Mississippi","MS");
+        states.put("Missouri","MO");
+        states.put("Montana","MT");
+        states.put("Nebraska","NE");
+        states.put("Nevada","NV");
+        states.put("New Brunswick","NB");
+        states.put("New Hampshire","NH");
+        states.put("New Jersey","NJ");
+        states.put("New Mexico","NM");
+        states.put("New York","NY");
+        states.put("Newfoundland","NF");
+        states.put("North Carolina","NC");
+        states.put("North Dakota","ND");
+        states.put("Northwest Territories","NT");
+        states.put("Nova Scotia","NS");
+        states.put("Nunavut","NU");
+        states.put("Ohio","OH");
+        states.put("Oklahoma","OK");
+        states.put("Ontario","ON");
+        states.put("Oregon","OR");
+        states.put("Pennsylvania","PA");
+        states.put("Prince Edward Island","PE");
+        states.put("Puerto Rico","PR");
+        states.put("Quebec","QC");
+        states.put("Rhode Island","RI");
+        states.put("Saskatchewan","SK");
+        states.put("South Carolina","SC");
+        states.put("South Dakota","SD");
+        states.put("Tennessee","TN");
+        states.put("Texas","TX");
+        states.put("Utah","UT");
+        states.put("Vermont","VT");
+        states.put("Virgin Islands","VI");
+        states.put("Virginia","VA");
+        states.put("Washington","WA");
+        states.put("West Virginia","WV");
+        states.put("Wisconsin","WI");
+        states.put("Wyoming","WY");
+        states.put("Yukon Territory","YT");
+        return states;
     }
 
 
