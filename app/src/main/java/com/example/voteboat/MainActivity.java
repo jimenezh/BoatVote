@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFeedFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,6 +24,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -86,6 +90,14 @@ public class MainActivity extends AppCompatActivity {
                         // Getting address from Location Object
                         String address = getAddressfromLocation(location);
                         Log.i(TAG, "Address is "+address);
+                        try {
+                            URLEncoder.encode(address, StandardCharsets.UTF_8.toString());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        // Requesting elections
+                        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
+                        Log.i(TAG,"done with client");
 
                     }
                 })
