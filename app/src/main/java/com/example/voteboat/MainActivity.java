@@ -1,6 +1,8 @@
 package com.example.voteboat;
 
 import android.Manifest;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +22,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
+import java.util.List;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     final ElectionFeedFragment electionFeedFragment = new ElectionFeedFragment();
 
     public FusedLocationProviderClient fusedLocationProviderClient;
+    private final int MAX_LOCATION_RESULTS = 5;
 
 
     @Override
@@ -75,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        // Now that we have the location, we go to this function
                         Toast.makeText(MainActivity.this,"Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is "+location.toString());
+                        // Getting address from Location Object
+                        String address = getAddressfromLocation(location);
+                        Log.i(TAG, "Address is "+address);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -89,6 +98,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private String getAddressfromLocation(Location location) {
+        String address = "";
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        // Uses reverse geocoding
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(lat,lng,MAX_LOCATION_RESULTS);
+            Toast.makeText(MainActivity.this,"Success in getting address" , Toast.LENGTH_SHORT).show();
+            address = addressList.get(0).getAddressLine(0);
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.this, "Could not get address", Toast.LENGTH_SHORT).show();
+            Log.e(TAG,"No addresses available");
+            e.printStackTrace();
+        }
+        return address;
+    }
+
 
     private void setBottomNavigationListener() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
