@@ -23,27 +23,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-
-@RuntimePermissions // using https://github.com/permissions-dispatcher
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     ActivityMainBinding binding;
     final FragmentManager fragmentManager = getSupportFragmentManager();
     final ElectionFeedFragment electionFeedFragment = new ElectionFeedFragment();
-
-    public FusedLocationProviderClient fusedLocationProviderClient;
-    private final int MAX_LOCATION_RESULTS = 5;
 
 
     @Override
@@ -62,73 +48,8 @@ public class MainActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
-        // Generated class method to request permission for location
-        MainActivityPermissionsDispatcher.getLocationWithPermissionCheck(this);
-        getLocation();
 
     }
-
-    // Delegates work to helper class
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    // Annotations from dependency. Includes fine + coarse location
-    @SuppressWarnings({"MissingPermission"})
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    protected void getLocation() {
-        // Google API to get location
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
-        locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        Toast.makeText(MainActivity.this,"Got location", Toast.LENGTH_LONG).show();
-                        Log.i(TAG, "Location is "+location.toString());
-                        // Getting address from Location Object
-                        String address = getAddressfromLocation(location);
-                        Log.i(TAG, "Address is "+address);
-                        try {
-                            URLEncoder.encode(address, StandardCharsets.UTF_8.toString());
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        // Requesting elections
-                        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-                        Log.i(TAG,"done with client");
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Error trying to get last GPS location");
-                        Toast.makeText(MainActivity.this,"No location", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                });
-    }
-
-    private String getAddressfromLocation(Location location) {
-        String address = "";
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        // Uses reverse geocoding
-        Geocoder geocoder = new Geocoder(MainActivity.this);
-        try {
-            List<Address> addressList = geocoder.getFromLocation(lat,lng,MAX_LOCATION_RESULTS);
-            Toast.makeText(MainActivity.this,"Success in getting address" , Toast.LENGTH_SHORT).show();
-            address = addressList.get(0).getAddressLine(0);
-        } catch (IOException e) {
-            Toast.makeText(MainActivity.this, "Could not get address", Toast.LENGTH_SHORT).show();
-            Log.e(TAG,"No addresses available");
-            e.printStackTrace();
-        }
-        return address;
-    }
-
 
     private void setBottomNavigationListener() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
