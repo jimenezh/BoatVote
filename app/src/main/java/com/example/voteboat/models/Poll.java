@@ -31,9 +31,9 @@ public class Poll {
         return poll;
     }
 
-    private static String checkifExistsAndAdd(String startDate, JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has("startDate"))
-            return jsonObject.getString("startDate");
+    private static String checkifExistsAndAdd(String field, JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has(field))
+            return jsonObject.getString(field);
         else
             return "";
     }

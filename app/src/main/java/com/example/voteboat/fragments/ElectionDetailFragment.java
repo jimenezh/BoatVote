@@ -50,6 +50,10 @@ public class ElectionDetailFragment extends Fragment {
 
         binding.tvElectionName.setText(election.getTitle());
         binding.tvDate.setText(election.getElectionDate());
+        binding.tvAbsentee.setText(election.getAbsenteeBallotUrl());
+        binding.tvElectionInfo.setText(election.getElectionInfoUrl());
+        binding.tvRegister.setText(election.getRegistrationUrl());
+        binding.tvRules.setText(election.getElectionRulesUrl());
         // Making text views for poll locations
         addElectionDayPollViews();
 

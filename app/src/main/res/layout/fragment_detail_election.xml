@@ -59,14 +59,6 @@
             android:text="Polling Locations"
             android:textSize="20sp" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/tvPoll"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/tvPollTitle"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:textSize="16sp"-->
-<!--            tools:text="Some address. Possibly in a recycler view." />-->
         <LinearLayout
             android:id="@+id/llPoll"
             android:layout_width="wrap_content"
@@ -81,14 +73,46 @@
             android:layout_below="@id/llPoll"
             />
 
-        <Button
-            android:id="@+id/btnRaces"
+    <LinearLayout
+        android:id="@+id/llLinks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnMap"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvAbsentee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Who is Running?"
-            android:layout_below="@id/btnMap"
-            android:layout_marginTop="20dp"
-            />
+            tools:text="Absentee Link" />
+
+        <TextView
+            android:id="@+id/tvElectionInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="More about this election" />
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Register here" />
+
+        <TextView
+            android:id="@+id/tvRules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rules"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llLinks"
+        android:layout_marginTop="20dp"
+        android:text="Who is Running?" />
 <!--    <androidx.recyclerview.widget.RecyclerView-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
