@@ -1,4 +1,4 @@
-package com.example.voteboat;
+package com.example.voteboat.activities;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.voteboat.R;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;

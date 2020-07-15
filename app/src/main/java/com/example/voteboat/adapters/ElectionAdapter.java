@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.voteboat.MainActivity;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
