@@ -56,6 +56,12 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
 
         public void bind(Race race) {
             binding.tvTitle.setText(race.getOffice());
+            if(race.hasCandidates()) {
+                //TODO: make this a list, rather than just one candidate
+                binding.tvCandidate1Name.setText(race.getCandidates().get(0).getName());
+                binding.tvCandidate1Party.setText("("+race.getCandidates().get(0).getParty()+")");
+            }else
+                binding.tvCandidatesTitle.setVisibility(View.GONE);
             // TODO: bind proper selector for star
         }
 

@@ -1,30 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.RaceFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvElectionName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="28sp"
-        tools:text="Election 1"
-        android:padding="10dp"/>
-    <TextView
-        android:id="@+id/tvElectionDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvElectionName"
-        android:textSize="20sp"
-        tools:text="06/09/20"
-        android:padding="10dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRaces"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tvElectionDate"
-        android:layout_marginTop="0dp" />
-</RelativeLayout>
+        android:padding="10dp"
+        tools:context=".fragments.RaceFragment">
+
+
+        <TextView
+            android:id="@+id/tvElectionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            tools:text="Election 1" />
+
+        <TextView
+            android:id="@+id/tvDateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvElectionName"
+            android:layout_alignStart="@id/tvElectionName"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
+            tools:text="Election Day: " />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tvDateText"
+            android:layout_alignBottom="@+id/tvDateText"
+
+            android:layout_toEndOf="@+id/tvDateText"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            tools:text="06/21/2020" />
+
+        <TextView
+            android:id="@+id/tvPollTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDateText"
+            android:layout_marginTop="22dp"
+            android:text="Polling Locations"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvPoll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvPollTitle"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"
+            tools:text="Some address. Possibly in a recycler view." />
+
+        <TextView
+            android:id="@+id/tvRacesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPoll"
+            android:layout_marginTop="20dp"
+            android:textSize="22sp"
+            android:text="Races" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRaces"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tvRacesTitle"
+            android:layout_marginTop="5dp" />
+
+
+    </RelativeLayout>
+</ScrollView>

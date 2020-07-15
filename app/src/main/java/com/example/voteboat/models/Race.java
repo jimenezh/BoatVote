@@ -15,6 +15,8 @@ public class Race {
     String level;
     String district;
     List<Candidate> candidates;
+    String ballotTitle;
+
 
     public static Race fromJsonObject(JSONObject jsonObject) throws JSONException {
         Race race = new Race();
@@ -25,6 +27,9 @@ public class Race {
             race.district = jsonObject.getJSONObject("district").getString("name");
         if(jsonObject.has("candidates"))
             race.candidates = Candidate.fromJsonArray(jsonObject.getJSONArray("candidates"));
+        if(jsonObject.has("ballotTitle")){
+            race.ballotTitle = jsonObject.getString("ballotTitle");
+        }
 
 
         return  race;
@@ -36,6 +41,10 @@ public class Race {
             races.add(Race.fromJsonObject(jsonArray.getJSONObject(i)));
         }
         return races;
+    }
+
+    public String getBallotTitle() {
+        return ballotTitle;
     }
 
     public String getOffice() {
@@ -52,5 +61,9 @@ public class Race {
 
     public List<Candidate> getCandidates() {
         return candidates;
+    }
+
+    public boolean hasCandidates() {
+        return getCandidates() != null;
     }
 }

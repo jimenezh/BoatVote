@@ -56,7 +56,9 @@ public class RaceFragment extends Fragment {
         binding.rvRaces.setAdapter(adapter);
         binding.rvRaces.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.tvElectionName.setText(election.getTitle());
-        binding.tvElectionDate.setText(election.getElectionDate());
+        binding.tvDate.setText(election.getElectionDate());
+        binding.tvPoll.setText(election.getElectionDayPolls().get(0).getLocation());
+
     }
 
 
