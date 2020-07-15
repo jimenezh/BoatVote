@@ -64,7 +64,6 @@ public class ElectionDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // TODO: Add intent (?) or fragment
-                Toast.makeText(getContext(), "Clicked on Races Button", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), RaceDetailActivity.class);
                 intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(election.getRaces()));
                 startActivity(intent);
