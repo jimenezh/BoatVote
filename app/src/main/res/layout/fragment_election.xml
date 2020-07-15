@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ElectionFeedFragment">
+    tools:context=".fragments.ElectionFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvElections"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tvElectionDate"
+        android:layout_marginTop="0dp" />
 </RelativeLayout>

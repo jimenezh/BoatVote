@@ -17,9 +17,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.voteboat.adapters.ElectionFeedAdapter;
+import com.example.voteboat.adapters.ElectionAdapter;
+import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
-import com.example.voteboat.databinding.FragmentElectionFeedBinding;
+import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Race;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,26 +45,25 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 @RuntimePermissions // using https://github.com/permissions-dispatcher
-public class ElectionFeedFragment extends Fragment {
+public class ElectionFragment extends Fragment {
 
-    public static final String TAG = "ElectionFeedFragment";
+    public static final String TAG = "ElectionFragment";
 
-    FragmentElectionFeedBinding binding;
-    ElectionFeedAdapter adapter;
-    List<Race> races;
-    Election election;
+    FragmentElectionBinding binding;
+
     public static final String DUMMY_STATE = "wi";
-
+    ElectionAdapter adapter;
+    List<Election> elections;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private final int MAX_LOCATION_RESULTS = 5;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentElectionFeedBinding.inflate(getLayoutInflater());
+        binding = FragmentElectionBinding.inflate(getLayoutInflater());
 
         // Generated class method to request permission for location
-        ElectionFeedFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
+        ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
 
         return binding.getRoot();
     }
@@ -72,16 +72,16 @@ public class ElectionFeedFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ElectionFeedFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ElectionFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Inititalizing empty list
-        races = new ArrayList<>();
+        elections = new ArrayList<>();
         // Setting adapter
-        adapter = new ElectionFeedAdapter(getContext(), races);
+        adapter = new ElectionAdapter(getContext(), elections);
         binding.rvElections.setAdapter(adapter);
         binding.rvElections.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -153,35 +153,40 @@ public class ElectionFeedFragment extends Fragment {
     private void getElectionInUserState(JSONArray jsonArray, String ocd_id, GoogleCivicClient googleCivicClient, Address address) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if (jsonObject.getString("ocdDivisionId").equals(ocd_id)) {
+            if (jsonObject.getString("ocdDivisionId").equals(ocd_id) || jsonObject.getString("id").equals("2000")) {
                 // If it has the same id, then we want to get more of it's information
-                getElectionInformation(jsonObject.getString("ocdDivisionId"), googleCivicClient, address);
+//                getElectionInformation(jsonObject.getString("ocdDivisionId"), googleCivicClient, address);
+                elections.add(Election.basicInformationFromJson(jsonObject));
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
-    // API request for more information on the election
-    private void getElectionInformation(String ocd_id, GoogleCivicClient googleCivicClient, Address address) throws JSONException {
-        googleCivicClient
-                .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        Log.i(TAG, "Got races " + json.toString());
-                        try {
-                            election = Election.fromJsonObject(json.jsonObject);
-
-                            races.addAll(election.getRaces());
-                            adapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    @Override
-                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                        Log.e(TAG, "Could not get races");
-                    }
-                });
-    }
+//    // API request for more information on the election
+//    private void getElectionInformation(String ocd_id, GoogleCivicClient googleCivicClient, Address address) throws JSONException {
+//        googleCivicClient
+//                .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+//                        Log.i(TAG, "Got races " + json.toString());
+//                        try {
+//                            election = Election.fromJsonObject(json.jsonObject);
+//                            // Set election info
+//                            binding.tvElectionName.setText(election.getTitle());
+//                            binding.tvElectionDate.setText(election.getElectionDate());
+//
+//                            races.addAll(election.getRaces());
+//                            adapter.notifyDataSetChanged();
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+//                        Log.e(TAG, "Could not get races");
+//                    }
+//                });
+//    }
 
     private Address getAddressFromLocation(Location location) {
         // Result

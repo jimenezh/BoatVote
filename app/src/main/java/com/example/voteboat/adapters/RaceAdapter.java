@@ -56,7 +56,6 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
 
         public void bind(Race race) {
             binding.tvTitle.setText(race.getOffice());
-            binding.tvDate.setText("Today");
             // TODO: bind proper selector for star
         }
 
