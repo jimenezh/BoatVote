@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/btnStar"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Maryland State Governor" />
+    <TextView
+        android:id="@+id/tvCandidatesTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:text="Candidates"
+        android:textSize="18sp"
+        />
+    <TextView
+        android:id="@+id/tvCandidate1Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCandidatesTitle"
+        tools:text="Candidate 1"/>
+
+    <TextView
+        android:id="@+id/tvCandidate1Party"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvCandidate1Name"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/tvCandidate1Name"
+        tools:text="(Party)" />
+
+
+</RelativeLayout>
