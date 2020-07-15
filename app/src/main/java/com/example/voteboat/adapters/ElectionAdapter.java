@@ -1,32 +1,46 @@
 package com.example.voteboat.adapters;
 
 import android.content.Context;
+import android.location.Address;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.MainActivity;
+import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
+import com.example.voteboat.fragments.RaceFragment;
 import com.example.voteboat.models.Election;
 
-import java.util.ArrayList;
-import java.util.Date;
+import org.json.JSONException;
+
 import java.util.List;
+
+import okhttp3.Headers;
 
 public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHolder> {
 
     public static final String TAG = "ElectionFeedAdapter";
 
-    Context context;
-    List<Election> elections;
+    private Context context;
+    private List<Election> elections;
+    public Address address;
 
-    public ElectionAdapter(Context context, List<Election> elections) {
+    public ElectionAdapter(Context context, List<Election> elections, Address address) {
         this.context = context;
-        // Dummy data
         this.elections = elections;
+        this.address = address;
+    }
+
+    // Interface to access listener on
+    public interface ElectionAdapterListener {
+        void setElectionListener(Object object, Fragment fragment, String type);
     }
 
     @NonNull
@@ -64,7 +78,40 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(context,"Pressed on election "+getAdapterPosition(),Toast.LENGTH_LONG).show();
+            // Get correct election, then make query for election details
+            Election election = elections.get(getAdapterPosition());
+            try {
+                launchRaceFragment(election.getOcd_id(), address);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+
+    // API request for more information on the election
+    private void launchRaceFragment(String ocd_id, Address address) throws JSONException {
+        // Getting all information
+        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
+        googleCivicClient
+                .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Log.i(TAG, "Got races " + json.toString());
+                        // now that we have the election information, we can pass it into the new fragment
+                        // we do so by calling the listener on mainactivity
+                        try {
+                            Election e = Election.fromJsonObject(json.jsonObject);
+                            MainActivity mainActivity = (MainActivity) context;
+                            mainActivity.setElectionListener(e, new RaceFragment(), Election.class.getSimpleName());
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Log.e(TAG, "Could not get races");
+                    }
+                });
     }
 }
