@@ -18,6 +18,14 @@
             android:textSize="28sp"
             tools:text="Election 1" />
 
+        <ImageButton
+            android:id="@+id/btnStarred"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tvElectionName"
+            android:src="@android:drawable/btn_star" />
+
         <TextView
             android:id="@+id/tvDateText"
             android:layout_width="wrap_content"
@@ -57,12 +65,19 @@
             android:layout_marginTop="5dp"
             android:textSize="16sp"
             tools:text="Some address. Possibly in a recycler view." />
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Polling Location Map"
+            android:layout_below="@id/tvPoll"
+            />
 
         <TextView
             android:id="@+id/tvRacesTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvPoll"
+            android:layout_below="@+id/btnMap"
             android:layout_marginTop="20dp"
             android:textSize="22sp"
             android:text="Races" />
