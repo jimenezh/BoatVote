@@ -12,12 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.voteboat.MainActivity;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
-import com.example.voteboat.fragments.RaceFragment;
+import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
-import com.parse.ParseObject;
 
 import org.json.JSONException;
 
@@ -104,7 +103,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         try {
                             Election e = Election.fromJsonObject(json.jsonObject);
                             MainActivity mainActivity = (MainActivity) context;
-                            mainActivity.setElectionListener(e, new RaceFragment(), Election.class.getSimpleName());
+                            mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }

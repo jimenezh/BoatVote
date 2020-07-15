@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        tools:context=".fragments.ElectionDetailFragment">
+
+
+        <TextView
+            android:id="@+id/tvElectionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            tools:text="Election 1" />
+
+        <ImageButton
+            android:id="@+id/btnStarred"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tvElectionName"
+            android:src="@android:drawable/btn_star" />
+
+        <TextView
+            android:id="@+id/tvDateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvElectionName"
+            android:layout_alignStart="@id/tvElectionName"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
+            tools:text="Election Day: " />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tvDateText"
+            android:layout_alignBottom="@+id/tvDateText"
+
+            android:layout_toEndOf="@+id/tvDateText"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            tools:text="06/21/2020" />
+
+        <TextView
+            android:id="@+id/tvPollTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDateText"
+            android:layout_marginTop="22dp"
+            android:text="Polling Locations"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/llPoll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvPollTitle"
+            android:orientation="vertical" />
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Polling Location Map"
+            android:layout_below="@id/llPoll"
+            />
+
+    <LinearLayout
+        android:id="@+id/llLinks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnMap"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvAbsentee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Absentee Link" />
+
+        <TextView
+            android:id="@+id/tvElectionInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="More about this election" />
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Register here" />
+
+        <TextView
+            android:id="@+id/tvRules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rules"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llLinks"
+        android:layout_marginTop="20dp"
+        android:text="Who is Running?" />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/rvRaces"/>-->
+
+
+    </RelativeLayout>
+<!--</ScrollView>-->
