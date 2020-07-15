@@ -1,6 +1,8 @@
 package com.example.voteboat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.voteboat.R;
+import com.example.voteboat.activities.RaceDetailActivity;
 import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
 import com.example.voteboat.models.Election;
@@ -62,6 +65,9 @@ public class ElectionDetailFragment extends Fragment {
             public void onClick(View view) {
                 // TODO: Add intent (?) or fragment
                 Toast.makeText(getContext(), "Clicked on Races Button", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), RaceDetailActivity.class);
+                intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(election.getRaces()));
+                startActivity(intent);
             }
         });
 
