@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.databinding.ItemRaceBinding;
+import com.example.voteboat.models.Candidate;
 import com.example.voteboat.models.Race;
 
 import java.util.List;
@@ -57,11 +58,19 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
         public void bind(Race race) {
             binding.tvTitle.setText(race.getOffice());
             if(race.hasCandidates()) {
+                List<Candidate> candidates = race.getCandidates();
                 //TODO: make this a list, rather than just one candidate
-                binding.tvCandidate1Name.setText(race.getCandidates().get(0).getName());
-                binding.tvCandidate1Party.setText("("+race.getCandidates().get(0).getParty()+")");
-            }else
-                binding.tvCandidatesTitle.setVisibility(View.GONE);
+                binding.tvCandidate1Name.setText(candidates.get(0).getName());
+                binding.tvCandidate1Party.setText("("+candidates.get(0).getParty()+")");
+                binding.tvUrl1.setText(candidates.get(0).getWebsiteUrl());
+                if(candidates.size() > 1){
+                    binding.tvCandidate2Name.setText(candidates.get(1).getName());
+                    binding.tvCandidate2Party.setText("("+candidates.get(1).getParty()+")");
+                    binding.tvUrl2.setText(candidates.get(1).getWebsiteUrl());
+                }
+
+            } else
+                binding.rlCandidates.setVisibility(View.GONE);
             // TODO: bind proper selector for star
         }
 

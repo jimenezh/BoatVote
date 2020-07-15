@@ -7,6 +7,7 @@ import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Parcel
 public class Candidate {
 
@@ -29,10 +30,15 @@ public class Candidate {
         Candidate candidate = new Candidate();
         candidate.name = jsonObject.getString("name");
         candidate.party = jsonObject.getString("party");
-        if(jsonObject.has("candidateUrl"))
-            candidate.websiteUrl = jsonObject.getString("candidateUrl");
-
+        candidate.websiteUrl = checkifExistsAndAdd("candidateUrl", jsonObject);
         return candidate;
+    }
+
+    private static String checkifExistsAndAdd(String field, JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has(field))
+            return jsonObject.getString(field);
+        else
+            return "";
     }
 
     public String getGoogleId() {
