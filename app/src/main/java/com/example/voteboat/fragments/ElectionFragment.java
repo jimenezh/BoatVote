@@ -18,11 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.adapters.ElectionAdapter;
-import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
-import com.example.voteboat.models.Race;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +54,7 @@ public class ElectionFragment extends Fragment {
     List<Election> elections;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private final int MAX_LOCATION_RESULTS = 5;
+    Address address;
 
     @Nullable
     @Override
@@ -81,7 +80,7 @@ public class ElectionFragment extends Fragment {
         // Inititalizing empty list
         elections = new ArrayList<>();
         // Setting adapter
-        adapter = new ElectionAdapter(getContext(), elections);
+        adapter = new ElectionAdapter(getContext(), elections, address);
         binding.rvElections.setAdapter(adapter);
         binding.rvElections.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -98,14 +97,15 @@ public class ElectionFragment extends Fragment {
                     public void onSuccess(Location location) {
                         Toast.makeText(getContext(), "Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is " + location.toString());
-                        // Getting address from Location Object
-                        final Address address = getAddressFromLocation(location);
-                        // Getting state + id
-                        final String ocd_id = getStateId(address);
+                        // Getting address from Location Object. Add this to adapter
+                        // This will later be used to get details of the elections
+                        adapter.address = getAddressFromLocation(location);
+                        // Getting state + state abbreviation
+                        final String ocd_id = getStateAbbreviation(adapter.address);
                         // Get relevant races
                         final GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-                        // Gets elections
-                        getElections(address, ocd_id, googleCivicClient);
+                        // Gets all elections
+                        getElections(ocd_id, googleCivicClient);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -119,14 +119,14 @@ public class ElectionFragment extends Fragment {
     }
 
     @NotNull
-    private String getStateId(Address address) {
+    private String getStateAbbreviation(Address address) {
         Map<String, String> states = getStateHashmap();
         String state = states.get(address.getAdminArea()).toLowerCase();
         // TODO: replace with actual state
         return String.format("ocd-division/country:us/state:%s", DUMMY_STATE);
     }
 
-    private void getElections(final Address address, final String ocd_id, final GoogleCivicClient googleCivicClient) {
+    private void getElections(final String ocd_id, final GoogleCivicClient googleCivicClient) {
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -134,14 +134,14 @@ public class ElectionFragment extends Fragment {
                 try {
                     // Add the election with the same id
                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
-                    getElectionInUserState(jsonArray, ocd_id, googleCivicClient, address);
+                    addElectionIfInUserState(jsonArray, ocd_id);
+                    adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Could not add elections");
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "No elections " + response, throwable);
@@ -150,43 +150,17 @@ public class ElectionFragment extends Fragment {
         });
     }
 
-    private void getElectionInUserState(JSONArray jsonArray, String ocd_id, GoogleCivicClient googleCivicClient, Address address) throws JSONException {
+    private void addElectionIfInUserState(JSONArray jsonArray, String ocd_id) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             if (jsonObject.getString("ocdDivisionId").equals(ocd_id) || jsonObject.getString("id").equals("2000")) {
                 // If it has the same id, then we want to get more of it's information
-//                getElectionInformation(jsonObject.getString("ocdDivisionId"), googleCivicClient, address);
                 elections.add(Election.basicInformationFromJson(jsonObject));
             }
         }
-        adapter.notifyDataSetChanged();
     }
 
-//    // API request for more information on the election
-//    private void getElectionInformation(String ocd_id, GoogleCivicClient googleCivicClient, Address address) throws JSONException {
-//        googleCivicClient
-//                .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
-//                    @Override
-//                    public void onSuccess(int statusCode, Headers headers, JSON json) {
-//                        Log.i(TAG, "Got races " + json.toString());
-//                        try {
-//                            election = Election.fromJsonObject(json.jsonObject);
-//                            // Set election info
-//                            binding.tvElectionName.setText(election.getTitle());
-//                            binding.tvElectionDate.setText(election.getElectionDate());
-//
-//                            races.addAll(election.getRaces());
-//                            adapter.notifyDataSetChanged();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    @Override
-//                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-//                        Log.e(TAG, "Could not get races");
-//                    }
-//                });
-//    }
+
 
     private Address getAddressFromLocation(Location location) {
         // Result
