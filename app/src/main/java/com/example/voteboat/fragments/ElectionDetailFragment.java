@@ -15,10 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.R;
 import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
 import com.example.voteboat.databinding.FragmentElectionBinding;
+import com.example.voteboat.databinding.ItemPollLocationBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
@@ -56,17 +58,20 @@ public class ElectionDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Setting adapter
         adapter = new RaceAdapter(getContext(), races);
-//        binding.rvRaces.setAdapter(adapter);
-//        binding.rvRaces.setLayoutManager(new LinearLayoutManager(getContext()));
-//        binding.rvRaces.setNestedScrollingEnabled(false);
+
         binding.tvElectionName.setText(election.getTitle());
         binding.tvDate.setText(election.getElectionDate());
-//        binding.tvPoll.setText(election.getElectionDayPolls().get(0).getLocation());
+        // Making text views for poll locations
         List<Poll> pollLocations = election.getElectionDayPolls();
         for(Poll pollLocation : pollLocations){
-            TextView textView = new TextView(getContext());
-            textView.setText(pollLocation.getLocation());
-            binding.llPoll.addView(textView);
+            View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
+            TextView title = v.findViewById(R.id.tvAddress);
+            title.setText(pollLocation.getLocation());
+//
+//            TextView textView = new TextView(getContext());
+//            R.layout.item_poll_location
+//            textView.setText(pollLocation.getLocation());
+            binding.llPoll.addView(v);
         }
         
         binding.btnRaces.setOnClickListener(new View.OnClickListener() {
