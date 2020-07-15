@@ -17,4 +17,34 @@
         android:layout_below="@id/tvAddress"
         android:layout_alignStart="@id/tvAddress"/>
 
+    <LinearLayout
+        android:id="@+id/llDates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTimesOpen">
+
+        <TextView
+            android:id="@+id/tvDateOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            tools:text="Today" />
+
+        <TextView
+            android:id="@+id/tvDateDash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tvDateClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="tomorrow" />
+
+    </LinearLayout>
+
+
 </RelativeLayout>

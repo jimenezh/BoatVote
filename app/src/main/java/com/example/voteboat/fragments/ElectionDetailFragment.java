@@ -1,8 +1,6 @@
 package com.example.voteboat.fragments;
 
-import android.location.Address;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,26 +10,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.R;
 import com.example.voteboat.adapters.RaceAdapter;
-import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
-import com.example.voteboat.databinding.FragmentElectionBinding;
-import com.example.voteboat.databinding.ItemPollLocationBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
 
-import org.json.JSONException;
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Headers;
 
 public class ElectionDetailFragment extends Fragment {
 
@@ -62,18 +51,8 @@ public class ElectionDetailFragment extends Fragment {
         binding.tvElectionName.setText(election.getTitle());
         binding.tvDate.setText(election.getElectionDate());
         // Making text views for poll locations
-        List<Poll> pollLocations = election.getElectionDayPolls();
-        for(Poll pollLocation : pollLocations){
-            View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
-            TextView title = v.findViewById(R.id.tvAddress);
-            title.setText(pollLocation.getLocation());
-//
-//            TextView textView = new TextView(getContext());
-//            R.layout.item_poll_location
-//            textView.setText(pollLocation.getLocation());
-            binding.llPoll.addView(v);
-        }
-        
+        addElectionDayPollViews();
+
         binding.btnRaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,8 +63,27 @@ public class ElectionDetailFragment extends Fragment {
 
     }
 
+    private void addElectionDayPollViews() {
+        List<Poll> pollLocations = election.getElectionDayPolls();
+        for(Poll pollLocation : pollLocations){
+            View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
+            TextView title = v.findViewById(R.id.tvAddress);
+            title.setText(pollLocation.getLocation());
 
+            TextView time = v.findViewById(R.id.tvTimesOpen);
+            time.setText(pollLocation.getPollingHours());
 
+            if(pollLocation.hasDates()) {
+                TextView openDate = v.findViewById(R.id.tvDateOpen);
+                TextView closeDate = v.findViewById(R.id.tvDateClose);
+                openDate.setText(pollLocation.getOpenDate());
+                closeDate.setText(pollLocation.getCloseDate());
+            }
+             else
+                v.findViewById(R.id.llDates).setVisibility(View.GONE);
+            binding.llPoll.addView(v);
+        }
+    }
 
 
 }
