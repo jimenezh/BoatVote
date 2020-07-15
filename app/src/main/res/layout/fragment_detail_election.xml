@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        tools:context=".fragments.RaceFragment">
+        tools:context=".fragments.ElectionDetailFragment">
 
 
         <TextView
@@ -57,38 +59,41 @@
             android:text="Polling Locations"
             android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/tvPoll"
-            android:layout_width="match_parent"
+<!--        <TextView-->
+<!--            android:id="@+id/tvPoll"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/tvPollTitle"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:textSize="16sp"-->
+<!--            tools:text="Some address. Possibly in a recycler view." />-->
+        <LinearLayout
+            android:id="@+id/llPoll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPollTitle"
-            android:layout_marginTop="5dp"
-            android:textSize="16sp"
-            tools:text="Some address. Possibly in a recycler view." />
+            android:orientation="vertical" />
         <Button
             android:id="@+id/btnMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Polling Location Map"
-            android:layout_below="@id/tvPoll"
+            android:layout_below="@id/llPoll"
             />
 
-        <TextView
-            android:id="@+id/tvRacesTitle"
+        <Button
+            android:id="@+id/btnRaces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnMap"
+            android:text="Who is Running?"
+            android:layout_below="@id/btnMap"
             android:layout_marginTop="20dp"
-            android:textSize="22sp"
-            android:text="Races" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvRaces"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tvRacesTitle"
-            android:layout_marginTop="5dp" />
+            />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/rvRaces"/>-->
 
 
     </RelativeLayout>
-</ScrollView>
+<!--</ScrollView>-->
