@@ -10,19 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemElectionBinding;
-import com.example.voteboat.models.Election;
+import com.example.voteboat.databinding.ItemRaceBinding;
 import com.example.voteboat.models.Race;
 
 import java.util.List;
 
-public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapter.ViewHolder> {
+public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
 
     public static final String TAG = "ElectionFeedAdapter";
 
-    Context context;
-    List<Race> races;
+    private Context context;
+    private List<Race> races;
 
-    public ElectionFeedAdapter(Context context, List<Race> races) {
+    public RaceAdapter(Context context, List<Race> races) {
         this.context = context;
         this.races = races;
     }
@@ -30,7 +30,7 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemElectionBinding binding = ItemElectionBinding.inflate(LayoutInflater.from(context));
+        ItemRaceBinding binding = ItemRaceBinding.inflate(LayoutInflater.from(context));
         return new ViewHolder(binding);
     }
 
@@ -46,12 +46,12 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ItemElectionBinding binding;
+        ItemRaceBinding binding;
 
-        public ViewHolder(@NonNull ItemElectionBinding itemElectionBinding) {
-            super(itemElectionBinding.getRoot());
-            this.binding = itemElectionBinding;
-            itemElectionBinding.getRoot().setOnClickListener(this);
+        public ViewHolder(@NonNull ItemRaceBinding itemRaceBinding) {
+            super(itemRaceBinding.getRoot());
+            this.binding = itemRaceBinding;
+            itemRaceBinding.getRoot().setOnClickListener(this);
         }
 
         public void bind(Race race) {
@@ -61,7 +61,7 @@ public class ElectionFeedAdapter extends RecyclerView.Adapter<ElectionFeedAdapte
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(context,"Pressed on election "+getAdapterPosition(),Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Pressed on race "+getAdapterPosition(),Toast.LENGTH_LONG).show();
         }
     }
 }

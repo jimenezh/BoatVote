@@ -9,12 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseObject;
+
+import org.parceler.Parcels;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ElectionAdapter.ElectionAdapterListener {
 
     public static final String TAG = "MainActivity";
     ActivityMainBinding binding;
@@ -64,5 +68,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
+    }
+
+    /* Listens for when election is clicked on, to go to that elections races
+    *  object is the data to be passed into the new fragment
+    *  fragment is which fragment we are going to
+    *  type is what data type the object is
+    */
+    @Override
+    public void setElectionListener(Object object, Fragment fragment, String type) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(type, Parcels.wrap(object));
+        fragment.setArguments(bundle);
+        // Replace frame layout with fragment
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
     }
 }

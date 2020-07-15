@@ -17,6 +17,7 @@ import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.RaceFragment;
 import com.example.voteboat.models.Election;
+import com.parse.ParseObject;
 
 import org.json.JSONException;
 

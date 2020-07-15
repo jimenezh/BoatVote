@@ -3,10 +3,11 @@ package com.example.voteboat.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Parcel
 public class Election {
     String title;
     String googleId;
@@ -37,7 +38,6 @@ public class Election {
         Election election = Election.basicInformationFromJson(electionBasicInfo);
 
         election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
-                new ArrayList<>();
         election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
         return election;
@@ -51,9 +51,6 @@ public class Election {
 
     public String getTitle() {
         return title;
-    }
-
-    public Election() {
     }
 
     public String getGoogleId() {
