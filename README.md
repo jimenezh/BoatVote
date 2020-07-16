@@ -1,9 +1,4 @@
-# Rock the Vote
-
-## Alternative Titles
-- VoteBoat
-- iElection
-- Rock and Poll
+# VoteBoat
 
 ## Table of Contents
 1. [Overview](#Overview)
@@ -31,22 +26,32 @@ Rock the Vote is an application that provides election data at a local, state, a
 
 **Required Must-have Stories**
 
-* Sign-Up (create new account)
-* Login 
-* Browse upcoming elections
-* Detailed election information
-    * Current representatives
-    * Candidates w/ links to pages
+* User can sign up + login 
+* User can browse upcoming elections
+* User can see detailed election information
+    * _Current representatives_
+    * Can click to view races
     * Polling dates/times/locations 
         * Registration
         * Early voting
         * Election day
         * Absentee ballots
-* Add election to calendar
-* Set/receive reminders for added elections
-* Show polling location/details w/ respect to user
-* View calendar
-* Upload a profile picture
+    * User can click to view nearest locations on map
+        * Show polling location/details w/ respect to user
+* User can see races for a specific election
+    * Candidates w/ links to pages (clickable)
+* User can star/unstar election
+* User can view calendar w/ starred elections
+* User can set/receive reminders for starred elections
+* User can upload a profile picture
+    * Alternatively: share picture on social media
+
+Ideas for algorithm:
+* Get nearest polling place
+* Most relevant races
+    * Based on # of candidates running
+    * When candidates are of different parties
+    * At what level of government they are
 
 **Optional Nice-to-have Stories**
 
@@ -63,23 +68,24 @@ Rock the Vote is an application that provides election data at a local, state, a
 
 ### 2. Screen Archetypes
 
-* Registration Screen
-    * Sign-Up (create new account)
-* Login Screen
-   * Login 
+* Login + Registration Screen
+    * User can sign up + login 
 * Stream
-    * Browse upcoming elections
-    * Add election to calendar
+    * User can browse upcoming elections
+    * User can star/unstar election
 * Election Detail
     * Detailed election information
+* Race Detail
+    * User can see races for a specific election
 * Calendar
-    * View calendar
+    * User can view calendar w/ starred elections
 * Event Detail
     * Set/receive reminders for added elections
 * Map View
-    * Show polling location/details w/ respect to user
+    * User can click to view nearest locations on map
 * Profile
-    * Upload a profile picture
+    * User can set/receive reminders for starred elections
+    * User can upload a profile picture
 
 
 ### 3. Navigation
@@ -87,23 +93,23 @@ Rock the Vote is an application that provides election data at a local, state, a
 **Tab Navigation** (Tab to Screen)
 
 * Stream (Home Feed)
-* Map View (should move somewhere else)
 * Calendar
+* Profile
 
 **Flow Navigation** (Screen to Screen)
 
-* Login Screen
+* Login + Registration Screen
    => Stream
-* Registration
-    => Stream
 * Stream
     => Election Detail
-    => Profile
 * Election Detail
+    => Map View
+    => Race Detail
+* Race Detail
     => None
 * Calendar 
     => Event Detail
-* Event Detail
+* Event Detail **Optional**
     => Election Detail
 * Map View
     => **Optional:** Polling Detail
