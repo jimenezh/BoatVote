@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,9 @@ import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.User;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import org.json.JSONException;
 
@@ -60,7 +64,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         return elections.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemElectionBinding binding;
 
@@ -70,11 +74,31 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             itemElectionBinding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(Election election) {
+        public void bind(final Election election) {
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate().toString());
             // TODO: bind proper selector for star
             binding.btnStar.starButton.setLiked(election.isStarred());
+            binding.btnStar.starButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    Toast.makeText(context, "Liked " + election.getTitle(), Toast.LENGTH_SHORT).show();
+                    if (!election.isStarred()) {
+                        User.addToStarredElections(election.getGoogleId());
+                        User.saveUser("Liked",TAG);
+                    }
+                    // Add to list
+
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    Toast.makeText(context, "unLiked " + election.getTitle(), Toast.LENGTH_SHORT).show();
+                    if (election.isStarred())
+                        User.removeFromStarredElections(election.getGoogleId());
+                    // then we want to add to the list to remove
+                }
+            });
         }
 
         @Override
@@ -109,6 +133,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                             ex.printStackTrace();
                         }
                     }
+
                     @Override
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "Could not get races");
