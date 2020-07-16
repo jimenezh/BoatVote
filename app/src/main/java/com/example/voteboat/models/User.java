@@ -10,6 +10,7 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class User {
@@ -22,8 +23,8 @@ public class User {
     public static final String KEY_STARRED_ELECTIONS = "elections";
 
     static ArrayList<String> starredElections = (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
-    static ArrayList<String> toAdd = new ArrayList<>();
-    static ArrayList<String> toRemove = new ArrayList<>();
+    static HashSet<String> toAdd = new HashSet<String>();
+    static HashSet<String> toRemove = new HashSet<String>();
 
 
     public static ArrayList<String> getStarredElections() {
@@ -37,7 +38,7 @@ public class User {
 
     public static void removeFromStarredElections(String electionId) {
         toRemove.add(electionId);
-        Log.i("USER", "To remove now has " + toAdd.size());
+        Log.i("USER", "To remove now has " + toRemove.size());
 
 //        user.removeAll(KEY_STARRED_ELECTIONS, Collections.singleton(electionId));
     }
