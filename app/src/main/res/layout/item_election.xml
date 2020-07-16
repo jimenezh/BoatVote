@@ -33,11 +33,15 @@
         android:layout_marginTop="5dp"
         tools:text="06/21/2020" />
 
-    <ImageButton
+
+
+    <include
         android:id="@+id/btnStar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="1"
-        app:srcCompat="@android:drawable/btn_star" />
+        layout="@layout/star_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignTop="@id/tvTitle"
+        android:layout_alignStart="@id/btnStar"
+        android:layout_alignBottom="@id/tvDate"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.like.LikeButton app:icon_type="Star"
+    app:icon_size="25dp"
+    android:id="@+id/star_button"
+    app:liked="false"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
