@@ -22,26 +22,30 @@ public class User {
     final static ParseUser user = ParseUser.getCurrentUser();
     public static final String KEY_STARRED_ELECTIONS = "elections";
 
-    static HashSet<String> toAdd = new HashSet<String>();
-    static HashSet<String> toRemove = new HashSet<String>();
+    /*HashSets to prevent duplicates
+    * Logic: everytime a user stars or unstars an election, it will be added to the
+    * appropriate HashSet. These will then be used to update the user (when not empty)
+    * when the fragment is destroyed.
+    * Note that we only add elections to star/unstar when they were originally unstarred/starred
+    * This prevents tons of callbacks + possible weird async behavior
+    */
+    static HashSet<String> toAdd = new HashSet<>();
+    static HashSet<String> toRemove = new HashSet<>();
 
-
+    // Gettter for updates list of elections
     public static ArrayList<String> getStarredElections() {
         return (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     }
 
+    // Adding of star/unstar elections
     public static void addToStarredElections(String electionId) {
         toAdd.add(electionId);
-        Log.i("USER", "To add now has " + toAdd.size());
     }
-
     public static void removeFromStarredElections(String electionId) {
         toRemove.add(electionId);
-        Log.i("USER", "To remove now has " + toRemove.size());
-
-//        user.removeAll(KEY_STARRED_ELECTIONS, Collections.singleton(electionId));
     }
 
+    // Called when fragment is destroyed
     public static void saveUserStarredElections(final String data, final String tag) {
         // If need to add elecs, then we go ahead and try to save these
         // this method also then attempt to remove the elects we want to remove
@@ -63,6 +67,7 @@ public class User {
                     Log.e(tag, "Could not save added in" + data);
                 } else {
                     toAdd.clear();
+                    // Now we can update the user with the elections removed
                     if (!toRemove.isEmpty()) {
                         saveUnstarredElections(tag, data);
                     }

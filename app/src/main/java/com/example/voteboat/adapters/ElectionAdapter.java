@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -79,20 +78,21 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             binding.tvDate.setText(election.getElectionDate().toString());
             // TODO: bind proper selector for star
             binding.btnStar.starButton.setLiked(election.isStarred());
+            setOnStarListener(election);
+        }
+
+        private void setOnStarListener(final Election election) {
             binding.btnStar.starButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
-                    Toast.makeText(context, "Liked " + election.getTitle(), Toast.LENGTH_SHORT).show();
+                    // only update if election is originally unstarred
                     if (!election.isStarred()) {
                         User.addToStarredElections(election.getGoogleId());
                     }
-                    // Add to list
-
                 }
-
                 @Override
                 public void unLiked(LikeButton likeButton) {
-                    Toast.makeText(context, "unLiked " + election.getTitle(), Toast.LENGTH_SHORT).show();
+                    // only update if election is originally starred
                     if (election.isStarred()) {
                         User.removeFromStarredElections(election.getGoogleId());
                     }
@@ -116,7 +116,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
     // API request for more information on the election
     private void launchRaceFragment(String ocd_id, Address address) throws JSONException {
-        // Getting all information
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient
                 .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
@@ -127,17 +126,20 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         // we do so by calling the listener on mainactivity
                         try {
                             Election e = Election.fromJsonObject(json.jsonObject);
-                            MainActivity mainActivity = (MainActivity) context;
-                            mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
+                            displayElectionDetail(e);
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }
                     }
-
                     @Override
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "Could not get races");
                     }
                 });
+    }
+
+    private void displayElectionDetail(Election e) {
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
     }
 }
