@@ -21,13 +21,10 @@ public class User {
     final static ParseUser user = ParseUser.getCurrentUser();
     public static final String KEY_STARRED_ELECTIONS = "elections";
 
-    static ArrayList<String> starredElections;
+    static ArrayList<String> starredElections = (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     static ArrayList<String> toAdd = new ArrayList<>();
     static ArrayList<String> toRemove = new ArrayList<>();
 
-    public User() {
-        starredElections = (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
-    }
 
     public static ArrayList<String> getStarredElections() {
         return starredElections;
