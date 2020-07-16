@@ -17,6 +17,9 @@ import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.User;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import org.json.JSONException;
 
@@ -60,7 +63,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         return elections.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemElectionBinding binding;
 
@@ -70,10 +73,32 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             itemElectionBinding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(Election election) {
+        public void bind(final Election election) {
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate().toString());
             // TODO: bind proper selector for star
+            binding.btnStar.starButton.setLiked(election.isStarred());
+            setOnStarListener(election);
+        }
+
+        private void setOnStarListener(final Election election) {
+            binding.btnStar.starButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    // only update if election is originally unstarred
+                    if (!election.isStarred()) {
+                        User.addToStarredElections(election.getGoogleId());
+                    }
+                }
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    // only update if election is originally starred
+                    if (election.isStarred()) {
+                        User.removeFromStarredElections(election.getGoogleId());
+                    }
+                    // then we want to add to the list to remove
+                }
+            });
         }
 
         @Override
@@ -91,7 +116,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
     // API request for more information on the election
     private void launchRaceFragment(String ocd_id, Address address) throws JSONException {
-        // Getting all information
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient
                 .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
@@ -102,8 +126,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         // we do so by calling the listener on mainactivity
                         try {
                             Election e = Election.fromJsonObject(json.jsonObject);
-                            MainActivity mainActivity = (MainActivity) context;
-                            mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
+                            displayElectionDetail(e);
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }
@@ -113,5 +136,10 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         Log.e(TAG, "Could not get races");
                     }
                 });
+    }
+
+    private void displayElectionDetail(Election e) {
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
     }
 }
