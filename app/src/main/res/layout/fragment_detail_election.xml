@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
@@ -65,59 +63,86 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPollTitle"
             android:orientation="vertical" />
+
         <Button
             android:id="@+id/btnMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Polling Location Map"
             android:layout_below="@id/llPoll"
-            />
+            android:text="Polling Location Map" />
 
-    <LinearLayout
-        android:id="@+id/llLinks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnMap"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/llLinks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnMap"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvAbsentee"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Absentee Voting:"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvAbsentee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="N/A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Election Information:"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvElectionInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="N/A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register here:"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="N/A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Election Rules:"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvRules"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRaces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Absentee Link" />
-
-        <TextView
-            android:id="@+id/tvElectionInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="More about this election" />
-
-        <TextView
-            android:id="@+id/tvRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Register here" />
-
-        <TextView
-            android:id="@+id/tvRules"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Rules"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnRaces"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llLinks"
-        android:layout_marginTop="20dp"
-        android:text="Who is Running?" />
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/rvRaces"/>-->
+            android:layout_below="@id/llLinks"
+            android:layout_marginTop="20dp"
+            android:text="Who is Running?" />
+        <!--    <androidx.recyclerview.widget.RecyclerView-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:id="@+id/rvRaces"/>-->
 
 
     </RelativeLayout>
-<!--</ScrollView>-->
+</ScrollView>
