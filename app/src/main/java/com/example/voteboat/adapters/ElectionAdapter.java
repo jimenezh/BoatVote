@@ -85,7 +85,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     Toast.makeText(context, "Liked " + election.getTitle(), Toast.LENGTH_SHORT).show();
                     if (!election.isStarred()) {
                         User.addToStarredElections(election.getGoogleId());
-                        User.saveUser("Liked",TAG);
                     }
                     // Add to list
 
@@ -96,7 +95,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     Toast.makeText(context, "unLiked " + election.getTitle(), Toast.LENGTH_SHORT).show();
                     if (election.isStarred()) {
                         User.removeFromStarredElections(election.getGoogleId());
-                        User.saveUser("Unliked",TAG);
                     }
                     // then we want to add to the list to remove
                 }

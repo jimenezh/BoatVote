@@ -22,13 +22,12 @@ public class User {
     final static ParseUser user = ParseUser.getCurrentUser();
     public static final String KEY_STARRED_ELECTIONS = "elections";
 
-    static ArrayList<String> starredElections = (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     static HashSet<String> toAdd = new HashSet<String>();
     static HashSet<String> toRemove = new HashSet<String>();
 
 
     public static ArrayList<String> getStarredElections() {
-        return starredElections;
+        return  (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     }
 
     public static void addToStarredElections(String electionId) {

@@ -21,6 +21,7 @@ import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -265,5 +266,6 @@ public class ElectionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        User.saveUser("Starred elections",TAG);
     }
 }
