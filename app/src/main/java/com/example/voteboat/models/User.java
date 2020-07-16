@@ -27,7 +27,7 @@ public class User {
 
 
     public static ArrayList<String> getStarredElections() {
-        return  (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
+        return (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     }
 
     public static void addToStarredElections(String electionId) {
@@ -42,18 +42,47 @@ public class User {
 //        user.removeAll(KEY_STARRED_ELECTIONS, Collections.singleton(electionId));
     }
 
-    public static void saveUser(final String data, final String tag) {
-        if(!toAdd.isEmpty())
-            user.addAllUnique(KEY_STARRED_ELECTIONS, toAdd);
-        if(!toRemove.isEmpty())
-            user.removeAll(KEY_STARRED_ELECTIONS,toRemove);
+    public static void saveUserStarredElections(final String data, final String tag) {
+        // If need to add elecs, then we go ahead and try to save these
+        // this method also then attempt to remove the elects we want to remove
+        // Nested callbacks will be slower but then will avoid error of operation not allowed
+        if (!toAdd.isEmpty())
+            saveNewlyStarredElections(data, tag);
+        // Because of the above, use else if
+        // This is in case toAdd is empty but toRemove is not
+        else if(!toRemove.isEmpty())
+            saveUnstarredElections(tag,data);
+    }
+
+    private static void saveNewlyStarredElections(final String data, final String tag) {
+        user.addAllUnique(KEY_STARRED_ELECTIONS, toAdd);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(tag, "Could not save added in" + data);
+                } else {
+                    toAdd.clear();
+                    if (!toRemove.isEmpty()) {
+                        saveUnstarredElections(tag, data);
+                    }
+                }
+            }
+        });
+    }
+
+    private static void saveUnstarredElections(final String tag, final String data) {
+        user.removeAll(KEY_STARRED_ELECTIONS, toRemove);
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null)
-                    Log.e(tag, "Could not save " + data);
-                else
+                    Log.e(tag, "Could not save removed in" + data);
+                else {
                     Log.i(tag, "Saved " + data);
+                    toRemove.clear();
+                }
+
             }
         });
     }
