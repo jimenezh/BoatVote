@@ -22,10 +22,11 @@
         tools:text="Maryland State Governor" />
 
     <RelativeLayout
-        android:id="@+id/rlCandidates"
+        android:id="@+id/rlCandidate1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvTitle">
+
 
         <TextView
             android:id="@+id/tvCandidate1Name"
@@ -44,18 +45,27 @@
             android:textSize="18sp"
             tools:text="(Party)" />
 
+
         <TextView
             android:id="@+id/tvUrl1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="url 1"
-            android:layout_below="@id/tvCandidate1Name"/>
+            android:layout_below="@id/tvCandidate1Name"
+            android:layout_marginBottom="2dp"
+            android:text="No website available" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlCandidate2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlCandidate1"
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/tvCandidate2Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvUrl1"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="5dp"
             android:textSize="18sp"
@@ -77,10 +87,8 @@
             android:id="@+id/tvUrl2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Url 2"
-            android:layout_below="@id/tvCandidate2Name"/>
-
+            android:layout_below="@id/tvCandidate2Name"
+            android:text="No website available" />
     </RelativeLayout>
-
 
 </RelativeLayout>

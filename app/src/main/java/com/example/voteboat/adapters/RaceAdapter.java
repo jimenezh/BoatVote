@@ -45,7 +45,7 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
         return races.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemRaceBinding binding;
 
@@ -57,26 +57,38 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
 
         public void bind(Race race) {
             binding.tvTitle.setText(race.getOffice());
-            if(race.hasCandidates()) {
+            if (race.hasCandidates()) {
                 List<Candidate> candidates = race.getCandidates();
                 //TODO: make this a list, rather than just one candidate
-                binding.tvCandidate1Name.setText(candidates.get(0).getName());
-                binding.tvCandidate1Party.setText("("+candidates.get(0).getParty()+")");
-                binding.tvUrl1.setText(candidates.get(0).getWebsiteUrl());
-                if(candidates.size() > 1){
-                    binding.tvCandidate2Name.setText(candidates.get(1).getName());
-                    binding.tvCandidate2Party.setText("("+candidates.get(1).getParty()+")");
-                    binding.tvUrl2.setText(candidates.get(1).getWebsiteUrl());
-                }
 
-            } else
-                binding.rlCandidates.setVisibility(View.GONE);
+                // Candidate 1
+                binding.rlCandidate1.setVisibility(View.VISIBLE);
+                binding.tvCandidate1Name.setText(candidates.get(0).getName());
+                binding.tvCandidate1Party.setText("(" + candidates.get(0).getParty() + ")");
+                binding.tvUrl1.setText(candidates.get(0).getWebsiteUrl());
+                if (candidates.get(0).getWebsiteUrl().isEmpty())
+                    binding.tvUrl1.setVisibility(View.GONE);
+
+                // Candidate 2
+                if (candidates.size() > 1) {
+                    binding.rlCandidate2.setVisibility(View.VISIBLE);
+                    binding.tvCandidate2Name.setText(candidates.get(1).getName());
+                    binding.tvCandidate2Party.setText("(" + candidates.get(1).getParty() + ")");
+                    binding.tvUrl2.setText(candidates.get(1).getWebsiteUrl());
+                    if (!candidates.get(1).getWebsiteUrl().isEmpty())
+                        binding.tvUrl2.setVisibility(View.GONE);
+                } else
+                    binding.rlCandidate2.setVisibility(View.GONE);
+            } else {
+                binding.rlCandidate1.setVisibility(View.GONE);
+                binding.rlCandidate2.setVisibility(View.GONE);
+            }
             // TODO: bind proper selector for star
         }
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(context,"Pressed on race "+getAdapterPosition(),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Pressed on race " + getAdapterPosition(), Toast.LENGTH_LONG).show();
         }
     }
 }
