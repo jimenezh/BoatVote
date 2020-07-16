@@ -1,9 +1,15 @@
 package com.example.voteboat.models;
 
+import android.util.Log;
+import android.widget.ScrollView;
+
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     /*
@@ -15,7 +21,7 @@ public class User {
     public static final String KEY_STARRED_ELECTIONS="elections";
 
     public static ArrayList<String> getStarredElections(){
-        return (ArrayList<String>)  user.get(KEY_STARRED_ELECTIONS);
+        return (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     }
 
 
