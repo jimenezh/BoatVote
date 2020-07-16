@@ -50,7 +50,7 @@ public class ElectionFragment extends Fragment {
 
     FragmentElectionBinding binding;
 
-    public static final String DUMMY_STATE = "wi";
+    public static final String DUMMY_STATE = "mi";
     ElectionAdapter adapter;
     List<Election> elections;
     public FusedLocationProviderClient fusedLocationProviderClient;

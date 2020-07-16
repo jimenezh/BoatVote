@@ -24,8 +24,8 @@ public class GoogleCivicClient {
     public static final String VOTER_INFO_KEY = "voterinfo";
 
     public static final String KEY = BuildConfig.GOOGLE_API_KEY;
-    public static final String DUMMY_ADDRESS = "232 State Street, Madison, Wisconsin";
-    public static final int ID = 5009;
+    public static final String DUMMY_ADDRESS = "9239 Carlin Street, Detroit, Michigan";
+    public static final int ID = 5003;
     AsyncHttpClient client;
 
     public GoogleCivicClient() {

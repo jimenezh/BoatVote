@@ -20,7 +20,8 @@ public class Race {
 
     public static Race fromJsonObject(JSONObject jsonObject) throws JSONException {
         Race race = new Race();
-        race.office = jsonObject.getString("office");
+        if(jsonObject.has("office"))
+            race.office = jsonObject.getString("office");
         if(jsonObject.has("level"))
             race.level = jsonObject.getJSONArray("level").getString(0);
         if(jsonObject.has("district"))

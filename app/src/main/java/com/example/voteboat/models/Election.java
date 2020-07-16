@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.List;
+
 @Parcel
 public class Election {
     String title;
@@ -36,7 +37,7 @@ public class Election {
         election.ocd_id = json.getString("ocdDivisionId");
 
         election.isStarred = isElectionInStarredList(election.googleId);
-        Log.i("Election", election.googleId+" is starred:"+ election.isStarred);
+        Log.i("Election", election.googleId + " is starred:" + election.isStarred);
 
         return election;
     }
@@ -44,8 +45,8 @@ public class Election {
     // Checks if user's starred elections contain election in question
     private static boolean isElectionInStarredList(String googleId) {
         List<String> starredElections = User.getStarredElections();
-        Log.i("Election", "Starred elections are: "+starredElections);
-        if(starredElections == null)
+        Log.i("Election", "Starred elections are: " + starredElections);
+        if (starredElections == null)
             return false;
         return starredElections.contains(googleId);
     }
@@ -59,9 +60,17 @@ public class Election {
                 .getJSONObject("electionAdministrationBody");
         election.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
         election.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
-        election.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl",state);
-        election.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl",state);
-        election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+        election.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
+        election.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
+
+        if (jsonObject.has("pollingLocations"))
+            election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+
+        if (jsonObject.has("earlyVoteSites"))
+            election.earlyPolls = Poll.fromJsonArray(jsonObject.getJSONArray("earlyVoteSites"));
+        if (jsonObject.has("dropOffLocations"))
+            election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
+
         election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
         return election;

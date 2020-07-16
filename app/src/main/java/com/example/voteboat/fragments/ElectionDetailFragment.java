@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +59,7 @@ public class ElectionDetailFragment extends Fragment {
         binding.tvRegister.setText(election.getRegistrationUrl());
         binding.tvRules.setText(election.getElectionRulesUrl());
         // Making text views for poll locations
-        addElectionDayPollViews();
+        addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
 
         binding.btnRaces.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,8 +73,7 @@ public class ElectionDetailFragment extends Fragment {
 
     }
 
-    private void addElectionDayPollViews() {
-        List<Poll> pollLocations = election.getElectionDayPolls();
+    private void addElectionDayPollViews(List<Poll> pollLocations, LinearLayout llPoll) {
         for(Poll pollLocation : pollLocations){
             View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
             TextView title = v.findViewById(R.id.tvAddress);
@@ -90,7 +90,7 @@ public class ElectionDetailFragment extends Fragment {
             }
              else
                 v.findViewById(R.id.llDates).setVisibility(View.GONE);
-            binding.llPoll.addView(v);
+            llPoll.addView(v);
         }
     }
 
