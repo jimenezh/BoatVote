@@ -1,6 +1,10 @@
 package com.example.voteboat.models;
 
 
+import android.util.Log;
+
+import com.parse.ParseUser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +26,7 @@ public class Election {
     String absenteeBallotUrl;
     String electionRulesUrl;
     String ocd_id;
+    boolean isStarred;
 
     public List<Race> getRaces() {
         return races;
@@ -34,7 +39,19 @@ public class Election {
         election.googleId = json.getString("id");
         election.ocd_id = json.getString("ocdDivisionId");
 
+        election.isStarred = isStarred(election.googleId);
+        Log.i("Election", election.googleId+" is starred:"+ election.isStarred);
+
         return election;
+    }
+
+    // Checks if user's starred elections contain election in question
+    private static boolean isStarred(String googleId) {
+        List<String> starredElections = User.getStarredElections();
+        Log.i("Election", "Starred elections are: "+starredElections);
+        if(starredElections == null)
+            return false;
+        return starredElections.contains(googleId);
     }
 
     public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
