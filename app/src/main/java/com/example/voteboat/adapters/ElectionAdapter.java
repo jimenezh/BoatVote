@@ -94,8 +94,10 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     Toast.makeText(context, "unLiked " + election.getTitle(), Toast.LENGTH_SHORT).show();
-                    if (election.isStarred())
+                    if (election.isStarred()) {
                         User.removeFromStarredElections(election.getGoogleId());
+                        User.saveUser("Unliked",TAG);
+                    }
                     // then we want to add to the list to remove
                 }
             });
