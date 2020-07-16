@@ -3,14 +3,10 @@ package com.example.voteboat.models;
 
 import android.util.Log;
 
-import com.parse.ParseUser;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
 import java.util.List;
 @Parcel
 public class Election {
@@ -39,14 +35,14 @@ public class Election {
         election.googleId = json.getString("id");
         election.ocd_id = json.getString("ocdDivisionId");
 
-        election.isStarred = isStarred(election.googleId);
+        election.isStarred = isElectionInStarredList(election.googleId);
         Log.i("Election", election.googleId+" is starred:"+ election.isStarred);
 
         return election;
     }
 
     // Checks if user's starred elections contain election in question
-    private static boolean isStarred(String googleId) {
+    private static boolean isElectionInStarredList(String googleId) {
         List<String> starredElections = User.getStarredElections();
         Log.i("Election", "Starred elections are: "+starredElections);
         if(starredElections == null)
@@ -79,6 +75,9 @@ public class Election {
             return "";
     }
 
+    public boolean isStarred() {
+        return isStarred;
+    }
 
     public String getOcd_id() {
         return ocd_id;
