@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemTodoBinding;
 import com.example.voteboat.models.ToDoItem;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +53,34 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             this.binding = itemTodoBinding;
         }
 
-        public void bind(ToDoItem item) {
+        public void bind(final ToDoItem item) {
             binding.tvElectionName.setText(item.getName());
             // TODO: actually bind things
 
+            binding.btnRegister.starButton.setLiked(item.isRegistered());
+            binding.btnDocs.starButton.setLiked(item.hasDocuments());
+            binding.btnDocs.starButton.setLiked(item.hasVoted());
+
+            setRegisteredListener(item);
+
+        }
+
+        private void setRegisteredListener(final ToDoItem item) {
+            binding.btnRegister.starButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    // add to list
+                    if(!item.isRegistered())
+                        item.setRegistered(true);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    // remove from list if registered
+                    if(item.isRegistered())
+                        item.setRegistered(false);
+                }
+            };);
         }
     }
 }
