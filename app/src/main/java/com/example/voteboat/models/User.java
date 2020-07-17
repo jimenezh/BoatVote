@@ -19,7 +19,7 @@ public class User {
      * gets one instance of the current user (user)
      * and uses ParseUser methods to handle custom fields from the database
      */
-    final static ParseUser user = ParseUser.getCurrentUser();
+    public final static ParseUser user = ParseUser.getCurrentUser();
     public static final String KEY_STARRED_ELECTIONS = "elections";
 
     /*HashSets to prevent duplicates
@@ -74,6 +74,10 @@ public class User {
                 }
             }
         });
+    }
+
+    public static void starElection(Election election){
+
     }
 
     private static void saveUnstarredElections(final String tag, final String data) {

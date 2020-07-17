@@ -17,9 +17,12 @@ import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import org.json.JSONException;
 
@@ -87,7 +90,27 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 public void liked(LikeButton likeButton) {
                     // only update if election is originally unstarred
                     if (!election.isStarred()) {
-                        User.addToStarredElections(election.getGoogleId());
+                        User.user.add(User.KEY_STARRED_ELECTIONS, election.getGoogleId());
+                        ToDoItem toDoItem = new ToDoItem();
+                        toDoItem.put("name", election.getTitle());
+                        toDoItem.put("googleId", election.getGoogleId());
+                        toDoItem.put("user", User.user);
+
+                        User.user.add("toDo",toDoItem );
+
+                        User.user.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e != null)
+                                    Log.e(TAG, "Could not save toDoItem", e);
+                                else
+                                    Log.i(TAG, "Saved to do item");
+                            }
+                        });
+                        // Make new to do
+                        // Add to starred
+//                        User.addToStarredElections(election);
+
                     }
                 }
                 @Override
