@@ -14,8 +14,8 @@ import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
+import com.example.voteboat.fragments.ToDoFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseObject;
 
 import org.parceler.Parcels;
 
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
     final FragmentManager fragmentManager = getSupportFragmentManager();
     final ElectionFragment electionFragment = new ElectionFragment();
     final ProfileFragment profileFragment = new ProfileFragment();
+    final ToDoFragment toDoFragment = new ToDoFragment();
 
 
     @Override
@@ -58,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
                     case R.id.action_home:
                         fragment = electionFragment;
                         break;
-                    case R.id.action_calendar:
-                        fragment = electionFragment;
+                    case R.id.action_todo:
+                        fragment = toDoFragment;
                         break;
                     case R.id.action_profile:
                         fragment = profileFragment;

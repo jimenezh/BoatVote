@@ -8,10 +8,10 @@
         android:title="Home"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_calendar"
+        android:id="@+id/action_todo"
         android:enabled="true"
-        android:icon="@android:drawable/ic_menu_my_calendar"
-        android:title="Calendar"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="ToDo"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"
