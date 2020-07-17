@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tvElectionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Election title"
+        android:textSize="24sp"/>
+    <TextView
+        android:id="@+id/tvItemRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvElectionName"
+        android:text="Register"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tvItemDocs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvItemRegister"
+        android:text="Gather the required documents"
+        android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/tvItemVote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvItemDocs"
+        android:text="Vote!"
+        android:textSize="18sp"/>
+
+</RelativeLayout>
