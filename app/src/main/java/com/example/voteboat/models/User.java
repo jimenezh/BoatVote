@@ -3,8 +3,10 @@ package com.example.voteboat.models;
 import android.util.Log;
 import android.widget.ScrollView;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -14,87 +16,68 @@ import java.util.HashSet;
 import java.util.List;
 
 public class User {
-    /*
-     * Rather than having to create another User object, this User class
-     * gets one instance of the current user (user)
-     * and uses ParseUser methods to handle custom fields from the database
-     */
+
+    public static final String TAG = "User";
+    public static final String KEY_TO_DO = "toDo";
+
     public final static ParseUser user = ParseUser.getCurrentUser();
     public static final String KEY_STARRED_ELECTIONS = "elections";
-
-    /*HashSets to prevent duplicates
-    * Logic: everytime a user stars or unstars an election, it will be added to the
-    * appropriate HashSet. These will then be used to update the user (when not empty)
-    * when the fragment is destroyed.
-    * Note that we only add elections to star/unstar when they were originally unstarred/starred
-    * This prevents tons of callbacks + possible weird async behavior
-    */
-    static HashSet<String> toAdd = new HashSet<>();
-    static HashSet<String> toRemove = new HashSet<>();
 
     // Gettter for updates list of elections
     public static ArrayList<String> getStarredElections() {
         return (ArrayList<String>) user.get(KEY_STARRED_ELECTIONS);
     }
 
-    // Adding of star/unstar elections
-    public static void addToStarredElections(String electionId) {
-        toAdd.add(electionId);
-    }
-    public static void removeFromStarredElections(String electionId) {
-        toRemove.add(electionId);
-    }
-
-    // Called when fragment is destroyed
-    public static void saveUserStarredElections(final String data, final String tag) {
-        // If need to add elecs, then we go ahead and try to save these
-        // this method also then attempt to remove the elects we want to remove
-        // Nested callbacks will be slower but then will avoid error of operation not allowed
-        if (!toAdd.isEmpty())
-            saveNewlyStarredElections(data, tag);
-        // Because of the above, use else if
-        // This is in case toAdd is empty but toRemove is not
-        else if(!toRemove.isEmpty())
-            saveUnstarredElections(tag,data);
-    }
-
-    private static void saveNewlyStarredElections(final String data, final String tag) {
-        user.addAllUnique(KEY_STARRED_ELECTIONS, toAdd);
-        user.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(tag, "Could not save added in" + data);
-                } else {
-                    toAdd.clear();
-                    // Now we can update the user with the elections removed
-                    if (!toRemove.isEmpty()) {
-                        saveUnstarredElections(tag, data);
-                    }
-                }
-            }
-        });
-    }
-
-    public static void starElection(Election election){
-
-    }
-
-    private static void saveUnstarredElections(final String tag, final String data) {
-        user.removeAll(KEY_STARRED_ELECTIONS, toRemove);
+    public static void starElection(Election election) {
+        // First, we add the election Id to the user's list of starred election
+        user.add(User.KEY_STARRED_ELECTIONS, election.getGoogleId());
+        // Now, we construct a new ToDoItem + add it to the user's list of ToDoItems
+        ToDoItem toDoItem = new ToDoItem();
+        toDoItem.put("name", election.getTitle());
+        toDoItem.put("googleId", election.getGoogleId());
+        toDoItem.put("user", User.user);
+        user.add(KEY_TO_DO, toDoItem);
+        // Finally, we save the user
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null)
-                    Log.e(tag, "Could not save removed in" + data);
-                else {
-                    Log.i(tag, "Saved " + data);
-                    toRemove.clear();
-                }
-
+                    Log.e(TAG, "Could not star election", e);
+                else
+                    Log.i(TAG, "Starred election");
             }
         });
     }
 
 
+    public static void unstarElection(final Election election) {
+        // First we need to find which ToDoItem has the same id for the user and or the election
+        ParseQuery<ToDoItem> query = new ParseQuery<ToDoItem>("ToDoItem");
+        query.whereEqualTo("googleId", election.getGoogleId());
+        query.whereEqualTo("user", user);
+        query.findInBackground(new FindCallback<ToDoItem>() {
+            @Override
+            public void done(List<ToDoItem> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Could not unstar election", e);
+                    return;
+                }
+                // Now we remove the election id from the user and the toDoItems
+                user.removeAll(KEY_STARRED_ELECTIONS, Collections.singleton(election.getGoogleId()));
+                user.removeAll(KEY_TO_DO, objects);
+                // Finally we save the user
+                user.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Could not unstar election", e);
+                            return;
+                        } else
+                            Log.i(TAG, "Unstarred " + election.getGoogleId());
+                    }
+                });
+            }
+        });
+
+    }
 }
