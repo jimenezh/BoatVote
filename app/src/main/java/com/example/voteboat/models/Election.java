@@ -117,7 +117,10 @@ public class Election extends ParseObject {
     }
 
     public String getGoogleId() {
-        return googleId;
+        if(googleId==null)
+            return (String) get(KEY_GOOGLE_ID);
+        else
+            return googleId;
     }
 
     public String getElectionDate() {
@@ -158,7 +161,7 @@ public class Election extends ParseObject {
         if(obj.getClass() != Election.class)
             return false;
         Election otherElection = (Election) obj;
-        return otherElection.getGoogleId() == this.getGoogleId();
+        return otherElection.getGoogleId().equals(this.getGoogleId());
     }
 
     public void putInParse() {
