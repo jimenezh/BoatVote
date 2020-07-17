@@ -2,14 +2,13 @@ package com.example.voteboat.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemTodoBinding;
-import com.example.voteboat.models.Election;
+import com.example.voteboat.models.ToDoItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +17,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
 
     private Context context;
-    private List<String> elections;
+    private List<ToDoItem> toDoItems;
 
 
-    public ToDoAdapter(Context context, ArrayList<String> elections) {
+    public ToDoAdapter(Context context, List<ToDoItem> elections) {
         this.context = context;
-        this.elections = elections;
+        this.toDoItems = elections;
     }
 
     @NonNull
@@ -35,12 +34,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(elections.get(position));
+        holder.bind(toDoItems.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return elections.size();
+        return toDoItems.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,8 +51,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             this.binding = itemTodoBinding;
         }
 
-        public void bind(String election) {
-            binding.tvElectionName.setText(election);
+        public void bind(ToDoItem election) {
+            binding.tvElectionName.setText(election.getName());
             // TODO: actually bind things
         }
     }
