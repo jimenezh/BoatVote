@@ -39,12 +39,12 @@ public class ToDoItem extends ParseObject {
     }
 
     public void setDocuments(boolean hasDocuments) {
-        put(KEY_HAS_REGISTERED, hasDocuments);
+        put(KEY_GATHERED_DOCS, hasDocuments);
         saveField(KEY_GATHERED_DOCS);
     }
 
     public void setVoted(boolean hasVoted) {
-        put(KEY_HAS_REGISTERED, hasVoted);
+        put(KEY_VOTED, hasVoted);
         saveField(KEY_VOTED);
     }
 
