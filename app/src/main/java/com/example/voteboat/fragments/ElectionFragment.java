@@ -288,6 +288,5 @@ public class ElectionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        User.saveUserStarredElections("Starred elections",TAG);
     }
 }

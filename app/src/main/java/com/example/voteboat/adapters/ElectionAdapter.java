@@ -90,36 +90,15 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 public void liked(LikeButton likeButton) {
                     // only update if election is originally unstarred
                     if (!election.isStarred()) {
-                        User.user.add(User.KEY_STARRED_ELECTIONS, election.getGoogleId());
-                        ToDoItem toDoItem = new ToDoItem();
-                        toDoItem.put("name", election.getTitle());
-                        toDoItem.put("googleId", election.getGoogleId());
-                        toDoItem.put("user", User.user);
-
-                        User.user.add("toDo",toDoItem );
-
-                        User.user.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if(e != null)
-                                    Log.e(TAG, "Could not save toDoItem", e);
-                                else
-                                    Log.i(TAG, "Saved to do item");
-                            }
-                        });
-                        // Make new to do
-                        // Add to starred
-//                        User.addToStarredElections(election);
-
+                        User.starElection(election);
                     }
                 }
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     // only update if election is originally starred
                     if (election.isStarred()) {
-                        User.removeFromStarredElections(election.getGoogleId());
+                        User.unstarElection(election);
                     }
-                    // then we want to add to the list to remove
                 }
             });
         }
@@ -135,6 +114,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             }
         }
     }
+
+
 
 
     // API request for more information on the election
