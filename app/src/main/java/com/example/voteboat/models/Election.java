@@ -20,6 +20,9 @@ import java.util.List;
 
 @ParseClassName("Election")
 public class Election extends ParseObject {
+
+    public static final String TAG = "Election";
+
     String title;
     String googleId;
     String electionDate;
@@ -33,6 +36,11 @@ public class Election extends ParseObject {
     String electionRulesUrl;
     String ocd_id;
     boolean isStarred;
+
+
+    // Parse Keys
+    public static final String KEY_NAME="name";
+    public static final String KEY_GOOGLE_ID="google_id";
 
     public Election() {
     }
@@ -151,5 +159,21 @@ public class Election extends ParseObject {
             return false;
         Election otherElection = (Election) obj;
         return otherElection.getGoogleId() == this.getGoogleId();
+    }
+
+    public void putInParse() {
+        put(KEY_NAME, this.getTitle());
+        put(KEY_GOOGLE_ID, this.getGoogleId());
+
+        final String id = this.getGoogleId();
+        this.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not save "+id);
+                else
+                    Log.i(TAG, "Saved "+id);
+            }
+        });
     }
 }

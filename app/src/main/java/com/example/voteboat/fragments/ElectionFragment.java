@@ -165,7 +165,7 @@ public class ElectionFragment extends Fragment {
                 else{
                     for(Election election : elections){
                         if(!objects.contains(election)){
-                            Log.i(TAG, election.getGoogleId()+" is not in Server");
+                            election.putInParse();
                         }
                     }
                 }
