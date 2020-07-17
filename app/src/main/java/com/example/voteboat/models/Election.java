@@ -3,14 +3,23 @@ package com.example.voteboat.models;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.parse.FindCallback;
+import com.parse.ParseClassName;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.List;
 
-@Parcel
-public class Election {
+@ParseClassName("Election")
+public class Election extends ParseObject {
     String title;
     String googleId;
     String electionDate;
@@ -24,6 +33,9 @@ public class Election {
     String electionRulesUrl;
     String ocd_id;
     boolean isStarred;
+
+    public Election() {
+    }
 
     public List<Race> getRaces() {
         return races;
@@ -130,5 +142,14 @@ public class Election {
 
     public String getElectionRulesUrl() {
         return electionRulesUrl;
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj.getClass() != Election.class)
+            return false;
+        Election otherElection = (Election) obj;
+        return otherElection.getGoogleId() == this.getGoogleId();
     }
 }

@@ -25,6 +25,9 @@ import com.example.voteboat.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -136,6 +139,7 @@ public class ElectionFragment extends Fragment {
                     // Add the election with the same id
                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
                     addElectionIfInUserState(jsonArray, ocd_id);
+                    addToParse();
                     adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
@@ -151,7 +155,25 @@ public class ElectionFragment extends Fragment {
         });
     }
 
-    private void addElectionIfInUserState(JSONArray jsonArray, String ocd_id) throws JSONException {
+    private void addToParse() {
+        ParseQuery<Election> query = new ParseQuery<>("Election");
+        query.findInBackground(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not get elections", e);
+                else{
+                    for(Election election : elections){
+                        if(!objects.contains(election)){
+                            Log.i(TAG, election.getGoogleId()+" is not in Server");
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void addElectionIfInUserState(final JSONArray jsonArray, final String ocd_id) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             if (jsonObject.getString("ocdDivisionId").equals(ocd_id) || jsonObject.getString("id").equals("2000")) {
