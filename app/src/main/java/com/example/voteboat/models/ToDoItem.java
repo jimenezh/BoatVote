@@ -30,12 +30,22 @@ public class ToDoItem extends ParseObject {
     }
 
     public boolean hasDocuments(){
-        return  ! (boolean) get(KEY_GATHERED_DOCS);
+        return  (boolean) get(KEY_GATHERED_DOCS);
     }
 
     public void setRegistered(boolean isRegistered){
         put(KEY_HAS_REGISTERED, isRegistered);
         saveField(KEY_HAS_REGISTERED);
+    }
+
+    public void setDocuments(boolean hasDocuments) {
+        put(KEY_HAS_REGISTERED, hasDocuments);
+        saveField(KEY_GATHERED_DOCS);
+    }
+
+    public void setVoted(boolean hasVoted) {
+        put(KEY_HAS_REGISTERED, hasVoted);
+        saveField(KEY_VOTED);
     }
 
     private void saveField(final String field) {

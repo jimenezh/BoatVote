@@ -12,7 +12,6 @@ import com.example.voteboat.models.ToDoItem;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
@@ -59,10 +58,47 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
             binding.btnRegister.starButton.setLiked(item.isRegistered());
             binding.btnDocs.starButton.setLiked(item.hasDocuments());
-            binding.btnDocs.starButton.setLiked(item.hasVoted());
+            binding.btnVote.starButton.setLiked(item.hasVoted());
 
             setRegisteredListener(item);
+            setDocumentsListener(item);
+            setVoteListener(item);
+        }
 
+        private void setVoteListener(final ToDoItem item) {
+            binding.btnVote.starButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    // add to list
+                    if (!item.hasVoted())
+                        item.setVoted(true);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    // remove from list if registered
+                    if (item.hasVoted())
+                        item.setVoted(false);
+                }
+            });
+        }
+
+        private void setDocumentsListener(final ToDoItem item) {
+            binding.btnDocs.starButton.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButton) {
+                    // add to list
+                    if (!item.hasDocuments())
+                        item.setDocuments(true);
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    // remove from list if registered
+                    if (item.isRegistered())
+                        item.setDocuments(false);
+                }
+            });
         }
 
         private void setRegisteredListener(final ToDoItem item) {
@@ -70,17 +106,17 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
-                    if(!item.isRegistered())
+                    if (!item.isRegistered())
                         item.setRegistered(true);
                 }
 
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     // remove from list if registered
-                    if(item.isRegistered())
+                    if (item.isRegistered())
                         item.setRegistered(false);
                 }
-            };);
+                });
         }
     }
 }
