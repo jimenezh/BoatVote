@@ -51,9 +51,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             this.binding = itemTodoBinding;
         }
 
-        public void bind(ToDoItem election) {
-            binding.tvElectionName.setText(election.getName());
+        public void bind(ToDoItem item) {
+            binding.tvElectionName.setText(item.getName());
             // TODO: actually bind things
+
         }
     }
 }

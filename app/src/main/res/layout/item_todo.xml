@@ -10,6 +10,16 @@
         android:layout_height="wrap_content"
         tools:text="Election title"
         android:textSize="24sp"/>
+
+    <include
+        android:id="@+id/btnRegister"
+        layout="@layout/to_do_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@id/tvItemRegister"
+        android:layout_alignBottom="@id/tvItemRegister"
+        android:layout_alignParentEnd="true" />
+
     <TextView
         android:id="@+id/tvItemRegister"
         android:layout_width="wrap_content"
@@ -18,6 +28,15 @@
         android:text="Register"
         android:textSize="18sp"/>
 
+    <include
+        android:id="@+id/btnDocs"
+        layout="@layout/to_do_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@id/tvItemDocs"
+        android:layout_alignBottom="@id/tvItemDocs"
+        android:layout_alignParentEnd="true" />
+
     <TextView
         android:id="@+id/tvItemDocs"
         android:layout_width="wrap_content"
@@ -25,6 +44,15 @@
         android:layout_below="@id/tvItemRegister"
         android:text="Gather the required documents"
         android:textSize="18sp"/>
+
+    <include
+        android:id="@+id/btnVote"
+        layout="@layout/to_do_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignTop="@id/tvItemVote"
+        android:layout_alignBottom="@id/tvItemVote"
+        android:layout_alignParentEnd="true" />
     <TextView
         android:id="@+id/tvItemVote"
         android:layout_width="wrap_content"
