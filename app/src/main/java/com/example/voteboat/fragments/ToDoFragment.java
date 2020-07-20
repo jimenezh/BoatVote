@@ -74,6 +74,11 @@ public class ToDoFragment extends Fragment {
             }
         });
 
+        representatives = new ArrayList<>();
+        representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
+        binding.rvRepresentatives.setAdapter(representativesAdapter);
+        binding.rvRepresentatives.setLayoutManager(new LinearLayoutManager(getContext()));
+
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient.getRepresentatives(new JsonHttpResponseHandler() {
             @Override
