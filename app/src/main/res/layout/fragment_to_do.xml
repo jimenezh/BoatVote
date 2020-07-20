@@ -13,7 +13,8 @@
         android:text="To Do"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:padding="2dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvToDoList"
@@ -28,10 +29,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rvToDoList"
         android:background="#03A9F4"
-        android:text="Call your represnetatives!"
+        android:text="Call your representatives!"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:padding="2dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRepresentatives"

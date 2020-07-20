@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,12 @@ public class ToDoFragment extends Fragment {
         toDoAdapter= new ToDoAdapter(getContext(), toDoItems);
         binding.rvToDoList.setAdapter(toDoAdapter);
         binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(binding.rvToDoList);
+            }
+        });
         getToDoItems();
         // Setting up representatives tab
         representatives = new ArrayList<>();
@@ -63,9 +70,22 @@ public class ToDoFragment extends Fragment {
         LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
         representativeLinearLayout.setReverseLayout(true); // reverse so most local reps show up
         binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
+        binding.tvRepresentativesTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(binding.rvRepresentatives);
+            }
+        });
         getRepresentatives();
 
         return binding.getRoot();
+    }
+
+    private void toggleVisibility(RecyclerView rv) {
+        if(rv.getVisibility() == View.GONE)
+            rv.setVisibility(View.VISIBLE);
+        else
+            rv.setVisibility(View.GONE);
     }
 
     // Call to API using GoogleCivicAPI
