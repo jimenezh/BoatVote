@@ -16,7 +16,7 @@ import com.example.voteboat.databinding.FragmentProfileBinding;
 import com.example.voteboat.models.User;
 import com.parse.ParseUser;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements EditDialogueFragment.EditNameDialogListener {
     public static final String TAG ="ProfileFragment";
     FragmentProfileBinding binding;
 
@@ -53,8 +53,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showEditDialog() {
-        FragmentManager fm = getChildFragmentManager();
+        FragmentManager fm = getParentFragmentManager();
         EditDialogueFragment editDialogFragment = EditDialogueFragment.newInstance("Some Title");
+        editDialogFragment.setTargetFragment(this, 300);
         editDialogFragment.show(fm, "fragment_edit_name");
     }
 
@@ -64,5 +65,11 @@ public class ProfileFragment extends Fragment {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(intent);
         getActivity().finish();
+    }
+
+    // This is called when the dialog is completed and the results have been passed
+    @Override
+    public void onFinishEditDialog(String inputText) {
+        Toast.makeText(getContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
     }
 }

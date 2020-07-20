@@ -70,8 +70,20 @@ public class EditDialogueFragment extends DialogFragment {
                 String text = binding.etUsername.getText().toString();
                 if(!text.isEmpty() || text != null) {
                     User.setUsername(text);
+                    sendBackResult();
                 }
             }
         });
+    }
+
+    public interface EditNameDialogListener {
+        void onFinishEditDialog(String inputText);
+    }
+
+    // Call this method to send the data back to the parent fragment
+    public void sendBackResult() {
+        EditNameDialogListener listener = (EditNameDialogListener) getTargetFragment();
+        listener.onFinishEditDialog(mEditText.getText().toString());
+        dismiss();
     }
 }
