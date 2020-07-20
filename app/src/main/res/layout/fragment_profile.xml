@@ -3,14 +3,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ProfileFragment">
+    tools:context=".fragments.ProfileFragment"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        tools:text="A username" />
+
+    <Button
+        android:id="@+id/btnUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvUsername"
+        android:layout_centerHorizontal="true"
+        android:text="Change Username"
+        />
+    <Button
+        android:id="@+id/btnPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnUsername"
+        android:layout_centerHorizontal="true"
+        android:text="Change Password"
+        />
+
 
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnPassword"
         android:layout_marginTop="4dp"
         android:text="Logout" />
+
+    <TextView
+        android:id="@+id/tvElectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have voted in "
+        android:layout_below="@id/btnLogout"
+        android:layout_marginTop="20dp"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+    <TextView
+        android:id="@+id/tvNumElections"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tvElectionTitle"
+        android:text="0"
+        android:layout_alignTop="@id/tvElectionTitle"
+        android:textColor="#000000"
+        android:textSize="20sp"/>
+    <TextView
+        android:id="@+id/tvElectionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="elections:"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_toRightOf="@id/tvNumElections"
+        android:layout_alignTop="@id/tvElectionTitle"
+        android:layout_marginLeft="5dp"/>
+    <TextView
+        android:id="@+id/tvElection1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvElectionTitle"
+        android:textSize="18sp"
+        android:text="2019 Local Elections"/>
 
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.voteboat.activities.LogInActivity;
 import com.example.voteboat.databinding.FragmentProfileBinding;
+import com.example.voteboat.models.User;
 import com.parse.ParseUser;
 
 public class ProfileFragment extends Fragment {
@@ -39,7 +41,21 @@ public class ProfileFragment extends Fragment {
                 launchLogInActivity();
             }
         });
+        // User details
+        binding.tvUsername.setText(User.getUsername());
+        binding.btnUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog();
+            }
+        });
         return binding.getRoot();
+    }
+
+    private void showEditDialog() {
+        FragmentManager fm = getChildFragmentManager();
+        EditDialogueFragment editDialogFragment = EditDialogueFragment.newInstance("Some Title");
+        editDialogFragment.show(fm, "fragment_edit_name");
     }
 
     private void launchLogInActivity() {

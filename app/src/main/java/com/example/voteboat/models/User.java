@@ -80,4 +80,22 @@ public class User {
             }
         });
     }
+
+    public static String getUsername() {
+        return ParseUser.getCurrentUser().getUsername();
+    }
+
+    public static void setUsername(String text) {
+        ParseUser user = ParseUser.getCurrentUser();
+        user.setUsername(text);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not save username", e);
+                else
+                    Log.i(TAG, "Saved username");
+            }
+        });
+    }
 }
