@@ -37,6 +37,9 @@ public class Representative {
         return representative;
     }
 
+    public String getUrl() {
+        return url;
+    }
 
     public String getName() {
         return name;

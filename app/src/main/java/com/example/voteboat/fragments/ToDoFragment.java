@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.adapters.RepresentativesAdapter;
@@ -77,7 +78,9 @@ public class ToDoFragment extends Fragment {
         representatives = new ArrayList<>();
         representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
         binding.rvRepresentatives.setAdapter(representativesAdapter);
-        binding.rvRepresentatives.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
+        representativeLinearLayout.setReverseLayout(true);
+        binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
 
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient.getRepresentatives(new JsonHttpResponseHandler() {
@@ -86,6 +89,7 @@ public class ToDoFragment extends Fragment {
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     representatives.addAll( Representative.fromJSONArray(json.jsonObject));
+                    representativesAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
