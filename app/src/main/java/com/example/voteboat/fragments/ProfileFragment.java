@@ -16,7 +16,7 @@ import com.example.voteboat.databinding.FragmentProfileBinding;
 import com.example.voteboat.models.User;
 import com.parse.ParseUser;
 
-public class ProfileFragment extends Fragment implements EditDialogueFragment.EditNameDialogListener {
+public class ProfileFragment extends Fragment implements EditUsernameFragment.EditNameDialogListener {
     public static final String TAG ="ProfileFragment";
     FragmentProfileBinding binding;
 
@@ -46,17 +46,23 @@ public class ProfileFragment extends Fragment implements EditDialogueFragment.Ed
         binding.btnUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showEditDialog();
+                showEditUsernameDialog("New username");
+            }
+        });
+        binding.btnPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditUsernameDialog("New password");
             }
         });
         return binding.getRoot();
     }
 
-    private void showEditDialog() {
+    private void showEditUsernameDialog(String title) {
         FragmentManager fm = getParentFragmentManager();
-        EditDialogueFragment editDialogFragment = EditDialogueFragment.newInstance("Some Title");
+        EditUsernameFragment editDialogFragment = EditUsernameFragment.newInstance(title);
         editDialogFragment.setTargetFragment(this, 300);
-        editDialogFragment.show(fm, "fragment_edit_name");
+        editDialogFragment.show(fm, "EditUsernameFragment");
     }
 
     private void launchLogInActivity() {
@@ -71,5 +77,6 @@ public class ProfileFragment extends Fragment implements EditDialogueFragment.Ed
     @Override
     public void onFinishEditDialog(String inputText) {
         Toast.makeText(getContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+        binding.tvUsername.setText(inputText);
     }
 }

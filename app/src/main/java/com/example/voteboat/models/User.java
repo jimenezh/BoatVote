@@ -36,15 +36,7 @@ public class User {
         toDoItem.put("user", user);
         user.add(KEY_TO_DO, toDoItem);
         // Finally, we save the user
-        user.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null)
-                    Log.e(TAG, "Could not star election", e);
-                else
-                    Log.i(TAG, "Starred election");
-            }
-        });
+        saveUser("Could not star election", "Starred election");
     }
 
 
@@ -67,16 +59,7 @@ public class User {
                 user.removeAll(KEY_TO_DO, objects);
                 objects.get(0).deleteInBackground();
                 // Finally we save the user
-                user.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, "Could not unstar election", e);
-                            return;
-                        } else
-                            Log.i(TAG, "Unstarred " + election.getGoogleId());
-                    }
-                });
+                saveUser("Could not unstar election", "Unstarred "+election.getGoogleId());
             }
         });
     }
@@ -86,16 +69,24 @@ public class User {
     }
 
     public static void setUsername(String text) {
-        ParseUser user = ParseUser.getCurrentUser();
-        user.setUsername(text);
-        user.saveInBackground(new SaveCallback() {
+        ParseUser.getCurrentUser().setUsername(text);
+        saveUser("Could not save username", "Saved username");
+    }
+
+    private static void saveUser(final String failureMessage, final String successMessag) {
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e != null)
-                    Log.e(TAG, "Could not save username", e);
+                if (e != null)
+                    Log.e(TAG, failureMessage, e);
                 else
-                    Log.i(TAG, "Saved username");
+                    Log.i(TAG, successMessag);
             }
         });
+    }
+
+    public static void setPassword(String password) {
+        ParseUser.getCurrentUser().setPassword(password);
+        saveUser("Could not save password","Saved password");
     }
 }
