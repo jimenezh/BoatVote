@@ -29,7 +29,6 @@ Rock the Vote is an application that provides election data at a local, state, a
 * User can sign up + login 
 * User can browse upcoming elections
 * User can see detailed election information
-    * _Current representatives_
     * Can click to view races
     * Polling dates/times/locations 
         * Registration
@@ -41,7 +40,9 @@ Rock the Vote is an application that provides election data at a local, state, a
 * User can see races for a specific election
     * Candidates w/ links to pages (clickable)
 * User can star/unstar election
-* User can view calendar w/ starred elections
+* User can view a list of to do's for each starred election
+    * User can check off to do item
+* User can see a list of current representatives and their information
 * User can set/receive reminders for starred elections
 * User can upload a profile picture
     * Alternatively: share picture on social media
@@ -77,15 +78,16 @@ Ideas for algorithm:
     * Detailed election information
 * Race Detail
     * User can see races for a specific election
-* Calendar
-    * User can view calendar w/ starred elections
-* Event Detail
-    * Set/receive reminders for added elections
+* To Do
+    * User can view a list of to do's for each election
+    * User can check off to do item
+    * User can see a list of current representatives and their information
 * Map View
     * User can click to view nearest locations on map
 * Profile
     * User can set/receive reminders for starred elections
     * User can upload a profile picture
+    * User can type in address to use in query for elections
 
 
 ### 3. Navigation
@@ -132,7 +134,7 @@ Ideas for algorithm:
 | createdAt | DateTime | default field |
 | updatedTime | DateTime | date when post is last updated (default field) |
 | username | String |  |
-| elections | Array | Pointers to elections that the user has starred | 
+| elections | Array | Ids of elections that the user has starred | 
 | calendarEvents | Array | Pointers to events that the user will be notified of |
 
 #### Election
