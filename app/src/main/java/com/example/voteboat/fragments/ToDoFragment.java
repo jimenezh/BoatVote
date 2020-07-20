@@ -50,14 +50,49 @@ public class ToDoFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentToDoBinding.inflate(inflater);
 
+        // Setting up To Do tab
         toDoItems = new ArrayList<>();
-
         toDoAdapter= new ToDoAdapter(getContext(), toDoItems);
-
         binding.rvToDoList.setAdapter(toDoAdapter);
         binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
+        getToDoItems();
+        // Setting up representatives tab
+        representatives = new ArrayList<>();
+        representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
+        binding.rvRepresentatives.setAdapter(representativesAdapter);
+        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
+        representativeLinearLayout.setReverseLayout(true); // reverse so most local reps show up
+        binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
+        getRepresentatives();
 
+        return binding.getRoot();
+    }
 
+    // Call to API using GoogleCivicAPI
+    private void getRepresentatives() {
+        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
+        googleCivicClient.getRepresentatives(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess: retreived reps ");
+                try {
+                    // Transform json into list of Representative objects
+                    representatives.addAll( Representative.fromJSONArray(json.jsonObject));
+                    // Notify adaptrs
+                    representativesAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure: failed to retreive reps: "+response, throwable);
+            }
+        });
+    }
+
+    // Parse query for user's toDOItems
+    private void getToDoItems() {
         ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
         query.whereEqualTo("user", ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<ToDoItem>() {
@@ -74,33 +109,5 @@ public class ToDoFragment extends Fragment {
 
             }
         });
-
-        representatives = new ArrayList<>();
-        representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
-        binding.rvRepresentatives.setAdapter(representativesAdapter);
-        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
-        representativeLinearLayout.setReverseLayout(true);
-        binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
-
-        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-        googleCivicClient.getRepresentatives(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess: retreived reps ");
-                try {
-                    representatives.addAll( Representative.fromJSONArray(json.jsonObject));
-                    representativesAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure: failed to retreive reps: "+response, throwable);
-            }
-        });
-
-        return binding.getRoot();
     }
 }

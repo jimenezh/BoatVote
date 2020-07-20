@@ -60,6 +60,8 @@ public class RepresentativesAdapter extends RecyclerView.Adapter<Representatives
 
         }
 
+        // In case Representative fields aren't available, check if null
+        // and set appropriate text + visibility
         private void setText(TextView textView, String text) {
             if(text == null)
                 textView.setVisibility(View.GONE);
