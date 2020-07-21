@@ -1,6 +1,7 @@
 package com.example.voteboat.fragments;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.voteboat.R;
+import com.example.voteboat.activities.MapActivity;
 import com.example.voteboat.activities.RaceDetailActivity;
 import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
@@ -65,12 +67,24 @@ public class ElectionDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // TODO: Add intent (?) or fragment
-                Intent intent = new Intent(getContext(), RaceDetailActivity.class);
-                intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(election.getRaces()));
+                launchRacesActivity();
+            }
+        });
+
+        binding.btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(getContext(), MapActivity.class);
                 startActivity(intent);
             }
         });
 
+    }
+
+    private void launchRacesActivity() {
+        Intent intent = new Intent(getContext(), RaceDetailActivity.class);
+        intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(election.getRaces()));
+        startActivity(intent);
     }
 
     private void addElectionDayPollViews(List<Poll> pollLocations, LinearLayout llPoll) {
