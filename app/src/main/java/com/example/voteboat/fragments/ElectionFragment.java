@@ -145,6 +145,7 @@ public class ElectionFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "No elections " + response, throwable);
@@ -159,9 +160,9 @@ public class ElectionFragment extends Fragment {
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if(e != null)
+                if (e != null)
                     Log.e(TAG, "Could not get elections", e);
-                else{
+                else {
                     // First we add the pre-existing elections to the list
                     elections.addAll(objects);
                     adapter.notifyDataSetChanged();
@@ -177,7 +178,7 @@ public class ElectionFragment extends Fragment {
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 final Election election = Election.basicInformationFromJson(jsonArray.getJSONObject(i));
-                if(!objects.contains(election)){
+                if (!objects.contains(election)) {
                     addElectionToParse(election);
                 }
             } catch (JSONException ex) {
@@ -187,24 +188,22 @@ public class ElectionFragment extends Fragment {
     }
 
     private void addElectionToParse(final Election election) {
-        Log.i(TAG, election+" not in parse");
-        try {
-            election.putInParse(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e != null)
-                        Log.e(TAG, "Could not save "+election);
-                    else {
-                        Log.i(TAG, "Saved " + election);
-                        // Now we can add the saved election to the list
-                        elections.add(election);
-                        adapter.notifyDataSetChanged();
-                    }
+        Log.i(TAG, election + " not in parse");
+
+        election.putInParse(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null)
+                    Log.e(TAG, "Could not save " + election);
+                else {
+                    Log.i(TAG, "Saved " + election);
+                    // Now we can add the saved election to the list
+                    elections.add(election);
+                    adapter.notifyDataSetChanged();
                 }
-            });
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            }
+        });
+
     }
 
 
@@ -217,7 +216,6 @@ public class ElectionFragment extends Fragment {
             }
         }
     }
-
 
 
     private Address getAddressFromLocation(Location location) {

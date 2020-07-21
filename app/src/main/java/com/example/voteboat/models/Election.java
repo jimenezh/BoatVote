@@ -115,16 +115,26 @@ public class Election extends ParseObject {
     }
 
     public String getTitle() {
-        if (title == null)
-            return getString(KEY_NAME);
+        if (title == null) {
+            try {
+                return fetchIfNeeded().getString(KEY_NAME);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         return title;
     }
 
-    public String getGoogleId() throws ParseException {
-        if (googleId == null)
-            return (String) fetchIfNeeded().get(KEY_GOOGLE_ID);
-        else
-            return googleId;
+    public String getGoogleId() {
+        if (googleId == null) {
+            try {
+                return (String) fetchIfNeeded().get(KEY_GOOGLE_ID);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return googleId;
     }
 
     public String getElectionDate() {
@@ -167,16 +177,10 @@ public class Election extends ParseObject {
         if (obj.getClass() != Election.class)
             return false;
         Election otherElection = (Election) obj;
-
-        try {
-            return otherElection.getGoogleId().equals(this.getGoogleId());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return otherElection.getGoogleId().equals(this.getGoogleId());
     }
 
-    public void putInParse(SaveCallback saveCallback) throws ParseException{
+    public void putInParse(SaveCallback saveCallback) {
         put(KEY_NAME, this.getTitle());
         put(KEY_GOOGLE_ID, this.getGoogleId());
         put(KEY_ELECTION_DATE, this.getElectionDate());

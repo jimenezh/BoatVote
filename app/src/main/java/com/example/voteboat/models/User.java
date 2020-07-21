@@ -37,18 +37,14 @@ public class User {
     private static void createToDoItem(Election election, ParseUser user) {
         ToDoItem toDoItem = new ToDoItem();
         toDoItem.put("name", election.getTitle());
-        try {
-            toDoItem.put("googleId", election.getGoogleId());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        toDoItem.put("googleId", election.getGoogleId());
         toDoItem.put("election", election);
         toDoItem.put("user", user);
         user.add(KEY_TO_DO, toDoItem);
     }
 
 
-    public static void unstarElection(final Election election) throws ParseException {
+    public static void unstarElection(final Election election) {
         final ParseUser user = ParseUser.getCurrentUser();
 
         // First we need to find which ToDoItem has the same id for the user and or the election
