@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.example.voteboat.R;
 import com.example.voteboat.databinding.ActivityMapBinding;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -36,13 +35,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.parceler.Parcels;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 @RuntimePermissions
-public class MapActivity extends AppCompatActivity  {
+public class MapActivity extends AppCompatActivity {
 
     ActivityMapBinding binding;
 
@@ -62,6 +63,8 @@ public class MapActivity extends AppCompatActivity  {
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     LatLng pollLocation;
+    String pollingHours;
+    String addressLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +81,14 @@ public class MapActivity extends AppCompatActivity  {
         // Initializing map fragment + checking that it's valid + loading map
         initializeMapFragment();
 
-        double pollLat = getIntent().getDoubleExtra("lat", 0);
-        double pollLng = getIntent().getDoubleExtra("lng", 0);
-        pollLocation = new LatLng(pollLat, pollLng);
+        extractPollLocationDetails();
+    }
+
+    private void extractPollLocationDetails() {
+        Address address = Parcels.unwrap( getIntent().getParcelableExtra("address"));
+        pollLocation = new LatLng(address.getLatitude(),address.getLongitude());
+        addressLine = address.getAddressLine(0);
+        pollingHours = getIntent().getStringExtra("hours");
     }
 
     private void getSavedLocation(Bundle savedInstanceState) {
@@ -98,11 +106,20 @@ public class MapActivity extends AppCompatActivity  {
                 @Override
                 public void onMapReady(GoogleMap map) { // map is the result, loadMap binds it to our own map
                     loadMap(map);
+                    addMarkerForPoll(map);
                 }
             });
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void addMarkerForPoll(GoogleMap map) {
+        map.addMarker(new MarkerOptions()
+                .position(pollLocation)
+                .title(addressLine)
+                .snippet(pollingHours));
+        map.moveCamera(CameraUpdateFactory.newLatLng(pollLocation));
     }
 
 
@@ -116,9 +133,6 @@ public class MapActivity extends AppCompatActivity  {
             // Q: Where is this generated class being generated???? Is it from the annotation?
             MapActivityPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
-
-            map.addMarker(new MarkerOptions().position(pollLocation));
-
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }

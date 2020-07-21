@@ -96,10 +96,9 @@ public class ElectionDetailFragment extends Fragment {
     private void putLatAndLngInIntent(Intent intent, String addressLine) throws IOException {
         Geocoder geocoder = new Geocoder(getContext());
         Address address = geocoder.getFromLocationName(addressLine,1).get(0);
-        double lat = address.getLatitude();
-        double lng = address.getLongitude();
-        intent.putExtra("lat",lat);
-        intent.putExtra("lng", lng);
+        intent.putExtra("address",Parcels.wrap(address));
+        intent.putExtra("hours",election.getElectionDayPolls().get(0).getPollingHours() );
+
     }
 
     private void launchRacesActivity() {
