@@ -187,20 +187,24 @@ public class ElectionFragment extends Fragment {
     }
 
     private void addElectionToParse(final Election election) {
-        Log.i(TAG, election.getGoogleId() +" not in parse");
-        election.putInParse(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e != null)
-                    Log.e(TAG, "Could not save "+election.getGoogleId());
-                else {
-                    Log.i(TAG, "Saved " + election.getGoogleId());
-                    // Now we can add the saved election to the list
-                    elections.add(election);
-                    adapter.notifyDataSetChanged();
+        Log.i(TAG, election+" not in parse");
+        try {
+            election.putInParse(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e != null)
+                        Log.e(TAG, "Could not save "+election);
+                    else {
+                        Log.i(TAG, "Saved " + election);
+                        // Now we can add the saved election to the list
+                        elections.add(election);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-            }
-        });
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -78,7 +78,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
         public void bind(final Election election) {
             binding.tvTitle.setText(election.getTitle());
-            binding.tvDate.setText(election.getElectionDate().toString());
+            binding.tvDate.setText(election.getElectionDate());
             // TODO: bind proper selector for star
             binding.btnStar.starButton.setLiked(election.isStarred());
             setOnStarListener(election);
@@ -97,7 +97,11 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 public void unLiked(LikeButton likeButton) {
                     // only update if election is originally starred
                     if (election.isStarred()) {
-                        User.unstarElection(election);
+                        try {
+                            User.unstarElection(election);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });

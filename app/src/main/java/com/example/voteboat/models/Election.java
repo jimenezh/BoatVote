@@ -58,20 +58,19 @@ public class Election extends ParseObject {
         election.googleId = json.getString("id");
         election.ocd_id = json.getString("ocdDivisionId");
 
-        election.isStarred = isElectionInStarredList(election.googleId);
         Log.i("Election", election.googleId + " is starred:" + election.isStarred);
 
         return election;
     }
 
-    // Checks if user's starred elections contain election in question
-    private static boolean isElectionInStarredList(String googleId) {
-        List<String> starredElections = User.getStarredElections();
-        Log.i("Election", "Starred elections are: " + starredElections);
-        if (starredElections == null)
-            return false;
-        return starredElections.contains(googleId);
-    }
+//    // Checks if user's starred elections contain election in question
+//    private static boolean isElectionInStarredList(String googleId) {
+//        List<String> starredElections = User.getStarredElections();
+//        Log.i("Election", "Starred elections are: " + starredElections);
+//        if (starredElections == null)
+//            return false;
+//        return starredElections.contains(googleId);
+//    }
 
     public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
@@ -107,7 +106,8 @@ public class Election extends ParseObject {
     }
 
     public boolean isStarred() {
-        return isStarred;
+        List<Election> elections = User.getStarredElections();
+        return elections.contains(this);
     }
 
     public String getOcd_id() {
@@ -120,9 +120,9 @@ public class Election extends ParseObject {
         return title;
     }
 
-    public String getGoogleId() {
+    public String getGoogleId() throws ParseException {
         if (googleId == null)
-            return (String) get(KEY_GOOGLE_ID);
+            return (String) fetchIfNeeded().get(KEY_GOOGLE_ID);
         else
             return googleId;
     }
@@ -167,12 +167,16 @@ public class Election extends ParseObject {
         if (obj.getClass() != Election.class)
             return false;
         Election otherElection = (Election) obj;
-        if (otherElection.getGoogleId() == null)
-            return false;
-        return otherElection.getGoogleId().equals(this.getGoogleId());
+
+        try {
+            return otherElection.getGoogleId().equals(this.getGoogleId());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void putInParse(SaveCallback saveCallback) {
+    public void putInParse(SaveCallback saveCallback) throws ParseException{
         put(KEY_NAME, this.getTitle());
         put(KEY_GOOGLE_ID, this.getGoogleId());
         put(KEY_ELECTION_DATE, this.getElectionDate());
