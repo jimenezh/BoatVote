@@ -43,6 +43,7 @@ public class Election extends ParseObject {
     public static final String KEY_GOOGLE_ID = "googleId";
     public static final String KEY_ELECTION_DATE = "electionDay";
     public static final String KEY_OCD_ID = "ocdDivisionId";
+    public static final String KEY_HAS_PASSED = "hasPassed";
 
     public Election() {
     }
@@ -62,15 +63,6 @@ public class Election extends ParseObject {
 
         return election;
     }
-
-//    // Checks if user's starred elections contain election in question
-//    private static boolean isElectionInStarredList(String googleId) {
-//        List<String> starredElections = User.getStarredElections();
-//        Log.i("Election", "Starred elections are: " + starredElections);
-//        if (starredElections == null)
-//            return false;
-//        return starredElections.contains(googleId);
-//    }
 
     public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
         JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
@@ -105,11 +97,6 @@ public class Election extends ParseObject {
             return "";
     }
 
-    public boolean isStarred() {
-        List<Election> elections = User.getStarredElections();
-        return elections.contains(this);
-    }
-
     public String getOcd_id() {
         return ocd_id;
     }
@@ -128,18 +115,24 @@ public class Election extends ParseObject {
     public String getGoogleId() {
         if (googleId == null) {
             try {
-                return (String) fetchIfNeeded().get(KEY_GOOGLE_ID);
+                return fetchIfNeeded().getString(KEY_GOOGLE_ID);
             } catch (ParseException e) {
                 e.printStackTrace();
+                return "";
             }
         }
-
         return googleId;
     }
 
     public String getElectionDate() {
-        if (electionDate == null)
-            return getString(KEY_ELECTION_DATE);
+        if (electionDate == null) {
+            try {
+                return fetchIfNeeded().getString(KEY_ELECTION_DATE);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
         return electionDate;
     }
 
@@ -188,5 +181,14 @@ public class Election extends ParseObject {
 
         final String id = this.getGoogleId();
         this.saveInBackground(saveCallback);
+    }
+
+
+    public void setElectionHasPassed() {
+        put(KEY_HAS_PASSED, true);
+    }
+
+    public boolean getHasPassed() {
+        return getBoolean(KEY_HAS_PASSED);
     }
 }
