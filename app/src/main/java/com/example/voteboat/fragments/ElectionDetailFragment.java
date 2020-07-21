@@ -34,10 +34,8 @@ import java.util.List;
 
 public class ElectionDetailFragment extends Fragment {
 
-    public static final String TAG ="RaceFragment";
+    public static final String TAG ="ElectionDetailFragment";
 
-    RaceAdapter adapter;
-    List<Race> races;
     Election election;
     FragmentDetailElectionBinding binding;
 
@@ -48,49 +46,47 @@ public class ElectionDetailFragment extends Fragment {
         // Getting races + election from args
         Bundle args = getArguments();
         election = Parcels.unwrap( args.getParcelable(Election.class.getSimpleName()));
-        races = election.getRaces();
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Setting adapter
-        adapter = new RaceAdapter(getContext(), races);
+        setElectionInformation();
+        addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
+        binding.btnRaces.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRacesActivity();
+            }
+        });
+        binding.btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchMapActivity();
+            }
+        });
 
+    }
+
+    private void setElectionInformation() {
         binding.tvElectionName.setText(election.getTitle());
         binding.tvDate.setText(election.getElectionDate());
         binding.tvAbsentee.setText(election.getAbsenteeBallotUrl());
         binding.tvElectionInfo.setText(election.getElectionInfoUrl());
         binding.tvRegister.setText(election.getRegistrationUrl());
+    }
 
-        // Making text views for poll locations
-        addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
-
-        binding.btnRaces.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: Add intent (?) or fragment
-                launchRacesActivity();
-            }
-        });
-
-        binding.btnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(getContext(), MapActivity.class);
-                String addressLine = election.getElectionDayPolls().get(0).getLocation();
-                try {
-                    putLatAndLngInIntent(intent, addressLine);
-                    startActivity(intent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Could not show map", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
+    private void launchMapActivity() {
+        Intent intent= new Intent(getContext(), MapActivity.class);
+        String addressLine = election.getElectionDayPolls().get(0).getLocation();
+        try {
+            putLatAndLngInIntent(intent, addressLine);
+            startActivity(intent);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Could not show map", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void putLatAndLngInIntent(Intent intent, String addressLine) throws IOException {

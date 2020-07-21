@@ -69,18 +69,13 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Inflating layout
         binding = ActivityMapBinding.inflate(getLayoutInflater());
-
         setContentView(binding.getRoot());
-
         // This checks if anything was saved, and, if so, gets the saved location
         getSavedLocation(savedInstanceState);
-
         // Initializing map fragment + checking that it's valid + loading map
         initializeMapFragment();
-
         extractPollLocationDetails();
     }
 
@@ -138,7 +133,6 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    // Q: Overriding methods of AppCompat by adding MapDemo stuff too?
     @SuppressLint("NeedOnRequestPermissionsResult")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -180,32 +174,6 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    // Is this for emulator?
-    private boolean isGooglePlayServicesAvailable() {
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates", "Google Play services is available.");
-            return true;
-        } else {
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                errorFragment.setDialog(errorDialog);
-                errorFragment.show(getSupportFragmentManager(),"MapActivity");
-            }
-
-            return false;
-        }
     }
 
     @Override
@@ -257,14 +225,8 @@ public class MapActivity extends AppCompatActivity {
         if (location == null) {
             return;
         }
-
         // Report to the UI that the location was updated
-
         mCurrentLocation = location;
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     // Creates bundle to save location

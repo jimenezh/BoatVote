@@ -226,18 +226,6 @@ public class ElectionFragment extends Fragment {
 
     }
 
-
-    private void addElectionIfInUserState(final JSONArray jsonArray, final String ocd_id) throws JSONException {
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if (jsonObject.getString("ocdDivisionId").equals(ocd_id) || jsonObject.getString("id").equals("2000")) {
-                // If it has the same id, then we want to get more of it's information
-                elections.add(Election.basicInformationFromJson(jsonObject));
-            }
-        }
-    }
-
-
     private Address getAddressFromLocation(Location location) {
         // Result
         Address address = null;

@@ -22,9 +22,6 @@ import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.ParseUser;
 
 import org.json.JSONException;
 
@@ -56,18 +53,15 @@ public class ToDoFragment extends Fragment {
         binding = FragmentToDoBinding.inflate(inflater);
 
         // Setting up To Do tab
-        toDoItems = new ArrayList<>();
-        toDoAdapter = new ToDoAdapter(getContext(), toDoItems);
-        binding.rvToDoList.setAdapter(toDoAdapter);
-        binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleVisibility(binding.rvToDoList);
-            }
-        });
+        setToDoAdapter();
         getToDoItems();
         // Setting up representatives tab
+        setRepresentativesAdapter();
+        getRepresentatives();
+        return binding.getRoot();
+    }
+
+    private void setRepresentativesAdapter() {
         representatives = new ArrayList<>();
         representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
         binding.rvRepresentatives.setAdapter(representativesAdapter);
@@ -80,9 +74,19 @@ public class ToDoFragment extends Fragment {
                 toggleVisibility(binding.rvRepresentatives);
             }
         });
-        getRepresentatives();
+    }
 
-        return binding.getRoot();
+    private void setToDoAdapter() {
+        toDoItems = new ArrayList<>();
+        toDoAdapter = new ToDoAdapter(getContext(), toDoItems);
+        binding.rvToDoList.setAdapter(toDoAdapter);
+        binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleVisibility(binding.rvToDoList);
+            }
+        });
     }
 
     private void toggleVisibility(RecyclerView rv) {
