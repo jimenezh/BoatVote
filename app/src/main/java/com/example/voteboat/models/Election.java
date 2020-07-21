@@ -99,36 +99,21 @@ public class Election extends ParseObject {
     }
 
     public String getTitle() {
-        if (title == null) {
-            try {
-                return fetchIfNeeded().getString(KEY_NAME);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+        if (title == null)
+            return getString(KEY_NAME);
         return title;
     }
 
     public String getGoogleId() {
         if (googleId == null) {
-            try {
-                return fetchIfNeeded().getString(KEY_GOOGLE_ID);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return "";
-            }
+            return getString(KEY_GOOGLE_ID);
         }
         return googleId;
     }
 
     public String getElectionDate() {
         if (electionDate == null) {
-            try {
-                return fetchIfNeeded().getString(KEY_ELECTION_DATE);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return "";
-            }
+            return getString(KEY_ELECTION_DATE);
         }
         return electionDate;
     }
