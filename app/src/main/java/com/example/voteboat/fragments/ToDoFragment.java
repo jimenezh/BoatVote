@@ -10,29 +10,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.adapters.RepresentativesAdapter;
 import com.example.voteboat.adapters.ToDoAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentToDoBinding;
+import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Representative;
 import com.example.voteboat.models.ToDoItem;
+import com.example.voteboat.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Headers;
 
 public class ToDoFragment extends Fragment {
-    public static final String TAG ="ToDoFragment";
+    public static final String TAG = "ToDoFragment";
     FragmentToDoBinding binding;
 
     List<ToDoItem> toDoItems;
@@ -53,7 +57,7 @@ public class ToDoFragment extends Fragment {
 
         // Setting up To Do tab
         toDoItems = new ArrayList<>();
-        toDoAdapter= new ToDoAdapter(getContext(), toDoItems);
+        toDoAdapter = new ToDoAdapter(getContext(), toDoItems);
         binding.rvToDoList.setAdapter(toDoAdapter);
         binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +86,7 @@ public class ToDoFragment extends Fragment {
     }
 
     private void toggleVisibility(RecyclerView rv) {
-        if(rv.getVisibility() == View.GONE)
+        if (rv.getVisibility() == View.GONE)
             rv.setVisibility(View.VISIBLE);
         else
             rv.setVisibility(View.GONE);
@@ -97,37 +101,73 @@ public class ToDoFragment extends Fragment {
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     // Transform json into list of Representative objects
-                    representatives.addAll( Representative.fromJSONArray(json.jsonObject));
+                    representatives.addAll(Representative.fromJSONArray(json.jsonObject));
                     // Notify adaptrs
                     representativesAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure: failed to retreive reps: "+response, throwable);
+                Log.e(TAG, "onFailure: failed to retreive reps: " + response, throwable);
             }
         });
     }
 
     // Parse query for user's toDOItems
     private void getToDoItems() {
-        ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<ToDoItem>() {
+        User.getToDo(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
                 if(e != null){
-                    Log.e(TAG, "Query failed");
+                    Log.e(TAG, "Could not get ToDo's");
                     return;
                 }
-                for(ToDoItem election: objects)
-                    Log.i(TAG,election.toString());
-                toDoItems.addAll(objects);
+                for (int i = 0; i < objects.size(); i++) {
+                    // Here, we check to see if the election has passed to see
+                    // if the todoitem is still valid
+                    addItemIfElectionHasNotPassed(i, objects.get(i));
+                }
+                // We save the user
+                User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
+                // Notify the adapter that we now have all the valid elections
                 toDoAdapter.notifyDataSetChanged();
-
             }
         });
+    }
+
+    private void addItemIfElectionHasNotPassed(int i, ToDoItem item) {
+        Election election = (Election) item.get("election");
+        if (hasElectionPassed(election))
+            // Delete the item, add it to past election, update election
+            updateElectionAndToDoItem(item, election);
+        else
+            // Otherwise, still valid todoItem
+            toDoItems.add(item);
+    }
+
+    private void updateElectionAndToDoItem(ToDoItem item, Election election) {
+        // Update election item
+        if (!election.getHasPassed())
+            election.setElectionHasPassed();
+        // Add to user's past elections if user voted
+        if (item.hasVoted())
+            User.addToPastElections(election);
+        // Remove item database
+        item.deleteInBackground();
+    }
+
+    private boolean hasElectionPassed(Election election) {
+        String d = election.getElectionDate();
+        try {
+            Date electionDate = new SimpleDateFormat("yyyy-MM-dd").parse(d);
+            Date today = new Date();
+            return electionDate.before(today);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
