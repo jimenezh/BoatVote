@@ -21,6 +21,7 @@ import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
@@ -36,12 +37,14 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
     private Context context;
     private List<Election> elections;
+    private List<Election> starredElections;
     public Address address;
 
-    public ElectionAdapter(Context context, List<Election> elections, Address address) {
+    public ElectionAdapter(Context context, List<Election> elections,List<Election> starredElections, Address address) {
         this.context = context;
         this.elections = elections;
         this.address = address;
+        this.starredElections = starredElections;
     }
 
     // Interface to access listener on
@@ -80,7 +83,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate());
             // TODO: bind proper selector for star
-            binding.btnStar.starButton.setLiked(election.isStarred());
+            binding.btnStar.starButton.setLiked(starredElections.contains(election));
             setOnStarListener(election);
         }
 
@@ -89,7 +92,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 @Override
                 public void liked(LikeButton likeButton) {
                     // only update if election is originally unstarred
-                    if (!election.isStarred()) {
+                    if (!starredElections.contains(election)) {
                         User.starElection(election);
                     }
                 }
@@ -97,7 +100,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     // only update if election is originally starred
-                    if (election.isStarred()) {
+                    if (starredElections.contains(election)) {
                         User.unstarElection(election);
                     }
                 }

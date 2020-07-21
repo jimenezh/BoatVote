@@ -21,6 +21,7 @@ import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +57,7 @@ public class ElectionFragment extends Fragment {
     public static final String DUMMY_STATE = "mi";
     ElectionAdapter adapter;
     List<Election> elections;
+    List<Election> starredElections;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private final int MAX_LOCATION_RESULTS = 5;
     Address address;
@@ -83,10 +85,27 @@ public class ElectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Inititalizing empty list
         elections = new ArrayList<>();
+        starredElections = new ArrayList<>();
         // Setting adapter
-        adapter = new ElectionAdapter(getContext(), elections, address);
+        adapter = new ElectionAdapter(getContext(), elections, starredElections,address);
         binding.rvElections.setAdapter(adapter);
         binding.rvElections.setLayoutManager(new LinearLayoutManager(getContext()));
+        // getting starred elections
+        getStarredElections();
+    }
+
+    private void getStarredElections() {
+        User.getStarredElections(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Could not get starred elections");
+                    return;
+                }
+                starredElections.addAll(objects);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // Annotations from dependency. Includes fine + coarse location

@@ -18,18 +18,20 @@ public class User {
     public static final String TAG = "User";
     public static final String KEY_TO_DO = "toDo";
 
-    public static final String KEY_STARRED_ELECTIONS = "elections";
+    public static final String KEY_STARRED_ELECTIONS = "starredElections";
     public static final String KEY_PAST_ELECTIONS = "pastElections";
 
     // Gettter for updates list of elections
-    public static ArrayList<Election> getStarredElections() {
-        return (ArrayList<Election>) ParseUser.getCurrentUser().get(KEY_STARRED_ELECTIONS);
+    public static void getStarredElections(FindCallback findCallback) {
+        ParseRelation<Election> starredElections = ParseUser.getCurrentUser().getRelation(KEY_STARRED_ELECTIONS);
+        starredElections.getQuery().findInBackground(findCallback);
     }
 
     public static void starElection(Election election) {
         ParseUser user = ParseUser.getCurrentUser();
         // First, we add the election Id to the user's list of starred election
-        user.add(User.KEY_STARRED_ELECTIONS, election);
+        ParseRelation<Election> elections = user.getRelation(KEY_STARRED_ELECTIONS);
+        elections.add(election);
         // Now, we construct a new ToDoItem + add it to the user's list of ToDoItems
         createToDoItem(election, user);
         // Finally, we save the user
