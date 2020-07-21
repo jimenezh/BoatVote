@@ -22,6 +22,7 @@ import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import org.json.JSONException;
 
@@ -142,14 +143,27 @@ public class ToDoFragment extends Fragment {
         });
     }
 
-    private void addItemIfElectionHasNotPassed(int i, ToDoItem item) {
-        Election election = (Election) item.get("election");
-        if (hasElectionPassed(election))
-            // Delete the item, add it to past election, update election
-            updateElectionAndToDoItem(item, election);
-        else
-            // Otherwise, still valid todoItem
-            toDoItems.add(item);
+    private void addItemIfElectionHasNotPassed(int i, final ToDoItem item) {
+        final Election election = (Election) item.get("election");
+        ParseQuery<Election> query = new ParseQuery<Election>("Election");
+        query.whereEqualTo("objectId", election.getObjectId());
+        query.include(Election.KEY_ELECTION_DATE);
+        query.findInBackground(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not get election", e);
+                else{
+                    Election result = objects.get(0);
+                    if (hasElectionPassed(result))
+                        // Delete the item, add it to past election, update election
+                        updateElectionAndToDoItem(item, result);
+                    else
+                        // Otherwise, still valid todoItem
+                        toDoItems.add(item);
+                }
+            }
+        });
     }
 
     private void updateElectionAndToDoItem(ToDoItem item, Election election) {
