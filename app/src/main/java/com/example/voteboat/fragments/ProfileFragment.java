@@ -80,11 +80,20 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void populatePastElectionsRV() {
-        List<Election> list = User.getPastElections();
-        Log.i(TAG,list.get(0).toString());
-        pastElections.addAll(list);
-        adapter.notifyDataSetChanged();
-        binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+        User.getPastElections(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Could not get past elections");
+                    return;
+                }
+                Log.i(TAG,"Got "+objects.size()+" past elections");
+                pastElections.addAll(objects);
+                adapter.notifyDataSetChanged();
+                binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+            }
+        });
+
     }
 
     private void showEditUsernameDialog(String title) {

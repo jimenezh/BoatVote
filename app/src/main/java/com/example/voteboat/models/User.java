@@ -5,6 +5,7 @@ import android.util.Log;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -18,6 +19,7 @@ public class User {
     public static final String KEY_TO_DO = "toDo";
 
     public static final String KEY_STARRED_ELECTIONS = "elections";
+    public static final String KEY_PAST_ELECTIONS = "pastElections";
 
     // Gettter for updates list of elections
     public static ArrayList<Election> getStarredElections() {
@@ -94,7 +96,14 @@ public class User {
         saveUser("Could not save password", "Saved password");
     }
 
-    public static List<Election> getPastElections() {
-        return (List<Election>) ParseUser.getCurrentUser().get("pastElections");
+    public static void getPastElections(FindCallback findCallback) {
+        ParseRelation<Election> elections = ParseUser.getCurrentUser().getRelation(KEY_PAST_ELECTIONS);
+        elections.getQuery().findInBackground(findCallback);
+    }
+
+    public static void addToPastElections(Election e) {
+        ParseRelation<Election> elections = ParseUser.getCurrentUser().getRelation(KEY_PAST_ELECTIONS);
+        elections.add(e);
+        saveUser("Could not add past election", "Added past election");
     }
 }
