@@ -32,7 +32,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     FragmentProfileBinding binding;
 
     List<Election> pastElections;
-    ElectionAdapter adapter;
+    PastElectionsAdapter adapter;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         });
         // User past elections RV
         pastElections = new ArrayList<>();
-        adapter = new ElectionAdapter(getContext(), pastElections, null);
+        adapter = new PastElectionsAdapter(getContext(), pastElections);
         binding.rvPastElections.setAdapter(adapter);
         binding.rvPastElections.setLayoutManager(new LinearLayoutManager(getContext()));
         // Query for past elections
@@ -80,28 +80,11 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void populatePastElectionsRV() {
-//
         List<Election> list = User.getPastElections();
         Log.i(TAG,list.get(0).toString());
         pastElections.addAll(list);
         adapter.notifyDataSetChanged();
         binding.tvNumElections.setText(String.valueOf(pastElections.size()));
-//
-//        ParseQuery<Election> query = new ParseQuery<Election>("Elections");
-//        query.include("pastElections");
-//        query.findInBackground(new FindCallback<Election>() {
-//            @Override
-//            public void done(List<Election> objects, ParseException e) {
-//                if(e != null){
-//                    Log.e(TAG, "No past election: ",e);
-//                } else{
-//                    Log.i(TAG, objects.size()+" past elections");
-//                    pastElections.addAll(objects);
-//                    binding.tvNumElections.setText(objects.size());
-//                    adapter.notifyDataSetChanged();
-//                }
-//            }
-//        });
     }
 
     private void showEditUsernameDialog(String title) {

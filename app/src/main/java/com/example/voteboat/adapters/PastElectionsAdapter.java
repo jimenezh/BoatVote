@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemElectionBinding;
+import com.example.voteboat.databinding.ItemPastElectionBinding;
 import com.example.voteboat.models.Election;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class PastElectionsAdapter extends RecyclerView.Adapter<PastElectionsAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        ItemElectionBinding binding = ItemElectionBinding.inflate(LayoutInflater.from(context));
+        ItemPastElectionBinding binding = ItemPastElectionBinding.inflate(LayoutInflater.from(context));
         return new ViewHolder(binding);
     }
 
@@ -43,12 +44,16 @@ public class PastElectionsAdapter extends RecyclerView.Adapter<PastElectionsAdap
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(@NonNull ItemElectionBinding binding) {
+        private final ItemPastElectionBinding binding;
+
+        public ViewHolder(@NonNull ItemPastElectionBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
 
         public void bind(Election election) {
-
+            binding.tvTitle.setText(election.getTitle());
+            binding.tvDate.setText(election.getElectionDate());
         }
     }
 }
