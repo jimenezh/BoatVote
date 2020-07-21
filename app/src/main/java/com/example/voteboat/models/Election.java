@@ -5,16 +5,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 import java.util.List;
 
@@ -186,6 +183,7 @@ public class Election extends ParseObject {
 
     public void setElectionHasPassed() {
         put(KEY_HAS_PASSED, true);
+        saveInBackground();
     }
 
     public boolean getHasPassed() {

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -107,14 +106,14 @@ public class User {
         saveUser("Could not save username", "Saved username");
     }
 
-    private static void saveUser(final String failureMessage, final String successMessag) {
+    public static void saveUser(final String failureMessage, final String successMessage) {
         ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e != null)
                     Log.e(TAG, failureMessage, e);
                 else
-                    Log.i(TAG, successMessag);
+                    Log.i(TAG, successMessage);
             }
         });
     }
@@ -133,5 +132,10 @@ public class User {
         ParseRelation<Election> elections = ParseUser.getCurrentUser().getRelation(KEY_PAST_ELECTIONS);
         elections.add(e);
         saveUser("Could not add past election", "Added past election");
+    }
+
+    public static void getToDo(FindCallback findCallback) {
+        ParseRelation<ToDoItem> toDoItemParseRelation = ParseUser.getCurrentUser().getRelation(KEY_TO_DO);
+        toDoItemParseRelation.getQuery().findInBackground(findCallback);
     }
 }
