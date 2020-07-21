@@ -157,6 +157,7 @@ public class ElectionFragment extends Fragment {
     private void synchronizeElectionsInParse(final JSONArray jsonArray) {
         // Get elections in parse
         ParseQuery<Election> query = new ParseQuery<>("Election");
+        query.whereEqualTo("hasPassed", false);
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
