@@ -21,13 +21,13 @@ import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
-import com.example.voteboat.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -107,7 +107,7 @@ public class ElectionFragment extends Fragment {
                         // Getting state + state abbreviation
                         final String ocd_id = getStateAbbreviation(adapter.address);
                         // Gets all elections
-                        getElections(ocd_id);
+                        populateElectionList(ocd_id);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -128,17 +128,17 @@ public class ElectionFragment extends Fragment {
         return String.format("ocd-division/country:us/state:%s", DUMMY_STATE);
     }
 
-    private void getElections(final String ocd_id) {
+    private void populateElectionList(final String ocd_id) {
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "Elections are: " + json.toString());
                 try {
-                    // Add the election with the same id
+                    // Extract elections
                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
-                    addToParse(jsonArray);
-                    adapter.notifyDataSetChanged();
+                    // Now we get the elections from parse + compare to see if any new elections
+                    synchronizeElectionsInParse(jsonArray);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "Could not add elections");
@@ -153,7 +153,8 @@ public class ElectionFragment extends Fragment {
         });
     }
 
-    private void addToParse(final JSONArray jsonArray) {
+    private void synchronizeElectionsInParse(final JSONArray jsonArray) {
+        // Get elections in parse
         ParseQuery<Election> query = new ParseQuery<>("Election");
         query.findInBackground(new FindCallback<Election>() {
             @Override
@@ -161,23 +162,47 @@ public class ElectionFragment extends Fragment {
                 if(e != null)
                     Log.e(TAG, "Could not get elections", e);
                 else{
-                    // We check the id to make sure we have it in the database
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        try {
-                            Election election = Election.basicInformationFromJson(jsonArray.getJSONObject(i));
-                            if(!objects.contains(election)){
-                                Log.i(TAG, election.getGoogleId() +" not in parse");
-                                election.putInParse();
-                            }
+                    // First we add the pre-existing elections to the list
+                    elections.addAll(objects);
+                    adapter.notifyDataSetChanged();
 
-                        } catch (JSONException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+                    // We check the ids of all elections in jsonArray to make sure we have it in the database
+                    checkIfElectionsInParse(objects, jsonArray);
                 }
             }
         });
     }
+
+    private void checkIfElectionsInParse(List<Election> objects, JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                final Election election = Election.basicInformationFromJson(jsonArray.getJSONObject(i));
+                if(!objects.contains(election)){
+                    addElectionToParse(election);
+                }
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void addElectionToParse(final Election election) {
+        Log.i(TAG, election.getGoogleId() +" not in parse");
+        election.putInParse(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not save "+election.getGoogleId());
+                else {
+                    Log.i(TAG, "Saved " + election.getGoogleId());
+                    // Now we can add the saved election to the list
+                    elections.add(election);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
 
     private void addElectionIfInUserState(final JSONArray jsonArray, final String ocd_id) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {

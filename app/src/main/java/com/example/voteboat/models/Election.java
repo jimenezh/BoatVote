@@ -39,10 +39,10 @@ public class Election extends ParseObject {
 
 
     // Parse Keys
-    public static final String KEY_NAME="name";
-    public static final String KEY_GOOGLE_ID="googleId";
-    public static final String KEY_ELECTION_DATE="electionDay";
-    public static final String KEY_OCD_ID="ocdDivisionId";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_GOOGLE_ID = "googleId";
+    public static final String KEY_ELECTION_DATE = "electionDay";
+    public static final String KEY_OCD_ID = "ocdDivisionId";
 
     public Election() {
     }
@@ -115,17 +115,21 @@ public class Election extends ParseObject {
     }
 
     public String getTitle() {
+        if (title == null)
+            return getString(KEY_NAME);
         return title;
     }
 
     public String getGoogleId() {
-        if(googleId==null)
+        if (googleId == null)
             return (String) get(KEY_GOOGLE_ID);
         else
             return googleId;
     }
 
     public String getElectionDate() {
+        if (electionDate == null)
+            return getString(KEY_ELECTION_DATE);
         return electionDate;
     }
 
@@ -160,29 +164,21 @@ public class Election extends ParseObject {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(obj.getClass() != Election.class)
+        if (obj.getClass() != Election.class)
             return false;
         Election otherElection = (Election) obj;
-        if(otherElection.getGoogleId() == null)
-            return  false;
+        if (otherElection.getGoogleId() == null)
+            return false;
         return otherElection.getGoogleId().equals(this.getGoogleId());
     }
 
-    public void putInParse() {
+    public void putInParse(SaveCallback saveCallback) {
         put(KEY_NAME, this.getTitle());
         put(KEY_GOOGLE_ID, this.getGoogleId());
-        put(KEY_ELECTION_DATE,this.getElectionDate());
+        put(KEY_ELECTION_DATE, this.getElectionDate());
         put(KEY_OCD_ID, this.getOcd_id());
 
         final String id = this.getGoogleId();
-        this.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e != null)
-                    Log.e(TAG, "Could not save "+id);
-                else
-                    Log.i(TAG, "Saved "+id);
-            }
-        });
+        this.saveInBackground(saveCallback);
     }
 }
