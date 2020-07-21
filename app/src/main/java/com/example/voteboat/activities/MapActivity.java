@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -59,6 +61,8 @@ public class MapActivity extends AppCompatActivity  {
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    LatLng pollLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,15 +72,26 @@ public class MapActivity extends AppCompatActivity  {
 
         setContentView(binding.getRoot());
 
-        // savedInstanceState holds a Bundle saved during previous state
         // This checks if anything was saved, and, if so, gets the saved location
+        getSavedLocation(savedInstanceState);
+
+        // Initializing map fragment + checking that it's valid + loading map
+        initializeMapFragment();
+
+        double pollLat = getIntent().getDoubleExtra("lat", 0);
+        double pollLng = getIntent().getDoubleExtra("lng", 0);
+        pollLocation = new LatLng(pollLat, pollLng);
+    }
+
+    private void getSavedLocation(Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
             // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
             // is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
+    }
 
-        // Initializing map fragment + checking that it's valid + loading map
+    private void initializeMapFragment() {
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() { // Load the map once it is ready (callback)
@@ -101,6 +116,8 @@ public class MapActivity extends AppCompatActivity  {
             // Q: Where is this generated class being generated???? Is it from the annotation?
             MapActivityPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
+
+            map.addMarker(new MarkerOptions().position(pollLocation));
 
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();

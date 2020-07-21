@@ -2,6 +2,9 @@ package com.example.voteboat.fragments;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import com.example.voteboat.models.Race;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ElectionDetailFragment extends Fragment {
@@ -75,10 +79,27 @@ public class ElectionDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent= new Intent(getContext(), MapActivity.class);
-                startActivity(intent);
+                String addressLine = election.getElectionDayPolls().get(0).getLocation();
+                try {
+                    putLatAndLngInIntent(intent, addressLine);
+                    startActivity(intent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Could not show map", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
+    }
+
+    private void putLatAndLngInIntent(Intent intent, String addressLine) throws IOException {
+        Geocoder geocoder = new Geocoder(getContext());
+        Address address = geocoder.getFromLocationName(addressLine,1).get(0);
+        double lat = address.getLatitude();
+        double lng = address.getLongitude();
+        intent.putExtra("lat",lat);
+        intent.putExtra("lng", lng);
     }
 
     private void launchRacesActivity() {
