@@ -64,7 +64,7 @@ public class ElectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentElectionBinding.inflate(getLayoutInflater());
-
+        // TODO: check if have user address
         // Generated class method to request permission for location
         ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
 
@@ -106,10 +106,8 @@ public class ElectionFragment extends Fragment {
                         adapter.address = getAddressFromLocation(location);
                         // Getting state + state abbreviation
                         final String ocd_id = getStateAbbreviation(adapter.address);
-                        // Get relevant races
-                        final GoogleCivicClient googleCivicClient = new GoogleCivicClient();
                         // Gets all elections
-                        getElections(ocd_id, googleCivicClient);
+                        getElections(ocd_id);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -130,7 +128,8 @@ public class ElectionFragment extends Fragment {
         return String.format("ocd-division/country:us/state:%s", DUMMY_STATE);
     }
 
-    private void getElections(final String ocd_id, final GoogleCivicClient googleCivicClient) {
+    private void getElections(final String ocd_id) {
+        GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -138,8 +137,7 @@ public class ElectionFragment extends Fragment {
                 try {
                     // Add the election with the same id
                     JSONArray jsonArray = json.jsonObject.getJSONArray("elections");
-                    addElectionIfInUserState(jsonArray, ocd_id);
-                    addToParse();
+                    addToParse(jsonArray);
                     adapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
@@ -155,7 +153,7 @@ public class ElectionFragment extends Fragment {
         });
     }
 
-    private void addToParse() {
+    private void addToParse(final JSONArray jsonArray) {
         ParseQuery<Election> query = new ParseQuery<>("Election");
         query.findInBackground(new FindCallback<Election>() {
             @Override
@@ -163,9 +161,17 @@ public class ElectionFragment extends Fragment {
                 if(e != null)
                     Log.e(TAG, "Could not get elections", e);
                 else{
-                    for(Election election : elections){
-                        if(!objects.contains(election)){
-                            election.putInParse();
+                    // We check the id to make sure we have it in the database
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        try {
+                            Election election = Election.basicInformationFromJson(jsonArray.getJSONObject(i));
+                            if(!objects.contains(election)){
+                                Log.i(TAG, election.getGoogleId() +" not in parse");
+                                election.putInParse();
+                            }
+
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
                         }
                     }
                 }

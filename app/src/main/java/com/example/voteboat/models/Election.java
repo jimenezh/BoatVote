@@ -40,7 +40,9 @@ public class Election extends ParseObject {
 
     // Parse Keys
     public static final String KEY_NAME="name";
-    public static final String KEY_GOOGLE_ID="google_id";
+    public static final String KEY_GOOGLE_ID="googleId";
+    public static final String KEY_ELECTION_DATE="electionDay";
+    public static final String KEY_OCD_ID="ocdDivisionId";
 
     public Election() {
     }
@@ -161,12 +163,16 @@ public class Election extends ParseObject {
         if(obj.getClass() != Election.class)
             return false;
         Election otherElection = (Election) obj;
+        if(otherElection.getGoogleId() == null)
+            return  false;
         return otherElection.getGoogleId().equals(this.getGoogleId());
     }
 
     public void putInParse() {
         put(KEY_NAME, this.getTitle());
         put(KEY_GOOGLE_ID, this.getGoogleId());
+        put(KEY_ELECTION_DATE,this.getElectionDate());
+        put(KEY_OCD_ID, this.getOcd_id());
 
         final String id = this.getGoogleId();
         this.saveInBackground(new SaveCallback() {
