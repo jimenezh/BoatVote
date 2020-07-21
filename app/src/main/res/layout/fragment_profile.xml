@@ -72,12 +72,9 @@
         android:layout_toRightOf="@id/tvNumElections"
         android:layout_alignTop="@id/tvElectionTitle"
         android:layout_marginLeft="5dp"/>
-    <TextView
-        android:id="@+id/tvElection1"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPastElections"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvElectionTitle"
-        android:textSize="18sp"
-        android:text="2019 Local Elections"/>
-
+        android:layout_below="@id/tvElectionTitle"/>
 </RelativeLayout>

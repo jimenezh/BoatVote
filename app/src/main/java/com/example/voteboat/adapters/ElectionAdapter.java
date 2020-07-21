@@ -93,15 +93,12 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         User.starElection(election);
                     }
                 }
+
                 @Override
                 public void unLiked(LikeButton likeButton) {
                     // only update if election is originally starred
                     if (election.isStarred()) {
-                        try {
-                            User.unstarElection(election);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        User.unstarElection(election);
                     }
                 }
             });
@@ -118,8 +115,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             }
         }
     }
-
-
 
 
     // API request for more information on the election
@@ -139,6 +134,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                             ex.printStackTrace();
                         }
                     }
+
                     @Override
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "Could not get races");

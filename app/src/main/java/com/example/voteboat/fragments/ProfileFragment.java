@@ -5,20 +5,34 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.voteboat.activities.LogInActivity;
+import com.example.voteboat.adapters.ElectionAdapter;
+import com.example.voteboat.adapters.PastElectionsAdapter;
 import com.example.voteboat.databinding.FragmentProfileBinding;
+import com.example.voteboat.models.Election;
 import com.example.voteboat.models.User;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProfileFragment extends Fragment implements EditUsernameFragment.EditNameDialogListener {
-    public static final String TAG ="ProfileFragment";
+    public static final String TAG = "ProfileFragment";
     FragmentProfileBinding binding;
+
+    List<Election> pastElections;
+    ElectionAdapter adapter;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -55,7 +69,39 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                 showEditUsernameDialog("New password");
             }
         });
+        // User past elections RV
+        pastElections = new ArrayList<>();
+        adapter = new ElectionAdapter(getContext(), pastElections, null);
+        binding.rvPastElections.setAdapter(adapter);
+        binding.rvPastElections.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Query for past elections
+        populatePastElectionsRV();
         return binding.getRoot();
+    }
+
+    private void populatePastElectionsRV() {
+//
+        List<Election> list = User.getPastElections();
+        Log.i(TAG,list.get(0).toString());
+        pastElections.addAll(list);
+        adapter.notifyDataSetChanged();
+        binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+//
+//        ParseQuery<Election> query = new ParseQuery<Election>("Elections");
+//        query.include("pastElections");
+//        query.findInBackground(new FindCallback<Election>() {
+//            @Override
+//            public void done(List<Election> objects, ParseException e) {
+//                if(e != null){
+//                    Log.e(TAG, "No past election: ",e);
+//                } else{
+//                    Log.i(TAG, objects.size()+" past elections");
+//                    pastElections.addAll(objects);
+//                    binding.tvNumElections.setText(objects.size());
+//                    adapter.notifyDataSetChanged();
+//                }
+//            }
+//        });
     }
 
     private void showEditUsernameDialog(String title) {
