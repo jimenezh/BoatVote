@@ -20,8 +20,15 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.example.voteboat.R;
 import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.databinding.FragmentPictureBinding;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -49,21 +56,18 @@ public class PictureFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Initialize facebook SDK
+        FacebookSdk.fullyInitialize();
+
         // Get the context
         // Inflate the layout for this fragment
         binding = FragmentPictureBinding.inflate(getLayoutInflater());
 
+        // Setting on click listeners
         binding.btnPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchCamera();
-            }
-        });
-
-        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Submitted to somewhere", Toast.LENGTH_SHORT).show();
             }
         });
         return binding.getRoot();
@@ -113,11 +117,9 @@ public class PictureFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                // RESIZE BITMAP, see section below
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                // Load the taken image into a preview
-                binding.ivPostImage.setImageBitmap(takenImage);
+                setBitMapOnImageView(takenImage);
+                setFacebookButtonContent(takenImage);
+
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
@@ -126,8 +128,22 @@ public class PictureFragment extends Fragment {
         }
     }
 
-    private void savePost(String description, ParseUser currentUser, File photoFile) {
+    private void setFacebookButtonContent(Bitmap takenImage) {
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(takenImage)
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        ((ShareButton)binding.fbShareButton).setShareContent(content);
+    }
 
+    private void setBitMapOnImageView(Bitmap takenImage) {
+        // RESIZE BITMAP, see section below
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        // Load the taken image into a preview
+        binding.ivPostImage.setImageBitmap(takenImage);
     }
 
 }
