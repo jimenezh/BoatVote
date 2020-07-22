@@ -2,16 +2,20 @@ package com.example.voteboat.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.databinding.ItemTodoBinding;
+import com.example.voteboat.fragments.PictureFragment;
 import com.example.voteboat.models.ToDoItem;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.io.File;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
@@ -19,6 +23,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     private Context context;
     private List<ToDoItem> toDoItems;
+
+    public static final String TAG = "ToDoAdapter";
 
 
     public ToDoAdapter(Context context, List<ToDoItem> elections) {
@@ -61,9 +67,14 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             setRegisteredListener(item);
             setDocumentsListener(item);
             setVoteListener(item);
+            // Camera listener
+            binding.btnCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((MainActivity) context).setElectionListener(null, new PictureFragment(),"none");
+                }
+            });
         }
-
-
 
         private void setVoteListener(final ToDoItem item) {
             binding.btnVote.starButton.setOnLikeListener(new OnLikeListener() {

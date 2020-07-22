@@ -84,9 +84,11 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
     */
     @Override
     public void setElectionListener(Object object, Fragment fragment, String type) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(type, Parcels.wrap(object));
-        fragment.setArguments(bundle);
+        if(object != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(type, Parcels.wrap(object));
+            fragment.setArguments(bundle);
+        }
         // Replace frame layout with fragment
         fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
     }
