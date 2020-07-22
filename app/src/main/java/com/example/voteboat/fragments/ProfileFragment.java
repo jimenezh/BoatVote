@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.voteboat.activities.LogInActivity;
@@ -33,6 +34,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     List<Election> pastElections;
     PastElectionsAdapter adapter;
+
+    boolean useCustomAddress;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -76,6 +79,36 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         binding.rvPastElections.setLayoutManager(new LinearLayoutManager(getContext()));
         // Query for past elections
         populatePastElectionsRV();
+
+        // Custom address
+        binding.switchAddress.setChecked(false);
+        binding.switchAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    // Then we want to show the custom addres field
+                    binding.etAddress.setVisibility(View.VISIBLE);
+                    binding.btnSetAddress.setVisibility(View.VISIBLE);
+                } else {
+                    binding.etAddress.setVisibility(View.GONE);
+                    binding.btnSetAddress.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        binding.btnSetAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String address = binding.etAddress.getText().toString();
+                if (address.isEmpty())
+                    Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
+                else {
+                    User.setAddress(address);
+                    binding.etAddress.setText("");
+                }
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -87,7 +120,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                     Log.e(TAG, "Could not get past elections");
                     return;
                 }
-                Log.i(TAG,"Got "+objects.size()+" past elections");
+                Log.i(TAG, "Got " + objects.size() + " past elections");
                 pastElections.addAll(objects);
                 adapter.notifyDataSetChanged();
                 binding.tvNumElections.setText(String.valueOf(pastElections.size()));

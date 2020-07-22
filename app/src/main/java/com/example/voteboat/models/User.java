@@ -17,6 +17,7 @@ public class User {
 
     public static final String KEY_STARRED_ELECTIONS = "starredElections";
     public static final String KEY_PAST_ELECTIONS = "pastElections";
+    public static final String KEY_ADDRESS ="address";
 
     // Gettter for updates list of elections
     public static void getStarredElections(FindCallback findCallback) {
@@ -137,5 +138,10 @@ public class User {
     public static void getToDo(FindCallback findCallback) {
         ParseRelation<ToDoItem> toDoItemParseRelation = ParseUser.getCurrentUser().getRelation(KEY_TO_DO);
         toDoItemParseRelation.getQuery().findInBackground(findCallback);
+    }
+
+    public static void setAddress(String address) {
+        ParseUser.getCurrentUser().put(KEY_ADDRESS,address);
+        saveUser("Could not set new address", "Set new address");
     }
 }
