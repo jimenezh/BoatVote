@@ -144,4 +144,8 @@ public class User {
         ParseUser.getCurrentUser().put(KEY_ADDRESS,address);
         saveUser("Could not set new address", "Set new address");
     }
+
+    public static String getCurrentAddress() {
+        return ParseUser.getCurrentUser().getString(KEY_ADDRESS);
+    }
 }

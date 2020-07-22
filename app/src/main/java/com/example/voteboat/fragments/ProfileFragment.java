@@ -80,18 +80,18 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         // Query for past elections
         populatePastElectionsRV();
 
+
+        // Get current address
+        getCurrentAddress();
+
         // Custom address
-        binding.switchAddress.setChecked(false);
         binding.switchAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    // Then we want to show the custom addres field
-                    binding.etAddress.setVisibility(View.VISIBLE);
-                    binding.btnSetAddress.setVisibility(View.VISIBLE);
+                    setAddressFormVisibility(View.VISIBLE);
                 } else {
-                    binding.etAddress.setVisibility(View.GONE);
-                    binding.btnSetAddress.setVisibility(View.GONE);
+                    setAddressFormVisibility(View.GONE);
                 }
             }
         });
@@ -110,6 +110,21 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         });
 
         return binding.getRoot();
+    }
+
+    private void getCurrentAddress() {
+        String currentAddress = User.getCurrentAddress();
+        if( currentAddress != null){
+            binding.tvCurrentAddress.setText(currentAddress);
+            binding.switchAddress.setChecked(true);
+            setAddressFormVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setAddressFormVisibility(int visibility) {
+        binding.tvCurrentAddress.setVisibility(visibility);
+        binding.etAddress.setVisibility(visibility);
+        binding.btnSetAddress.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {
