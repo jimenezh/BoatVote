@@ -66,4 +66,6 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
     // For starring elections
     compile 'com.github.jd-alexander:LikeButton:0.2.3'
+    // Sharing to facebook
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 }
