@@ -54,7 +54,17 @@
         android:layout_alignBottom="@id/tvItemVote"
         android:layout_alignParentEnd="true" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <com.facebook.share.widget.ShareButton
+        android:id="@+id/btnShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tvItemVote"
+        android:layout_alignBottom="@id/tvItemVote"
+        android:layout_toLeftOf="@id/btnVote"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+    <ImageButton
         android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,7 +72,10 @@
         android:layout_alignBottom="@id/tvItemVote"
         android:layout_toLeftOf="@id/btnVote"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_camera" />
+        android:src="@android:drawable/ic_menu_camera"
+        />
+
+
     <TextView
         android:id="@+id/tvItemVote"
         android:layout_width="wrap_content"
