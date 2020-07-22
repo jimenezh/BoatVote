@@ -62,7 +62,7 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
 
                 setCandidate1Info(candidates.get(0));
                 if (candidates.size() > 1) {
-                    setCandidate2Info(candidates.get(0));
+                    setCandidate2Info(candidates.get(1));
                 } else
                     binding.rlCandidate2.setVisibility(View.GONE);
             } else {
