@@ -40,10 +40,9 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
     private List<Election> starredElections;
     public Address address;
 
-    public ElectionAdapter(Context context, List<Election> elections,List<Election> starredElections, Address address) {
+    public ElectionAdapter(Context context, List<Election> elections,List<Election> starredElections) {
         this.context = context;
         this.elections = elections;
-        this.address = address;
         this.starredElections = starredElections;
     }
 
