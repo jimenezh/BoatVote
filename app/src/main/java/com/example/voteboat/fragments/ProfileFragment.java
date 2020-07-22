@@ -92,6 +92,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                     setAddressFormVisibility(View.VISIBLE);
                 } else {
                     setAddressFormVisibility(View.GONE);
+                    User.setUseCustomAddress(false);
                 }
             }
         });
@@ -114,12 +115,13 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
             User.setAddress(address);
             binding.tvCurrentAddress.setText(address);
             binding.etAddress.setText("");
+            User.setUseCustomAddress(true);
         }
     }
 
     private void getCurrentAddress() {
-        String currentAddress = User.getCurrentAddress();
-        if( currentAddress != null){
+        if( User.useCustomAddress()){
+            String currentAddress = User.getCurrentAddress();
             binding.tvCurrentAddress.setText(currentAddress);
             binding.switchAddress.setChecked(true);
             setAddressFormVisibility(View.VISIBLE);
