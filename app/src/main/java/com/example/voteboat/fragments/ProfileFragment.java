@@ -99,17 +99,22 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         binding.btnSetAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String address = binding.etAddress.getText().toString();
-                if (address.isEmpty())
-                    Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
-                else {
-                    User.setAddress(address);
-                    binding.etAddress.setText("");
-                }
+                setAddress();
             }
         });
 
         return binding.getRoot();
+    }
+
+    private void setAddress() {
+        String address = binding.etAddress.getText().toString();
+        if (address.isEmpty())
+            Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
+        else {
+            User.setAddress(address);
+            binding.tvCurrentAddress.setText(address);
+            binding.etAddress.setText("");
+        }
     }
 
     private void getCurrentAddress() {
