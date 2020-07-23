@@ -52,6 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvCandidate1Name"
             android:layout_marginBottom="2dp"
+            android:autoLink="all"
+            android:linksClickable="true"
             android:text="No website available" />
     </RelativeLayout>
 
@@ -88,6 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvCandidate2Name"
+            android:autoLink="all"
+            android:linksClickable="true"
             android:text="No website available" />
     </RelativeLayout>
 
