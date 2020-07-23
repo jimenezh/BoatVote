@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
@@ -61,6 +62,12 @@ public class ElectionFragment extends Fragment {
     public FusedLocationProviderClient fusedLocationProviderClient;
     private final int MAX_LOCATION_RESULTS = 5;
     Address address;
+
+    // Interface to access listener on
+    public interface ElectionListener {
+        void changeFragment(Object object, Fragment fragment, String type);
+        void setUserAddress(Address address);
+    }
 
     @Nullable
     @Override
@@ -238,6 +245,8 @@ public class ElectionFragment extends Fragment {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, MAX_LOCATION_RESULTS);
             Toast.makeText(getContext(), "Success in getting address", Toast.LENGTH_SHORT).show();
             address = addressList.get(0);
+            // Setting address in MainActivity so other fragments can access it
+            ((MainActivity) getContext()).setUserAddress(address);
         } catch (IOException e) {
             Toast.makeText(getContext(), "Could not get address", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "No addresses available");

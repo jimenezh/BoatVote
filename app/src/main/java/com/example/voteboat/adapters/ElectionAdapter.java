@@ -47,10 +47,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         this.starredElections = starredElections;
     }
 
-    // Interface to access listener on
-    public interface ElectionAdapterListener {
-        void setElectionListener(Object object, Fragment fragment, String type);
-    }
 
     @NonNull
     @Override
@@ -146,6 +142,6 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
     private void displayElectionDetail(Election e) {
         MainActivity mainActivity = (MainActivity) context;
-        mainActivity.setElectionListener(e, new ElectionDetailFragment(), Election.class.getSimpleName());
+        mainActivity.changeFragment(e, new ElectionDetailFragment(), Election.class.getSimpleName());
     }
 }

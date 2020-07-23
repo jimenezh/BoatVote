@@ -1,8 +1,10 @@
 package com.example.voteboat.activities;
 
+import android.location.Address;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.parceler.Parcels;
 
 
-public class MainActivity extends AppCompatActivity implements ElectionAdapter.ElectionAdapterListener {
+public class MainActivity extends AppCompatActivity implements ElectionFragment.ElectionListener {
 
     public static final String TAG = "MainActivity";
     ActivityMainBinding binding;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
     final ElectionFragment electionFragment = new ElectionFragment();
     final ProfileFragment profileFragment = new ProfileFragment();
     final ToDoFragment toDoFragment = new ToDoFragment();
+
+    Address address;
 
 
     @Override
@@ -55,19 +59,22 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_home:
-                        fragment = electionFragment;
-                        break;
-                    case R.id.action_todo:
-                        fragment = toDoFragment;
-                        break;
-                    case R.id.action_profile:
-                        fragment = profileFragment;
-                        break;
-                    default:
-                        fragment = electionFragment;
-                        break;
+                // Guarantees that we cannot switch out of election feed until we have the address
+                if(address == null) {
+                    Toast.makeText(MainActivity.this ,"please wait", Toast.LENGTH_LONG).show();
+                    fragment = electionFragment;
+                } else {
+                    switch (item.getItemId()) {
+                        case R.id.action_home:
+                            fragment = electionFragment;
+                            break;
+                        case R.id.action_todo:
+                            fragment = toDoFragment;
+                            break;
+                        case R.id.action_profile:
+                            fragment = profileFragment;
+                            break;
+                    }
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
@@ -83,11 +90,17 @@ public class MainActivity extends AppCompatActivity implements ElectionAdapter.E
     *  type is what data type the object is
     */
     @Override
-    public void setElectionListener(Object object, Fragment fragment, String type) {
+    public void changeFragment(Object object, Fragment fragment, String type) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(type, Parcels.wrap(object));
         fragment.setArguments(bundle);
         // Replace frame layout with fragment
         fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
+    }
+
+    @Override
+    public void setUserAddress(Address address) {
+        this.address = address;
+        toDoFragment.getRepresentatives(address.getAddressLine(0));
     }
 }
