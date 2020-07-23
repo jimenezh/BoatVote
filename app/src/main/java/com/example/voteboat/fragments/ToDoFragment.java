@@ -71,39 +71,9 @@ public class ToDoFragment extends Fragment {
         binding = FragmentToDoBinding.inflate(inflater);
 
         // Setting up To Do tab. Query immediately for to do items since they're in parse
-        setToDoAdapter();
         getToDoItems();
         // Setting up representatives tab, we query for reps once we have the address
-        setRepresentativesAdapter();
         return binding.getRoot();
-    }
-
-    private void setRepresentativesAdapter() {
-        // NOTE: reps is initialized before creation of f
-        representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
-        binding.rvRepresentatives.setAdapter(representativesAdapter);
-        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
-        representativeLinearLayout.setReverseLayout(true); // reverse so most local reps show up
-        binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
-        binding.tvRepresentativesTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleVisibility(binding.rvRepresentatives);
-            }
-        });
-    }
-
-    private void setToDoAdapter() {
-        toDoItems = new ArrayList<>();
-        toDoAdapter = new ToDoAdapter(getContext(), toDoItems, this);
-        binding.rvToDoList.setAdapter(toDoAdapter);
-        binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleVisibility(binding.rvToDoList);
-            }
-        });
     }
 
     private void toggleVisibility(RecyclerView rv) {

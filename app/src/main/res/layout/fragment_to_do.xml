@@ -5,42 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ToDoFragment">
 
-    <TextView
-        android:id="@+id/tvToDoTitle"
+    <com.multilevelview.MultiLevelRecyclerView
+        android:id="@+id/rvItems"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#03A9F4"
-        android:text="To Do"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:padding="2dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvToDoList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvToDoTitle"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/tvRepresentativesTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rvToDoList"
-        android:background="#03A9F4"
-        android:text="Call your representatives!"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:padding="2dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRepresentatives"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvRepresentativesTitle"
-        android:layout_alignParentStart="true" />
+        android:layout_height="match_parent" />
 
 
 </RelativeLayout>
