@@ -3,14 +3,14 @@ package com.example.voteboat.models;
 import com.multilevelview.models.RecyclerViewItem;
 
 public class Item extends RecyclerViewItem {
-    static Enum TODO;
-    static Enum REP;
-    static Enum LABEL;
+    public static final int TODO = 0;
+    public static final int REP = 1;
+    public static final int LABEL = 2;
 
     ToDoItem toDoItem;
     Representative representative;
     String label;
-    Enum type;
+    int type;
 
 
 
@@ -38,5 +38,13 @@ public class Item extends RecyclerViewItem {
 
     public Representative getRepresentative() {
         return representative;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public int getType() {
+        return type;
     }
 }

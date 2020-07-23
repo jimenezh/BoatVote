@@ -7,10 +7,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -18,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.activities.MainActivity;
+import com.example.voteboat.databinding.ItemLabelBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
 import com.example.voteboat.fragments.PictureFragment;
 import com.example.voteboat.fragments.ToDoFragment;
@@ -35,6 +38,7 @@ import com.multilevelview.MultiLevelRecyclerView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
+
 
 public class ToDoAdapter extends MultiLevelAdapter {
 
@@ -60,22 +64,55 @@ public class ToDoAdapter extends MultiLevelAdapter {
         this.multiLevelRecyclerView = multiLevelRecyclerView;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return toDoItems.get(position).getType();
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemTodoBinding binding = ItemTodoBinding.inflate(LayoutInflater.from(context));
-        return new ViewHolder(binding);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        switch (viewType) {
+            case Item.LABEL:
+                return new LabelHolder(ItemLabelBinding.inflate(LayoutInflater.from(context)));
+            case Item.TODO:
+                return new ViewHolder(ItemTodoBinding.inflate(LayoutInflater.from(context)));
+        }
+
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-        ViewHolder holder = (ViewHolder) viewHolder;
-        holder.bind(toDoItems.get(i).getToDoItem());
+        Item item = toDoItems.get(i);
+        switch (item.getType()) {
+            case Item.LABEL:
+                ((LabelHolder) viewHolder).bind(item.getLabel());
+                break;
+            case Item.TODO:
+                ((ViewHolder) viewHolder).bind(item.getToDoItem());
+                break;
+        }
+
     }
 
     @Override
     public int getItemCount() {
         return toDoItems.size();
+    }
+
+    class LabelHolder extends RecyclerView.ViewHolder {
+        ItemLabelBinding binding;
+
+        public LabelHolder(@NonNull ItemLabelBinding itemLabelBinding) {
+            super(itemLabelBinding.getRoot());
+            binding = itemLabelBinding;
+        }
+
+        public void bind(String label) {
+            binding.tvLabel.setText(label);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

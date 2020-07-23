@@ -51,7 +51,9 @@ public class ToDoFragment extends Fragment {
     public static final String TAG = "ToDoFragment";
     FragmentToDoBinding binding;
 
-    List<ToDoItem> toDoItems;
+    ToDoAdapter myAdapter;
+
+    List<Item> toDoItems;
     String address;
 
     List<Representative> representatives;
@@ -72,20 +74,21 @@ public class ToDoFragment extends Fragment {
 
         // Initialize data
         List<Item> items = new ArrayList<>();
-        items.add(new Item(0));
-        items.add(new Item(0));
+        items.add(new Item(0, "To Do:"));
 
         MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
 
-        ToDoAdapter myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
+        myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
         multiLevelRecyclerView.setAdapter(myAdapter);
-        multiLevelRecyclerView.openTill(0);
+        multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        multiLevelRecyclerView.openTill(0,1);
         multiLevelRecyclerView.setAccordion(true);
+        multiLevelRecyclerView.removeItemClickListeners();
 
 
 
         // Setting up To Do tab. Query immediately for to do items since they're in parse
-        getToDoItems();
+//        getToDoItems();
         // Setting up representatives tab, we query for reps once we have the address
         return binding.getRoot();
     }
@@ -138,6 +141,7 @@ public class ToDoFragment extends Fragment {
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
                 // Notify the adapter that we now have all the valid elections
+                myAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -159,7 +163,8 @@ public class ToDoFragment extends Fragment {
                         updateElectionAndToDoItem(item, result);
                     else
                         // Otherwise, still valid todoItem
-                        toDoItems.add(item);
+                        toDoItems.add(new Item(1,item));
+
                 }
             }
         });
