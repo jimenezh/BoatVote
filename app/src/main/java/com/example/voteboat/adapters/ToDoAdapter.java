@@ -21,6 +21,7 @@ import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.databinding.ItemTodoBinding;
 import com.example.voteboat.fragments.PictureFragment;
 import com.example.voteboat.fragments.ToDoFragment;
+import com.example.voteboat.models.Item;
 import com.example.voteboat.models.ToDoItem;
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.SharePhoto;
@@ -28,17 +29,20 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.multilevelview.MultiLevelAdapter;
+import com.multilevelview.MultiLevelRecyclerView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
-public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
+public class ToDoAdapter extends MultiLevelAdapter {
 
 
     private Context context;
-    private List<ToDoItem> toDoItems;
+    private List<Item> toDoItems;
     private ToDoFragment fragment;
+    private MultiLevelRecyclerView multiLevelRecyclerView;
 
     public static final String TAG = "ToDoAdapter";
 
@@ -48,10 +52,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
 
 
-    public ToDoAdapter(Context context, List<ToDoItem> elections, ToDoFragment fragment) {
+    public ToDoAdapter(Context context, List<Item> elections, ToDoFragment fragment, MultiLevelRecyclerView multiLevelRecyclerView) {
+        super(elections);
         this.context = context;
         this.toDoItems = elections;
         this.fragment = fragment;
+        this.multiLevelRecyclerView = multiLevelRecyclerView;
     }
 
     @NonNull
@@ -62,8 +68,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(toDoItems.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        ViewHolder holder = (ViewHolder) viewHolder;
+        holder.bind(toDoItems.get(i).getToDoItem());
     }
 
     @Override
