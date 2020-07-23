@@ -52,8 +52,8 @@ public class ToDoFragment extends Fragment {
     FragmentToDoBinding binding;
 
     ToDoAdapter myAdapter;
+    List<Item> items;
 
-    List<Item> toDoItems;
     String address;
 
     List<Representative> representatives;
@@ -73,7 +73,7 @@ public class ToDoFragment extends Fragment {
         binding = FragmentToDoBinding.inflate(inflater);
 
         // Initialize data
-        List<Item> items = new ArrayList<>();
+        items = new ArrayList<>();
         items.add(new Item(0, "To Do:"));
 
         MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
@@ -88,7 +88,7 @@ public class ToDoFragment extends Fragment {
 
 
         // Setting up To Do tab. Query immediately for to do items since they're in parse
-//        getToDoItems();
+        getToDoItems();
         // Setting up representatives tab, we query for reps once we have the address
         return binding.getRoot();
     }
@@ -140,8 +140,6 @@ public class ToDoFragment extends Fragment {
                 }
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
-                // Notify the adapter that we now have all the valid elections
-                myAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -161,9 +159,12 @@ public class ToDoFragment extends Fragment {
                     if (hasElectionPassed(result))
                         // Delete the item, add it to past election, update election
                         updateElectionAndToDoItem(item, result);
-                    else
+                    else {
                         // Otherwise, still valid todoItem
-                        toDoItems.add(new Item(1,item));
+                        items.add(new Item(1, item));
+                        myAdapter.notifyItemInserted(items.size()-1);
+
+                    }
 
                 }
             }
