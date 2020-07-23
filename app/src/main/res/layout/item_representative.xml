@@ -55,6 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvEmail"
         tools:text="A website"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

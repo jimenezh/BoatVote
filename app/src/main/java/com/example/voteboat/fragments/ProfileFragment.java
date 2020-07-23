@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.voteboat.activities.LogInActivity;
@@ -33,6 +34,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     List<Election> pastElections;
     PastElectionsAdapter adapter;
+
+    boolean useCustomAddress;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -76,7 +79,59 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         binding.rvPastElections.setLayoutManager(new LinearLayoutManager(getContext()));
         // Query for past elections
         populatePastElectionsRV();
+
+
+        // Get current address
+        getCurrentAddress();
+
+        // Custom address
+        binding.switchAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    setAddressFormVisibility(View.VISIBLE);
+                } else {
+                    setAddressFormVisibility(View.GONE);
+                    User.setUseCustomAddress(false);
+                }
+            }
+        });
+
+        binding.btnSetAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setAddress();
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    private void setAddress() {
+        String address = binding.etAddress.getText().toString();
+        if (address.isEmpty())
+            Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
+        else {
+            User.setAddress(address);
+            binding.tvCurrentAddress.setText(address);
+            binding.etAddress.setText("");
+            User.setUseCustomAddress(true);
+        }
+    }
+
+    private void getCurrentAddress() {
+        if( User.useCustomAddress()){
+            String currentAddress = User.getCurrentAddress();
+            binding.tvCurrentAddress.setText(currentAddress);
+            binding.switchAddress.setChecked(true);
+            setAddressFormVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setAddressFormVisibility(int visibility) {
+        binding.tvCurrentAddress.setVisibility(visibility);
+        binding.etAddress.setVisibility(visibility);
+        binding.btnSetAddress.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {
@@ -87,7 +142,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                     Log.e(TAG, "Could not get past elections");
                     return;
                 }
-                Log.i(TAG,"Got "+objects.size()+" past elections");
+                Log.i(TAG, "Got " + objects.size() + " past elections");
                 pastElections.addAll(objects);
                 adapter.notifyDataSetChanged();
                 binding.tvNumElections.setText(String.valueOf(pastElections.size()));

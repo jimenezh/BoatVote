@@ -17,6 +17,8 @@ public class User {
 
     public static final String KEY_STARRED_ELECTIONS = "starredElections";
     public static final String KEY_PAST_ELECTIONS = "pastElections";
+    public static final String KEY_ADDRESS ="address";
+    public static final String KEY_USE_CUSTOM_ADDRESS ="useAddress";
 
     // Gettter for updates list of elections
     public static void getStarredElections(FindCallback findCallback) {
@@ -137,5 +139,23 @@ public class User {
     public static void getToDo(FindCallback findCallback) {
         ParseRelation<ToDoItem> toDoItemParseRelation = ParseUser.getCurrentUser().getRelation(KEY_TO_DO);
         toDoItemParseRelation.getQuery().findInBackground(findCallback);
+    }
+
+    public static void setAddress(String address) {
+        ParseUser.getCurrentUser().put(KEY_ADDRESS,address);
+        setUseCustomAddress(true);
+        saveUser("Could not set new address", "Set new address");
+    }
+
+    public static String getCurrentAddress() {
+        return ParseUser.getCurrentUser().getString(KEY_ADDRESS);
+    }
+
+    public static boolean useCustomAddress(){
+        return ParseUser.getCurrentUser().getBoolean(KEY_USE_CUSTOM_ADDRESS);
+    }
+
+    public static void setUseCustomAddress(boolean useCustomAddress) {
+        ParseUser.getCurrentUser().put(KEY_USE_CUSTOM_ADDRESS, useCustomAddress);
     }
 }
