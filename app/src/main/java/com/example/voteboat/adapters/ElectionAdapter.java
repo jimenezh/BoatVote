@@ -107,7 +107,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             // Get correct election, then make query for election details
             Election election = elections.get(getAdapterPosition());
             try {
-                launchRaceFragment(election.getOcd_id(), address);
+                launchRaceFragment(election.getGoogleId(), address);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -116,10 +116,11 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
 
     // API request for more information on the election
-    private void launchRaceFragment(String ocd_id, Address address) throws JSONException {
+    private void launchRaceFragment(String googleId, Address address) throws JSONException {
+        Log.i(TAG, "Election id is "+googleId);
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient
-                .voterInformationElections(ocd_id, address.getAddressLine(0), new JsonHttpResponseHandler() {
+                .voterInformationElections(googleId, address.getAddressLine(0), new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "Got races " + json.toString());
@@ -135,7 +136,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
                     @Override
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                        Log.e(TAG, "Could not get races");
+                        Log.e(TAG, "Could not get races "+response, throwable);
                     }
                 });
     }
