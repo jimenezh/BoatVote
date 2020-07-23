@@ -17,4 +17,7 @@
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="login">Log In</string>
+
+    <!--  for Facebook SDK  -->
+    <string name="facebook_app_id">647670929440821</string>
 </resources>

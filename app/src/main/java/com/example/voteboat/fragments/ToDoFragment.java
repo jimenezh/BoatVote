@@ -1,15 +1,21 @@
 package com.example.voteboat.fragments;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.adapters.RepresentativesAdapter;
@@ -20,18 +26,24 @@ import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Representative;
 import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import okhttp3.Headers;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ToDoFragment extends Fragment {
     public static final String TAG = "ToDoFragment";
@@ -42,6 +54,10 @@ public class ToDoFragment extends Fragment {
 
     List<Representative> representatives;
     RepresentativesAdapter representativesAdapter;
+
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+    public String photoFileName = "photo.jpg";
+
 
     public ToDoFragment() {
         // Required empty public constructor
@@ -79,7 +95,7 @@ public class ToDoFragment extends Fragment {
 
     private void setToDoAdapter() {
         toDoItems = new ArrayList<>();
-        toDoAdapter = new ToDoAdapter(getContext(), toDoItems);
+        toDoAdapter = new ToDoAdapter(getContext(), toDoItems, this);
         binding.rvToDoList.setAdapter(toDoAdapter);
         binding.rvToDoList.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.tvToDoTitle.setOnClickListener(new View.OnClickListener() {
@@ -188,4 +204,61 @@ public class ToDoFragment extends Fragment {
         }
         return false;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Photo is on disk, we now publish it
+                publishToFacebook();
+            } else { // Result was a failure
+                Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void publishToFacebook() {
+        File file = getPhotoFileUri(photoFileName);
+        Bitmap takenImage = BitmapFactory.decodeFile(file.getAbsolutePath());
+        SharePhotoContent content = convertBitmapIntoFacebookContent(takenImage);
+        openShareDialog(content);
+    }
+
+    private void openShareDialog(SharePhotoContent content) {
+        ShareDialog shareDialog = new ShareDialog(this);
+        if(!shareDialog.canShow(content))
+            Log.e(TAG, "Cannot share to Facebook");
+        else
+            shareDialog.show(this, content);
+    }
+
+    private SharePhotoContent convertBitmapIntoFacebookContent(Bitmap takenImage) {
+        // SharePhoto is Facebook's data model for photos
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(takenImage)
+                .setCaption("I Voted!")
+                .build();
+        // Add the photo to the post's content
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        // Triggers intent to the Facebook app
+        return content;
+    }
+
+    // Get safe storage directory for photos
+    // Use `getExternalFilesDir` on Context to access package-specific directories.
+    // This way, we don't need to request external read/write runtime permissions.
+    public File getPhotoFileUri(String fileName) {
+        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
+            Log.d(TAG, "failed to create directory");
+        }
+        // Return the file target for the photo based on filename
+        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
+        return file;
+    }
+
 }
