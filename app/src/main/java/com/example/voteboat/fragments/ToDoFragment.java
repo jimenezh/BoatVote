@@ -39,6 +39,7 @@ public class ToDoFragment extends Fragment {
 
     List<ToDoItem> toDoItems;
     ToDoAdapter toDoAdapter;
+    String address;
 
     List<Representative> representatives;
     RepresentativesAdapter representativesAdapter;
@@ -53,17 +54,16 @@ public class ToDoFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentToDoBinding.inflate(inflater);
 
-        // Setting up To Do tab
+        // Setting up To Do tab. Query immediately for to do items since they're in parse
         setToDoAdapter();
         getToDoItems();
-        // Setting up representatives tab
+        // Setting up representatives tab, we query for reps once we have the address
         setRepresentativesAdapter();
-        getRepresentatives();
         return binding.getRoot();
     }
 
     private void setRepresentativesAdapter() {
-        representatives = new ArrayList<>();
+        // NOTE: reps is initialized before creation of f
         representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
         binding.rvRepresentatives.setAdapter(representativesAdapter);
         LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
@@ -98,17 +98,17 @@ public class ToDoFragment extends Fragment {
     }
 
     // Call to API using GoogleCivicAPI
-    private void getRepresentatives() {
+    public void getRepresentatives(String address) {
+        representatives = new ArrayList<>();
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
-        googleCivicClient.getRepresentatives(new JsonHttpResponseHandler() {
+        googleCivicClient.getRepresentatives(address, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     // Transform json into list of Representative objects
                     representatives.addAll(Representative.fromJSONArray(json.jsonObject));
-                    // Notify adaptrs
-                    representativesAdapter.notifyDataSetChanged();
+                    // Note: don't need to notify adapter, since it hasn't been created
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
