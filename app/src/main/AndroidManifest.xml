@@ -77,7 +77,7 @@
         <!-- Facebook Share -->
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider{APP_ID}"
+            android:authorities="com.facebook.app.FacebookContentProvider647670929440821"
             android:exported="true" />
 
     </application>
