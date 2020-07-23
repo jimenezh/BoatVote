@@ -23,12 +23,14 @@ import com.example.voteboat.adapters.ToDoAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentToDoBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.Item;
 import com.example.voteboat.models.Representative;
 import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.multilevelview.MultiLevelRecyclerView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -50,11 +52,9 @@ public class ToDoFragment extends Fragment {
     FragmentToDoBinding binding;
 
     List<ToDoItem> toDoItems;
-    ToDoAdapter toDoAdapter;
     String address;
 
     List<Representative> representatives;
-    RepresentativesAdapter representativesAdapter;
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
@@ -69,6 +69,20 @@ public class ToDoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentToDoBinding.inflate(inflater);
+
+        // Initialize data
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(0));
+        items.add(new Item(0));
+
+        MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
+
+        ToDoAdapter myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
+        multiLevelRecyclerView.setAdapter(myAdapter);
+        multiLevelRecyclerView.openTill(0);
+        multiLevelRecyclerView.setAccordion(true);
+
+
 
         // Setting up To Do tab. Query immediately for to do items since they're in parse
         getToDoItems();
@@ -124,7 +138,6 @@ public class ToDoFragment extends Fragment {
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
                 // Notify the adapter that we now have all the valid elections
-                toDoAdapter.notifyDataSetChanged();
             }
         });
     }
