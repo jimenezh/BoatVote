@@ -210,8 +210,10 @@ public class ToDoFragment extends Fragment {
 
     private void openShareDialog(SharePhotoContent content) {
         ShareDialog shareDialog = new ShareDialog(this);
-        if(!shareDialog.canShow(content))
+        if(!shareDialog.canShow(content)) {
             Log.e(TAG, "Cannot share to Facebook");
+            Toast.makeText(getContext(), "Please install Facebook", Toast.LENGTH_SHORT).show();
+        }
         else
             shareDialog.show(this, content);
     }
