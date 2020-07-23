@@ -81,7 +81,7 @@ public class ToDoFragment extends Fragment {
         myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
         multiLevelRecyclerView.setAdapter(myAdapter);
         multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        multiLevelRecyclerView.openTill(0,1);
+        multiLevelRecyclerView.openTill(0, 1);
         multiLevelRecyclerView.setAccordion(true);
         multiLevelRecyclerView.removeItemClickListeners();
 
@@ -145,6 +145,9 @@ public class ToDoFragment extends Fragment {
     }
 
     private void addItemIfElectionHasNotPassed(int i, final ToDoItem item) {
+
+        final Item itemLabel = items.get(0);
+
         final Election election = (Election) item.get("election");
         ParseQuery<Election> query = new ParseQuery<Election>("Election");
         query.whereEqualTo("objectId", election.getObjectId());
@@ -161,9 +164,10 @@ public class ToDoFragment extends Fragment {
                         updateElectionAndToDoItem(item, result);
                     else {
                         // Otherwise, still valid todoItem
-                        items.add(new Item(1, item));
-                        myAdapter.notifyItemInserted(items.size()-1);
-
+                        Item newToDo = new Item(1, item);
+                        itemLabel.addChild(newToDo);
+                        items.add(newToDo);
+                        myAdapter.notifyDataSetChanged();
                     }
 
                 }

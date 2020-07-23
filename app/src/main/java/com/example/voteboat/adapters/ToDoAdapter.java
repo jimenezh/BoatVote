@@ -102,16 +102,23 @@ public class ToDoAdapter extends MultiLevelAdapter {
         return toDoItems.size();
     }
 
-    class LabelHolder extends RecyclerView.ViewHolder {
+    class LabelHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemLabelBinding binding;
 
         public LabelHolder(@NonNull ItemLabelBinding itemLabelBinding) {
             super(itemLabelBinding.getRoot());
             binding = itemLabelBinding;
+            itemLabelBinding.getRoot().setOnClickListener(this);
         }
 
         public void bind(String label) {
             binding.tvLabel.setText(label);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Toast.makeText(context, "Clicked on item "+getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
         }
     }
 
