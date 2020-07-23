@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.util.Log;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-import com.example.voteboat.adapters.RepresentativesAdapter;
 import com.example.voteboat.adapters.ToDoAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentToDoBinding;
@@ -71,33 +69,24 @@ public class ToDoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentToDoBinding.inflate(inflater);
-
         // Initialize data
         items = new ArrayList<>();
-        items.add(new Item(0, "To Do:"));
-
-        MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
-
-        myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
-        multiLevelRecyclerView.setAdapter(myAdapter);
-        multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        multiLevelRecyclerView.openTill(0, 1);
-        multiLevelRecyclerView.setAccordion(true);
-        multiLevelRecyclerView.removeItemClickListeners();
-
-
-
+        items.add(new Item(0, "To Do:")); // Add label immediately so RV doesn't complain
+        configureRecyclerView();
         // Setting up To Do tab. Query immediately for to do items since they're in parse
         getToDoItems();
         // Setting up representatives tab, we query for reps once we have the address
         return binding.getRoot();
     }
 
-    private void toggleVisibility(RecyclerView rv) {
-        if (rv.getVisibility() == View.GONE)
-            rv.setVisibility(View.VISIBLE);
-        else
-            rv.setVisibility(View.GONE);
+    private void configureRecyclerView() {
+        MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
+        myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
+        multiLevelRecyclerView.setAdapter(myAdapter);
+        multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        multiLevelRecyclerView.openTill(0);
+        multiLevelRecyclerView.setAccordion(true);
+        multiLevelRecyclerView.removeItemClickListeners();
     }
 
     // Call to API using GoogleCivicAPI
@@ -145,9 +134,6 @@ public class ToDoFragment extends Fragment {
     }
 
     private void addItemIfElectionHasNotPassed(int i, final ToDoItem item) {
-
-        final Item itemLabel = items.get(0);
-
         final Election election = (Election) item.get("election");
         ParseQuery<Election> query = new ParseQuery<Election>("Election");
         query.whereEqualTo("objectId", election.getObjectId());
@@ -164,15 +150,19 @@ public class ToDoFragment extends Fragment {
                         updateElectionAndToDoItem(item, result);
                     else {
                         // Otherwise, still valid todoItem
-                        Item newToDo = new Item(1, item);
-                        itemLabel.addChild(newToDo);
-                        items.add(newToDo);
-                        myAdapter.notifyDataSetChanged();
+                        addToRecyclerView(item);
                     }
 
                 }
             }
         });
+    }
+
+    private void addToRecyclerView(ToDoItem item) {
+        Item itemLabel = items.get(0);
+        Item newToDo = new Item(1, item);
+        itemLabel.addChild(newToDo);
+        myAdapter.notifyDataSetChanged();
     }
 
     private void updateElectionAndToDoItem(ToDoItem item, Election election) {
