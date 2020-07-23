@@ -1,5 +1,6 @@
 package com.example.voteboat.clients;
 
+import android.location.Address;
 import android.util.Log;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
@@ -17,8 +18,6 @@ public class GoogleCivicClient {
     public static final String VOTER_INFO_KEY = "voterinfo";
 
     public static final String KEY = BuildConfig.GOOGLE_API_KEY;
-    public static final String DUMMY_ADDRESS = "9239 Carlin Street, Detroit, Michigan";
-    public static final int ID = 5003;
     AsyncHttpClient client;
 
     public GoogleCivicClient() {
@@ -34,19 +33,19 @@ public class GoogleCivicClient {
         client.get(url, params, jsonHttpResponseHandler);
     }
 
-    public void voterInformationElections(String ocdId, String address, JsonHttpResponseHandler handler) {
+    public void voterInformationElections(String googleId, String address, JsonHttpResponseHandler handler) {
         RequestParams params = new RequestParams();
-        params.put("address", DUMMY_ADDRESS);
-        params.put("electionId", ID);
+        params.put("address", address);
+        params.put("electionId", googleId);
         String url = String.format(BASE_URL_CIVIC, VOTER_INFO_KEY, KEY);
         Log.i(TAG, "using url " + url);
         client.get(url, params, handler);
     }
 
-    public void getRepresentatives(JsonHttpResponseHandler handler) {
+    public void getRepresentatives(String address, JsonHttpResponseHandler handler) {
         String url = String.format(BASE_URL_REPS, KEY);
         RequestParams params = new RequestParams();
-        params.put("address", DUMMY_ADDRESS);
+        params.put("address",address );
         client.get(url, params,handler);
     }
 }
