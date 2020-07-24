@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tool Bar"
+        android:layout_toRightOf="@id/pbProgressAction"
+        android:textColor="#000000"
+        android:textSize="25sp"/>
 
     <ProgressBar
         android:id="@+id/pbProgressAction"

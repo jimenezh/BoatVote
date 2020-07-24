@@ -32,9 +32,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     public static final String TAG = "MainActivity";
     ActivityMainBinding binding;
     final FragmentManager fragmentManager = getSupportFragmentManager();
-    final ElectionFragment electionFragment = new ElectionFragment();
-    final ProfileFragment profileFragment = new ProfileFragment();
-    final ToDoFragment toDoFragment = new ToDoFragment();
 
     Address address;
 
@@ -70,17 +67,17 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        fragment = electionFragment;
+                        fragment = new ElectionFragment();
                         break;
                     case R.id.action_todo:
                         if(address == null) {
                             Toast.makeText(MainActivity.this, "Wait", Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        fragment = toDoFragment;
+                        fragment = new ElectionFragment();
                         break;
                     case R.id.action_profile:
-                        fragment = profileFragment;
+                        fragment = new ProfileFragment();
                         break;
                 }
 
@@ -109,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     @Override
     public void setUserAddress(Address address) {
         this.address = address;
-        toDoFragment.getRepresentatives(address.getAddressLine(0));
     }
 
     @Override
