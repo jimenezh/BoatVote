@@ -67,10 +67,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
                         fragment = electionFragment;
                         break;
                     case R.id.action_todo:
-                        if(address == null) {
-                            Toast.makeText(MainActivity.this, "Could not load ToDo", Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
                         fragment = toDoFragment;
                         break;
                     case R.id.action_profile:
@@ -103,6 +99,5 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     @Override
     public void setUserAddress(Address address) {
         this.address = address;
-        toDoFragment.getRepresentatives(address.getAddressLine(0));
     }
 }

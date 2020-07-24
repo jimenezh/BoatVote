@@ -1,10 +1,14 @@
 package com.example.voteboat.fragments;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +32,9 @@ import com.example.voteboat.models.User;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.multilevelview.MultiLevelRecyclerView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -42,9 +49,13 @@ import java.util.Date;
 import java.util.List;
 
 import okhttp3.Headers;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
+@RuntimePermissions
 public class ToDoFragment extends Fragment {
     public static final String TAG = "ToDoFragment";
     FragmentToDoBinding binding;
@@ -67,6 +78,7 @@ public class ToDoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         binding = FragmentToDoBinding.inflate(inflater);
         // Initialize data
@@ -74,9 +86,15 @@ public class ToDoFragment extends Fragment {
         items.add(new Item(0, "To Do:")); // Add label immediately so RV doesn't complain
         configureRecyclerView();
         // Setting up To Do tab. Query immediately for to do items since they're in parse
-        getToDoItems();
+        populateToDo();
         // Setting up representatives tab, we query for reps once we have the address
         return binding.getRoot();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ToDoFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
     }
 
     private void configureRecyclerView() {
@@ -91,7 +109,6 @@ public class ToDoFragment extends Fragment {
 
     // Call to API using GoogleCivicAPI
     public void getRepresentatives(String address) {
-        representatives = new ArrayList<>();
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient.getRepresentatives(address, new JsonHttpResponseHandler() {
             @Override
@@ -99,8 +116,11 @@ public class ToDoFragment extends Fragment {
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     // Transform json into list of Representative objects
-                    representatives.addAll(Representative.fromJSONArray(json.jsonObject));
-                    // Note: don't need to notify adapter, since it hasn't been created
+                    Item repLabel = new Item(0, "Call your representatives!");
+                    repLabel.addChildren(Representative.fromJSONArray(json.jsonObject));
+                    items.add(repLabel);
+                    // Notify adapter
+                    myAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -114,7 +134,7 @@ public class ToDoFragment extends Fragment {
     }
 
     // Parse query for user's toDOItems
-    private void getToDoItems() {
+    private void populateToDo() {
         User.getToDo(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
@@ -129,6 +149,8 @@ public class ToDoFragment extends Fragment {
                 }
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
+                // Now we get the location + the reps
+                ToDoFragmentPermissionsDispatcher.getLocationWithPermissionCheck(ToDoFragment.this);
             }
         });
     }
@@ -244,6 +266,33 @@ public class ToDoFragment extends Fragment {
         // Return the file target for the photo based on filename
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
         return file;
+    }
+
+    // Annotations from dependency. Includes fine + coarse location
+    @SuppressWarnings({"MissingPermission"})
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    protected void getLocation() {
+        // Google API to get location
+        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(getContext());
+        locationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        Toast.makeText(getContext(), "Got location", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "Location is " + location.toString());
+                        // Getting address from Location Object to get reps
+                        Address address = ElectionFragment.getAddressFromLocation(location, getContext());
+                        getRepresentatives(address.getAddressLine(0));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Error trying to get last GPS location");
+                        Toast.makeText(getContext(), "No location", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                });
     }
 
 }
