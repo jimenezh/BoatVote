@@ -157,7 +157,8 @@ public class ElectionFragment extends Fragment {
                 starredElections.addAll(objects);
                 adapter.notifyDataSetChanged();
                 // Set swipe to false
-                binding.swipeContainer.setRefreshing(false);
+                if(binding.swipeContainer != null)
+                    binding.swipeContainer.setRefreshing(false);
             }
         });
     }

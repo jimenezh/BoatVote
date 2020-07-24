@@ -154,7 +154,6 @@ public class ToDoFragment extends Fragment {
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
                 // Notify the adapter that we now have all the valid elections
-                toDoAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -174,9 +173,12 @@ public class ToDoFragment extends Fragment {
                     if (hasElectionPassed(result))
                         // Delete the item, add it to past election, update election
                         updateElectionAndToDoItem(item, result);
-                    else
+                    else {
                         // Otherwise, still valid todoItem
                         toDoItems.add(item);
+                        toDoAdapter.notifyItemInserted(toDoItems.size()-1);
+                    }
+
                 }
             }
         });
