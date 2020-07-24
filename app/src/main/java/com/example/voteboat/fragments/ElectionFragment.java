@@ -94,11 +94,13 @@ public class ElectionFragment extends Fragment {
     }
 
     private void populateElectionFeed() {
+        ((MainActivity) getContext()).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
             // Now we get the address from parse and transform that into an Address Object
             String parseAddress = User.getCurrentAddress();
             try {
+                ((MainActivity) getContext()).showProgressBar();
                 List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
@@ -128,7 +130,7 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 adapter.notifyDataSetChanged();
-//                ((MainActivity) getContext()).hideProgressBar();
+                ((MainActivity) getContext()).hideProgressBar();
             }
         });
     }
