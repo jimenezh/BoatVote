@@ -128,6 +128,7 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 adapter.notifyDataSetChanged();
+//                ((MainActivity) getContext()).hideProgressBar();
             }
         });
     }

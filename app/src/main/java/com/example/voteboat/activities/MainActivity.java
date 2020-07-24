@@ -3,10 +3,15 @@ package com.example.voteboat.activities;
 import android.location.Address;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     final ToDoFragment toDoFragment = new ToDoFragment();
 
     Address address;
+
+    ProgressBar miActionProgressItem;
 
 
     @Override
@@ -103,5 +110,24 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     public void setUserAddress(Address address) {
         this.address = address;
         toDoFragment.getRepresentatives(address.getAddressLine(0));
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.toolbar);
+        miActionProgressItem = findViewById(R.id.pbProgressAction);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisibility(View.INVISIBLE);
     }
 }
