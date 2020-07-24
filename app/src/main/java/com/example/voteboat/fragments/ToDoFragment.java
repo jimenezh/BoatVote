@@ -82,8 +82,8 @@ public class ToDoFragment extends Fragment {
         representatives = new ArrayList<>();
         representativesAdapter = new RepresentativesAdapter(getContext(), representatives);
         binding.rvRepresentatives.setAdapter(representativesAdapter);
-        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext());
-        representativeLinearLayout.setReverseLayout(true); // reverse so most local reps show up
+        LinearLayoutManager representativeLinearLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true);
+        representativeLinearLayout.setStackFromEnd(true);
         binding.rvRepresentatives.setLayoutManager(representativeLinearLayout);
         binding.tvRepresentativesTitle.setOnClickListener(new View.OnClickListener() {
             @Override
