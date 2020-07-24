@@ -150,6 +150,7 @@ public class ToDoFragment extends Fragment {
                 }
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
+
                 // Now we get the location + the reps
                 ToDoFragmentPermissionsDispatcher.getLocationWithPermissionCheck(ToDoFragment.this);
             }

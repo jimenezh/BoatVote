@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.activities.MainActivity;
@@ -58,12 +59,11 @@ public class ElectionFragment extends Fragment {
     List<Election> starredElections;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private static final int MAX_LOCATION_RESULTS = 5;
-    Address address;
+    boolean isRefresh;
 
     // Interface to access listener on
     public interface ElectionListener {
         void changeFragment(Object object, Fragment fragment, String type);
-        void setUserAddress(Address address);
     }
 
     @Nullable
@@ -86,6 +86,8 @@ public class ElectionFragment extends Fragment {
         // Inititalizing empty lists
         elections = new ArrayList<>();
         starredElections = new ArrayList<>();
+        // Swipe refresh
+        setUpSwipeRefresh();
         // Setting the election adapter
         adapter = new ElectionAdapter(getContext(), elections, starredElections);
         binding.rvElections.setAdapter(adapter);
@@ -93,6 +95,27 @@ public class ElectionFragment extends Fragment {
         // Populate the election adapter
         populateElectionFeed();
     }
+    private void setUpSwipeRefresh() {
+        // First query is not a refresh
+        isRefresh = false;
+
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                isRefresh = true;
+                populateElectionFeed();
+            }
+        });
+        // Configure the refreshing colors
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
 
     private void populateElectionFeed() {
         ((MainActivity) getContext()).showProgressBar(); // Progress bar start
@@ -131,7 +154,11 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 adapter.notifyDataSetChanged();
+
                 ((MainActivity) getContext()).hideProgressBar();
+                // Set swipe to false
+                if(binding.swipeContainer != null)
+                    binding.swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -170,6 +197,9 @@ public class ElectionFragment extends Fragment {
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
+                // Clear if refresh
+                if(isRefresh) adapter.clear();
+
                 Log.i(TAG, "Elections are: " + json.toString());
                 try {
                     // Extract elections
