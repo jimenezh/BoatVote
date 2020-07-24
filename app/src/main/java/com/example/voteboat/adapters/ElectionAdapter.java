@@ -145,4 +145,11 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         MainActivity mainActivity = (MainActivity) context;
         mainActivity.changeFragment(e, new ElectionDetailFragment(), Election.class.getSimpleName());
     }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        elections.clear();
+        starredElections.clear();
+        notifyDataSetChanged();
+    }
 }
