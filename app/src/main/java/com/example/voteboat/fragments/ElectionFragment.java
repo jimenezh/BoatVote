@@ -1,6 +1,7 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -56,7 +57,7 @@ public class ElectionFragment extends Fragment {
     List<Election> elections;
     List<Election> starredElections;
     public FusedLocationProviderClient fusedLocationProviderClient;
-    private final int MAX_LOCATION_RESULTS = 5;
+    private static final int MAX_LOCATION_RESULTS = 5;
     Address address;
 
     // Interface to access listener on
@@ -146,7 +147,7 @@ public class ElectionFragment extends Fragment {
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
-                        adapter.address = getAddressFromLocation(location);
+                        adapter.address = getAddressFromLocation(location, getContext());
                         // Gets all elections
                         getElections();
                     }
@@ -240,22 +241,22 @@ public class ElectionFragment extends Fragment {
 
     }
 
-    private Address getAddressFromLocation(Location location) {
+    protected static Address getAddressFromLocation(Location location, Context context) {
         // Result
         Address address = null;
         // Coordinates
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         // Using reverse geocoding
-        Geocoder geocoder = new Geocoder(getContext());
+        Geocoder geocoder = new Geocoder(context);
         try {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, MAX_LOCATION_RESULTS);
-            Toast.makeText(getContext(), "Success in getting address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Success in getting address", Toast.LENGTH_SHORT).show();
             address = addressList.get(0);
             // Setting address in MainActivity so other fragments can access it
-            ((MainActivity) getContext()).setUserAddress(address);
+            ((MainActivity) context).setUserAddress(address);
         } catch (IOException e) {
-            Toast.makeText(getContext(), "Could not get address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Could not get address", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "No addresses available");
             e.printStackTrace();
         }
