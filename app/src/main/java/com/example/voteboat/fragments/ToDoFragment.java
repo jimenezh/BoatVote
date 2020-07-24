@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.util.Log;
@@ -99,7 +100,9 @@ public class ToDoFragment extends Fragment {
         MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
         myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
         multiLevelRecyclerView.setAdapter(myAdapter);
-        multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        linearLayoutManager.getStackFromEnd();
+        multiLevelRecyclerView.setLayoutManager(linearLayoutManager);
         multiLevelRecyclerView.openTill(0);
         multiLevelRecyclerView.setAccordion(true);
         multiLevelRecyclerView.removeItemClickListeners();
