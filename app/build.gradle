@@ -68,5 +68,4 @@ dependencies {
     compile 'com.github.jd-alexander:LikeButton:0.2.3'
     // Sharing to facebook
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 }
