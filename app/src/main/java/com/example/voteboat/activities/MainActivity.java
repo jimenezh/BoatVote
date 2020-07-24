@@ -60,22 +60,23 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // Guarantees that we cannot switch out of election feed until we have the address
-                if(address == null) {
-                    Toast.makeText(MainActivity.this ,"please wait", Toast.LENGTH_LONG).show();
-                    fragment = electionFragment;
-                } else {
-                    switch (item.getItemId()) {
-                        case R.id.action_home:
-                            fragment = electionFragment;
-                            break;
-                        case R.id.action_todo:
-                            fragment = toDoFragment;
-                            break;
-                        case R.id.action_profile:
-                            fragment = profileFragment;
-                            break;
-                    }
+
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        fragment = electionFragment;
+                        break;
+                    case R.id.action_todo:
+                        if(address == null) {
+                            Toast.makeText(MainActivity.this, "Wait", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        fragment = toDoFragment;
+                        break;
+                    case R.id.action_profile:
+                        fragment = profileFragment;
+                        break;
                 }
+
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }
@@ -85,17 +86,17 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     }
 
     /* Listens for when election is clicked on, to go to that elections races
-    *  object is the data to be passed into the new fragment
-    *  fragment is which fragment we are going to
-    *  type is what data type the object is
-    */
+     *  object is the data to be passed into the new fragment
+     *  fragment is which fragment we are going to
+     *  type is what data type the object is
+     */
     @Override
     public void changeFragment(Object object, Fragment fragment, String type) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(type, Parcels.wrap(object));
         fragment.setArguments(bundle);
         // Replace frame layout with fragment
-        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(), fragment).commit();
     }
 
     @Override

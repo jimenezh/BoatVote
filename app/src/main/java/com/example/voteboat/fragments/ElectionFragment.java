@@ -102,6 +102,7 @@ public class ElectionFragment extends Fragment {
                 List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
+                    ((MainActivity) getContext()).setUserAddress(adapter.address);
                     getElections();
                     return;
                 }
