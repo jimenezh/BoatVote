@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ToDoAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentToDoBinding;
@@ -109,6 +110,7 @@ public class ToDoFragment extends Fragment {
         googleCivicClient.getRepresentatives(address, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
+                ((MainActivity)getContext()).hideProgressBar();
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     // Transform json into list of Representative objects
@@ -124,13 +126,16 @@ public class ToDoFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                ((MainActivity)getContext()).hideProgressBar();
                 Log.e(TAG, "onFailure: failed to retreive reps: " + response, throwable);
+                Toast.makeText(getContext(), "Could not get representatives", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     // Parse query for user's toDOItems
     private void populateToDo() {
+        ((MainActivity)getContext()).showProgressBar();
         User.getToDo(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {

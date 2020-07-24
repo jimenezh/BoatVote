@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Election title"
+        android:textColor="#000000"
         android:textSize="24sp"/>
 
     <include
@@ -25,6 +26,7 @@
         android:id="@+id/tvItemRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#292929"
         android:layout_below="@id/tvElectionName"
         android:layout_marginBottom="10dp"
         android:text="Register"
@@ -33,6 +35,7 @@
     <include
         android:id="@+id/btnDocs"
         layout="@layout/like_button"
+        android:textColor="#292929"
         android:layout_marginRight="10dp"
         android:layout_width="25dp"
         android:layout_height="25dp"
@@ -42,6 +45,7 @@
 
     <TextView
         android:id="@+id/tvItemDocs"
+        android:textColor="#292929"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvItemRegister"
@@ -87,6 +91,7 @@
         android:id="@+id/tvItemVote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#292929"
         android:layout_below="@id/tvItemDocs"
         android:layout_marginBottom="15dp"
         android:text="Vote!"
