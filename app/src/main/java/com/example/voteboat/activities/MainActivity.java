@@ -3,10 +3,15 @@ package com.example.voteboat.activities;
 import android.location.Address;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,11 +32,10 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     public static final String TAG = "MainActivity";
     ActivityMainBinding binding;
     final FragmentManager fragmentManager = getSupportFragmentManager();
-    final ElectionFragment electionFragment = new ElectionFragment();
-    final ProfileFragment profileFragment = new ProfileFragment();
-    final ToDoFragment toDoFragment = new ToDoFragment();
 
     Address address;
+
+    ProgressBar miActionProgressItem;
 
 
     @Override
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         // View Binding. Inflating XML file
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        miActionProgressItem = findViewById(R.id.pbProgressAction);
 
         // Setting listener for bottom navigation
         setBottomNavigationListener();
@@ -64,13 +70,13 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        fragment = electionFragment;
+                        fragment = new ElectionFragment();
                         break;
                     case R.id.action_todo:
-                        fragment = toDoFragment;
+                        fragment = new ToDoFragment();
                         break;
                     case R.id.action_profile:
-                        fragment = profileFragment;
+                        fragment = new ProfileFragment();
                         break;
                 }
 
@@ -99,5 +105,22 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     @Override
     public void setUserAddress(Address address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.toolbar);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisibility(View.INVISIBLE);
     }
 }

@@ -78,7 +78,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate());
             binding.btnStar.getRoot();
-//            binding.btnStar.starButton.setLiked(starredElections.contains(election));
+            binding.btnStar.starButton.setLiked(starredElections.contains(election));
             setOnStarListener(election);
         }
 
