@@ -49,14 +49,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogout"
         android:text="Use custom address"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:textColor="#000000"
+        />
     <TextView
         android:id="@+id/tvCurrentAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/switchAddress"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="#292929"
         android:layout_marginTop="5dp"
         tools:text="This is my current address"/>
     <EditText
@@ -66,7 +68,9 @@
         android:layout_below="@id/tvCurrentAddress"
         android:layout_marginTop="5dp"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        android:textColor="#292929"
+        android:backgroundTint="@color/browser_actions_divider_color"/>
     <Button
         android:id="@+id/btnSetAddress"
         android:layout_width="wrap_content"

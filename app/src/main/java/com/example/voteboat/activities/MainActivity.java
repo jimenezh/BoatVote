@@ -102,10 +102,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         fragmentManager.beginTransaction().replace(binding.flContainer.getId(), fragment).commit();
     }
 
-    @Override
-    public void setUserAddress(Address address) {
-        this.address = address;
-    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

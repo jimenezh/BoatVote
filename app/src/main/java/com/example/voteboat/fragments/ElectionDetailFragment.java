@@ -54,6 +54,7 @@ public class ElectionDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setElectionInformation();
         addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
+        if(election.getRaces().isEmpty()) binding.btnRaces.setVisibility(View.GONE);
         binding.btnRaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

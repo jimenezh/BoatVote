@@ -87,6 +87,7 @@ public class Election extends ParseObject {
 
         if(jsonObject.has("contests"))
             election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
+        else election.races = new ArrayList<>();
 
         return election;
 
@@ -96,7 +97,7 @@ public class Election extends ParseObject {
         if (jsonObject.has(field))
             return jsonObject.getString(field);
         else
-            return "";
+            return "N/A";
     }
 
     public String getOcd_id() {

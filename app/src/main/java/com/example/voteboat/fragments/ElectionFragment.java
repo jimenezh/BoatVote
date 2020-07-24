@@ -128,7 +128,6 @@ public class ElectionFragment extends Fragment {
                 List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
-                    ((MainActivity) getContext()).setUserAddress(adapter.address);
                     getElections();
                     return;
                 }
@@ -287,7 +286,6 @@ public class ElectionFragment extends Fragment {
             Toast.makeText(context, "Success in getting address", Toast.LENGTH_SHORT).show();
             address = addressList.get(0);
             // Setting address in MainActivity so other fragments can access it
-            ((MainActivity) context).setUserAddress(address);
         } catch (IOException e) {
             Toast.makeText(context, "Could not get address", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "No addresses available");
