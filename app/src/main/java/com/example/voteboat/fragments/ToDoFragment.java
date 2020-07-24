@@ -63,10 +63,6 @@ public class ToDoFragment extends Fragment {
     ToDoAdapter myAdapter;
     List<Item> items;
 
-    String address;
-
-    List<Representative> representatives;
-
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
 

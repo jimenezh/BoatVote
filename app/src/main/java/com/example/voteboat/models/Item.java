@@ -3,6 +3,7 @@ package com.example.voteboat.models;
 import com.multilevelview.models.RecyclerViewItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Item extends RecyclerViewItem {
@@ -59,6 +60,12 @@ public class Item extends RecyclerViewItem {
 
     public List<RecyclerViewItem> getChildren() {
         return children;
+    }
+
+    @Override
+    public void addChildren(List<RecyclerViewItem> children) {
+        Collections.reverse(children);
+        this.children = children;
     }
 
     @Override

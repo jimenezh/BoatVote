@@ -2,40 +2,31 @@ package com.example.voteboat.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.databinding.ItemLabelBinding;
+import com.example.voteboat.databinding.ItemRepresentativeBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
-import com.example.voteboat.fragments.PictureFragment;
 import com.example.voteboat.fragments.ToDoFragment;
 import com.example.voteboat.models.Item;
+import com.example.voteboat.models.Representative;
 import com.example.voteboat.models.ToDoItem;
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareButton;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.multilevelview.MultiLevelAdapter;
 import com.multilevelview.MultiLevelRecyclerView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -77,10 +68,10 @@ public class ToDoAdapter extends MultiLevelAdapter {
             case Item.LABEL:
                 return new LabelHolder(ItemLabelBinding.inflate(LayoutInflater.from(context)));
             case Item.TODO:
-                return new ViewHolder(ItemTodoBinding.inflate(LayoutInflater.from(context)));
+                return new ToDoHolder(ItemTodoBinding.inflate(LayoutInflater.from(context)));
+            default:
+                return new RepHolder(ItemRepresentativeBinding.inflate(LayoutInflater.from(context)));
         }
-
-        return null;
     }
 
     @Override
@@ -91,8 +82,10 @@ public class ToDoAdapter extends MultiLevelAdapter {
                 ((LabelHolder) viewHolder).bind(item.getLabel());
                 break;
             case Item.TODO:
-                ((ViewHolder) viewHolder).bind(item.getToDoItem());
+                ((ToDoHolder) viewHolder).bind(item.getToDoItem());
                 break;
+            default:
+                ((RepHolder) viewHolder).bind(item.getRepresentative());
         }
 
     }
@@ -117,16 +110,16 @@ public class ToDoAdapter extends MultiLevelAdapter {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(context, "Clicked on item "+getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Clicked on item " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ToDoHolder extends RecyclerView.ViewHolder {
 
         ItemTodoBinding binding;
 
-        public ViewHolder(@NonNull ItemTodoBinding itemTodoBinding) {
+        public ToDoHolder(@NonNull ItemTodoBinding itemTodoBinding) {
             super(itemTodoBinding.getRoot());
             this.binding = itemTodoBinding;
         }
@@ -225,5 +218,35 @@ public class ToDoAdapter extends MultiLevelAdapter {
             }
         }
 
+    }
+
+    private class RepHolder extends RecyclerView.ViewHolder {
+        ItemRepresentativeBinding binding;
+
+        public RepHolder(@NonNull ItemRepresentativeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(Representative representative) {
+            binding.tvRepName.setText(representative.getName());
+            binding.tvParty.setText(representative.getParty());
+            setText(binding.tvPhone, representative.getPhoneNumber());
+            setText(binding.tvPhone, representative.getPhoneNumber());
+            setText(binding.tvEmail, representative.getEmail());
+            setText(binding.tvUrl, representative.getUrl());
+
+        }
+
+        // In case Representative fields aren't available, check if null
+        // and set appropriate text + visibility
+        private void setText(TextView textView, String text) {
+            if (text == null)
+                textView.setVisibility(View.GONE);
+            else {
+                textView.setText(text);
+                textView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }
