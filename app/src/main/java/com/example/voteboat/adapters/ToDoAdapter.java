@@ -2,43 +2,43 @@ package com.example.voteboat.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.voteboat.activities.MainActivity;
+import com.example.voteboat.databinding.ItemLabelBinding;
+import com.example.voteboat.databinding.ItemRepresentativeBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
-import com.example.voteboat.fragments.PictureFragment;
 import com.example.voteboat.fragments.ToDoFragment;
+import com.example.voteboat.models.Item;
+import com.example.voteboat.models.Representative;
 import com.example.voteboat.models.ToDoItem;
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareButton;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.multilevelview.MultiLevelAdapter;
+import com.multilevelview.MultiLevelRecyclerView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
-public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
+
+public class ToDoAdapter extends MultiLevelAdapter {
 
 
     private Context context;
-    private List<ToDoItem> toDoItems;
+    private List<Item> toDoItems;
     private ToDoFragment fragment;
+    private MultiLevelRecyclerView multiLevelRecyclerView;
 
     public static final String TAG = "ToDoAdapter";
 
@@ -48,22 +48,47 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
 
 
-    public ToDoAdapter(Context context, List<ToDoItem> elections, ToDoFragment fragment) {
+    public ToDoAdapter(Context context, List<Item> elections, ToDoFragment fragment, MultiLevelRecyclerView multiLevelRecyclerView) {
+        super(elections);
         this.context = context;
         this.toDoItems = elections;
         this.fragment = fragment;
+        this.multiLevelRecyclerView = multiLevelRecyclerView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return toDoItems.get(position).getType();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemTodoBinding binding = ItemTodoBinding.inflate(LayoutInflater.from(context));
-        return new ViewHolder(binding);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        switch (viewType) {
+            case Item.LABEL:
+                return new LabelHolder(ItemLabelBinding.inflate(LayoutInflater.from(context)));
+            case Item.TODO:
+                return new ToDoHolder(ItemTodoBinding.inflate(LayoutInflater.from(context)));
+            default:
+                return new RepHolder(ItemRepresentativeBinding.inflate(LayoutInflater.from(context)));
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(toDoItems.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        Item item = toDoItems.get(i);
+        switch (item.getType()) {
+            case Item.LABEL:
+                ((LabelHolder) viewHolder).bind(item.getLabel());
+                break;
+            case Item.TODO:
+                ((ToDoHolder) viewHolder).bind(item.getToDoItem());
+                break;
+            default:
+                ((RepHolder) viewHolder).bind(item.getRepresentative());
+        }
+
     }
 
     @Override
@@ -71,20 +96,40 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return toDoItems.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class LabelHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ItemLabelBinding binding;
+
+        public LabelHolder(@NonNull ItemLabelBinding itemLabelBinding) {
+            super(itemLabelBinding.getRoot());
+            binding = itemLabelBinding;
+            itemLabelBinding.getRoot().setOnClickListener(this);
+        }
+
+        public void bind(String label) {
+            binding.tvLabel.setText(label);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Toast.makeText(context, "Clicked on item " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
+        }
+    }
+
+    class ToDoHolder extends RecyclerView.ViewHolder {
 
         ItemTodoBinding binding;
 
-        public ViewHolder(@NonNull ItemTodoBinding itemTodoBinding) {
+        public ToDoHolder(@NonNull ItemTodoBinding itemTodoBinding) {
             super(itemTodoBinding.getRoot());
             this.binding = itemTodoBinding;
         }
 
         public void bind(final ToDoItem item) {
             binding.tvElectionName.setText(item.getName());
-            binding.btnRegister.starButton.setLiked(item.isRegistered());
-            binding.btnDocs.starButton.setLiked(item.hasDocuments());
-            binding.btnVote.starButton.setLiked(item.hasVoted());
+            binding.btnRegister.likeButton.setLiked(item.isRegistered());
+            binding.btnDocs.likeButton.setLiked(item.hasDocuments());
+            binding.btnVote.likeButton.setLiked(item.hasVoted());
 
             setRegisteredListener(item);
             setDocumentsListener(item);
@@ -99,7 +144,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setVoteListener(final ToDoItem item) {
-            binding.btnVote.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnVote.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
@@ -117,7 +162,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setDocumentsListener(final ToDoItem item) {
-            binding.btnDocs.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnDocs.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
@@ -135,7 +180,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setRegisteredListener(final ToDoItem item) {
-            binding.btnRegister.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnRegister.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
@@ -174,5 +219,35 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             }
         }
 
+    }
+
+    private class RepHolder extends RecyclerView.ViewHolder {
+        ItemRepresentativeBinding binding;
+
+        public RepHolder(@NonNull ItemRepresentativeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(Representative representative) {
+            binding.tvRepName.setText(representative.getName());
+            binding.tvParty.setText(representative.getParty());
+            setText(binding.tvPhone, representative.getPhoneNumber());
+            setText(binding.tvPhone, representative.getPhoneNumber());
+            setText(binding.tvEmail, representative.getEmail());
+            setText(binding.tvUrl, representative.getUrl());
+
+        }
+
+        // In case Representative fields aren't available, check if null
+        // and set appropriate text + visibility
+        private void setText(TextView textView, String text) {
+            if (text == null)
+                textView.setVisibility(View.GONE);
+            else {
+                textView.setText(text);
+                textView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

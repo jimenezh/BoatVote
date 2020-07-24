@@ -1,5 +1,7 @@
 package com.example.voteboat.models;
 
+import com.multilevelview.models.RecyclerViewItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,8 +16,8 @@ public class Representative {
     String email;
     String url;
 
-    public static List<Representative> fromJSONArray(JSONObject jsonObject) throws JSONException {
-        List<Representative> representatives = new ArrayList<>();
+    public static List<RecyclerViewItem> fromJSONArray(JSONObject jsonObject) throws JSONException {
+        List<RecyclerViewItem> representatives = new ArrayList<>();
 
         JSONArray array = jsonObject.getJSONArray("officials");
         for(int i = 0; i < array.length(); i++){
@@ -24,7 +26,7 @@ public class Representative {
         return representatives;
     }
 
-    private static Representative fromJson(JSONObject jsonObject) throws JSONException {
+    private static RecyclerViewItem fromJson(JSONObject jsonObject) throws JSONException {
         Representative representative = new Representative();
         representative.name = jsonObject.getString("name");
         if(jsonObject.has("phones"))
@@ -34,7 +36,7 @@ public class Representative {
             representative.email = jsonObject.getJSONArray("emails").getString(0);
         if(jsonObject.has("urls"))
             representative.url = jsonObject.getJSONArray("urls").getString(0);
-        return representative;
+        return new Item(1, representative);
     }
 
     public String getUrl() {

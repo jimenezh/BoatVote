@@ -104,6 +104,10 @@ public class ElectionDetailFragment extends Fragment {
     }
 
     private void addElectionDayPollViews(List<Poll> pollLocations, LinearLayout llPoll) {
+        if (pollLocations.isEmpty()) {
+            binding.btnMap.setVisibility(View.GONE);
+            binding.tvPollTitle.setText("No polls near you");
+        }
         for(Poll pollLocation : pollLocations){
             View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
             TextView title = v.findViewById(R.id.tvAddress);

@@ -1,6 +1,7 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
@@ -55,8 +58,13 @@ public class ElectionFragment extends Fragment {
     List<Election> elections;
     List<Election> starredElections;
     public FusedLocationProviderClient fusedLocationProviderClient;
-    private final int MAX_LOCATION_RESULTS = 5;
-    Address address;
+    private static final int MAX_LOCATION_RESULTS = 5;
+    boolean isRefresh;
+
+    // Interface to access listener on
+    public interface ElectionListener {
+        void changeFragment(Object object, Fragment fragment, String type);
+    }
 
     @Nullable
     @Override
@@ -78,6 +86,8 @@ public class ElectionFragment extends Fragment {
         // Inititalizing empty lists
         elections = new ArrayList<>();
         starredElections = new ArrayList<>();
+        // Swipe refresh
+        setUpSwipeRefresh();
         // Setting the election adapter
         adapter = new ElectionAdapter(getContext(), elections, starredElections);
         binding.rvElections.setAdapter(adapter);
@@ -85,16 +95,40 @@ public class ElectionFragment extends Fragment {
         // Populate the election adapter
         populateElectionFeed();
     }
+    private void setUpSwipeRefresh() {
+        // First query is not a refresh
+        isRefresh = false;
+
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                isRefresh = true;
+                populateElectionFeed();
+            }
+        });
+        // Configure the refreshing colors
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
 
     private void populateElectionFeed() {
+        ((MainActivity) getContext()).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
             // Now we get the address from parse and transform that into an Address Object
             String parseAddress = User.getCurrentAddress();
             try {
+                ((MainActivity) getContext()).showProgressBar();
                 List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
+                    ((MainActivity) getContext()).setUserAddress(adapter.address);
                     getElections();
                     return;
                 }
@@ -120,6 +154,11 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 adapter.notifyDataSetChanged();
+
+                ((MainActivity) getContext()).hideProgressBar();
+                // Set swipe to false
+                if(binding.swipeContainer != null)
+                    binding.swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -138,7 +177,7 @@ public class ElectionFragment extends Fragment {
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
-                        adapter.address = getAddressFromLocation(location);
+                        adapter.address = getAddressFromLocation(location, getContext());
                         // Gets all elections
                         getElections();
                     }
@@ -158,6 +197,9 @@ public class ElectionFragment extends Fragment {
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
+                // Clear if refresh
+                if(isRefresh) adapter.clear();
+
                 Log.i(TAG, "Elections are: " + json.toString());
                 try {
                     // Extract elections
@@ -232,20 +274,22 @@ public class ElectionFragment extends Fragment {
 
     }
 
-    private Address getAddressFromLocation(Location location) {
+    protected static Address getAddressFromLocation(Location location, Context context) {
         // Result
         Address address = null;
         // Coordinates
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         // Using reverse geocoding
-        Geocoder geocoder = new Geocoder(getContext());
+        Geocoder geocoder = new Geocoder(context);
         try {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, MAX_LOCATION_RESULTS);
-            Toast.makeText(getContext(), "Success in getting address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Success in getting address", Toast.LENGTH_SHORT).show();
             address = addressList.get(0);
+            // Setting address in MainActivity so other fragments can access it
+            ((MainActivity) context).setUserAddress(address);
         } catch (IOException e) {
-            Toast.makeText(getContext(), "Could not get address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Could not get address", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "No addresses available");
             e.printStackTrace();
         }

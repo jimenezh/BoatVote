@@ -13,6 +13,7 @@ import com.parse.SaveCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ParseClassName("Election")
@@ -43,6 +44,9 @@ public class Election extends ParseObject {
     public static final String KEY_HAS_PASSED = "hasPassed";
 
     public Election() {
+        earlyPolls = new ArrayList<>();
+        electionDayPolls = new ArrayList<>();
+        absenteeBallotLocations=  new ArrayList<>();
     }
 
     public List<Race> getRaces() {
@@ -81,7 +85,8 @@ public class Election extends ParseObject {
         if (jsonObject.has("dropOffLocations"))
             election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
 
-        election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
+        if(jsonObject.has("contests"))
+            election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
         return election;
 
