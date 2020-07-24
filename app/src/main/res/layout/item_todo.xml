@@ -13,7 +13,8 @@
 
     <include
         android:id="@+id/btnRegister"
-        layout="@layout/to_do_button"
+        layout="@layout/like_button"
+        android:layout_marginRight="10dp"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignTop="@id/tvItemRegister"
@@ -25,12 +26,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvElectionName"
+        android:layout_marginBottom="10dp"
         android:text="Register"
         android:textSize="18sp"/>
 
     <include
         android:id="@+id/btnDocs"
-        layout="@layout/to_do_button"
+        layout="@layout/like_button"
+        android:layout_marginRight="10dp"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignTop="@id/tvItemDocs"
@@ -42,12 +45,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvItemRegister"
+        android:layout_marginBottom="10dp"
         android:text="Gather the required documents"
         android:textSize="18sp"/>
 
     <include
         android:id="@+id/btnVote"
-        layout="@layout/to_do_button"
+        layout="@layout/like_button"
+        android:layout_marginRight="10dp"
+
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignTop="@id/tvItemVote"
@@ -66,6 +72,7 @@
 
     <ImageButton
         android:id="@+id/btnCamera"
+        android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/tvItemVote"
@@ -81,6 +88,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvItemDocs"
+        android:layout_marginBottom="15dp"
         android:text="Vote!"
         android:textSize="18sp"/>
 

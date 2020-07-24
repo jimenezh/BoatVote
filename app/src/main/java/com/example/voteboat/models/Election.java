@@ -85,7 +85,8 @@ public class Election extends ParseObject {
         if (jsonObject.has("dropOffLocations"))
             election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
 
-        election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
+        if(jsonObject.has("contests"))
+            election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
 
         return election;
 

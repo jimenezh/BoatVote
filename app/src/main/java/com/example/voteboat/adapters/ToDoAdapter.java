@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -82,9 +83,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
         public void bind(final ToDoItem item) {
             binding.tvElectionName.setText(item.getName());
-            binding.btnRegister.starButton.setLiked(item.isRegistered());
-            binding.btnDocs.starButton.setLiked(item.hasDocuments());
-            binding.btnVote.starButton.setLiked(item.hasVoted());
+            binding.btnRegister.likeButton.setLiked(item.isRegistered());
+            binding.btnDocs.likeButton.setLiked(item.hasDocuments());
+            binding.btnVote.likeButton.setLiked(item.hasVoted());
 
             setRegisteredListener(item);
             setDocumentsListener(item);
@@ -99,7 +100,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setVoteListener(final ToDoItem item) {
-            binding.btnVote.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnVote.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
@@ -117,7 +118,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setDocumentsListener(final ToDoItem item) {
-            binding.btnDocs.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnDocs.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
@@ -135,7 +136,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
         private void setRegisteredListener(final ToDoItem item) {
-            binding.btnRegister.starButton.setOnLikeListener(new OnLikeListener() {
+            binding.btnRegister.likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     // add to list
