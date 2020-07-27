@@ -62,8 +62,9 @@ public class ToDoFragment extends Fragment {
     public static final String TAG = "ToDoFragment";
     FragmentToDoBinding binding;
 
-    ToDoAdapter myAdapter;
+    ToDoAdapter adapter;
     List<Item> items;
+    MultiLevelRecyclerView multiLevelRecyclerView;
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
@@ -97,13 +98,12 @@ public class ToDoFragment extends Fragment {
     }
 
     private void configureRecyclerView() {
-        MultiLevelRecyclerView multiLevelRecyclerView = binding.rvItems;
-        myAdapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
-        multiLevelRecyclerView.setAdapter(myAdapter);
+        multiLevelRecyclerView = binding.rvItems;
+        adapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
+        multiLevelRecyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         linearLayoutManager.getStackFromEnd();
         multiLevelRecyclerView.setLayoutManager(linearLayoutManager);
-        multiLevelRecyclerView.openTill(0);
         multiLevelRecyclerView.setAccordion(true);
         multiLevelRecyclerView.removeItemClickListeners();
     }
@@ -121,8 +121,9 @@ public class ToDoFragment extends Fragment {
                     Item repLabel = new Item(0, "Call your representatives!");
                     repLabel.addChildren(Representative.fromJSONArray(json.jsonObject));
                     items.add(repLabel);
-                    // Notify adapter
-                    myAdapter.notifyDataSetChanged();
+                    // Notify adapter + expand
+                    adapter.notifyDataSetChanged();
+                    multiLevelRecyclerView.openTill(0,1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -190,7 +191,7 @@ public class ToDoFragment extends Fragment {
         Item itemLabel = items.get(0);
         Item newToDo = new Item(1, item);
         itemLabel.addChild(newToDo);
-        myAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     private void updateElectionAndToDoItem(ToDoItem item, Election election) {

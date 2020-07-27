@@ -107,12 +107,21 @@ public class ToDoAdapter extends MultiLevelAdapter {
 
         public void bind(String label) {
             binding.tvLabel.setText(label);
+            setArrowPosition();
         }
 
         @Override
         public void onClick(View view) {
             Toast.makeText(context, "Clicked on item " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
+            // Animating arrow
+            setArrowPosition();
+        }
+
+        private void setArrowPosition() {
+            binding.ivArrow.animate()
+                    .rotation(toDoItems.get(getAdapterPosition()).isExpanded() ? 180 : 0)
+                    .start();
         }
     }
 
