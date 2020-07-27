@@ -29,7 +29,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
@@ -133,6 +135,8 @@ public class ElectionFragment extends Fragment {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                // Likely to be offline, in this case we want to get the stashed elections
+                getCachedElections();
             }
             // In case something fails
             Toast.makeText(getContext(), "Could not use address", Toast.LENGTH_SHORT).show();
@@ -140,6 +144,26 @@ public class ElectionFragment extends Fragment {
         // Else, use device location
         ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
 
+    }
+
+    private void getCachedElections() {
+        ParseQuery<Election> query = new ParseQuery<>("Election");
+        query.fromPin(Election.class.getSimpleName());
+        query.findInBackground(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Error getting cached elections", e);
+                    return;
+                }
+                // Add to elections
+                elections.addAll(objects);
+                adapter.notifyDataSetChanged();
+                // We also need the starred elections
+//                getCachedStarredElections();
+
+            }
+        });
     }
 
 
@@ -152,10 +176,13 @@ public class ElectionFragment extends Fragment {
                     return;
                 }
                 starredElections.addAll(objects);
+                // Pin to use when offline
+                ParseObject.pinAllInBackground(Election.class.getSimpleName(), starredElections);
+                // Notify the adapter
                 adapter.notifyDataSetChanged();
-
+                // Hide and set as false since at last query + everything succeeded
                 ((MainActivity) getContext()).hideProgressBar();
-                // Set swipe to false
+                // Set swipe to false since at final query
                 if(binding.swipeContainer != null)
                     binding.swipeContainer.setRefreshing(false);
             }
@@ -233,6 +260,9 @@ public class ElectionFragment extends Fragment {
                 else {
                     // First we add the pre-existing elections to the list
                     elections.addAll(objects);
+                    // Now we pin them so that they can be used when offline
+                    ParseObject.pinAllInBackground(Election.class.getSimpleName(), elections);
+                    // Notify the adapter
                     adapter.notifyDataSetChanged();
                     // We check the ids of all elections in jsonArray to make sure we have it in the database
                     checkIfElectionsInParse(objects, jsonArray);

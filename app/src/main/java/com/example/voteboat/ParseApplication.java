@@ -36,6 +36,7 @@ public class ParseApplication extends Application {
                 .applicationId("vote-boat") // should correspond to APP_ID env variable
                 .clientKey(null)  // set explicitly unless clientKey is explicitly configured on Parse server
                 .clientBuilder(builder)
+                .enableLocalDataStore()
                 .server("https://vote-boat.herokuapp.com/parse/").build());
     }
 }
