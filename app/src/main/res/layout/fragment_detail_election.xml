@@ -2,11 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="10dp"
         tools:context=".fragments.ElectionDetailFragment">
 
@@ -37,7 +38,6 @@
             android:layout_alignTop="@+id/tvDateText"
             android:layout_alignBottom="@+id/tvDateText"
             android:layout_toEndOf="@+id/tvDateText"
-            android:layout_weight="1"
             android:textColor="#292929"
             android:textSize="16sp"
             tools:text="06/21/2020" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvDateText"
             android:layout_marginTop="22dp"
-            android:text="Polling Locations"
+            android:text="@string/polling_locations"
             android:textColor="#000000"
             android:textSize="20sp" />
 
@@ -64,6 +64,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/llPoll"
+            android:background="#03A9F4"
+            android:padding="10dp"
             android:text="Polling Location Map" />
 
         <LinearLayout
@@ -74,17 +76,12 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Information for your state"
-                android:textColor="#000000"
-                android:textSize="22dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Absentee Voting:"
+                android:textSize="18sp"
                 android:textColor="#292929" />
 
             <TextView
@@ -95,12 +92,13 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:textColor="#292929"
-                android:text="N/A" />
+                android:text="@string/n_a" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Election Information:"
+                android:textSize="18sp"
                 android:textColor="#292929" />
 
             <TextView
@@ -110,13 +108,14 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:linksClickable="true"
-                android:text="N/A"
+                android:text="@string/n_a"
                 android:textColor="#292929" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register here:"
+                android:textSize="18sp"
                 android:textColor="#292929"
                 />
 
@@ -127,7 +126,7 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:linksClickable="true"
-                android:text="N/A"
+                android:text="@string/n_a"
                 android:textColor="#292929" />
 
             <TextView
@@ -135,6 +134,7 @@
                 android:layout_height="wrap_content"
                 android:autoLink="all"
                 android:linksClickable="true"
+                android:textSize="18sp"
                 android:text="Election Rules:"
                 android:textColor="#292929"
                 />
@@ -143,7 +143,9 @@
                 android:id="@+id/tvRules"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="N/A"
+                android:text="@string/n_a"
+                android:autoLink="all"
+                android:linksClickable="true"
                 android:textColor="#292929" />
         </LinearLayout>
 
@@ -153,11 +155,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/llLinks"
             android:layout_marginTop="20dp"
+            android:background="#03A9F4"
+            android:padding="10dp"
             android:text="Who is Running?" />
-        <!--    <androidx.recyclerview.widget.RecyclerView-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:id="@+id/rvRaces"/>-->
 
 
     </RelativeLayout>

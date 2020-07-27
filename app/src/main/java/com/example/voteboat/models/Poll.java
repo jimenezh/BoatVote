@@ -25,7 +25,7 @@ public class Poll {
         poll.location = getFullAddress(jsonObject);
         Log.i("POLL", "Full address is " + poll.location);
         // TODO: add more information on location
-        poll.pollingHours = jsonObject.getString("pollingHours");
+        poll.pollingHours = checkifExistsAndAdd("pollingHours", jsonObject);
         poll.openDate = checkifExistsAndAdd("startDate", jsonObject);
         poll.closeDate = checkifExistsAndAdd("endDate", jsonObject);
         return poll;
@@ -44,7 +44,7 @@ public class Poll {
         Iterator<String> stringIterator = addressInformation.keys();
         for (Iterator<String> it = stringIterator; it.hasNext(); ) {
             String key = it.next();
-            address = address + " " + addressInformation.getString(key);
+            address = address + "\n" + addressInformation.getString(key);
         }
         return address;
     }

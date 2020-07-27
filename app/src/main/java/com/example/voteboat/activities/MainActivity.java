@@ -94,10 +94,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
      *  type is what data type the object is
      */
     @Override
-    public void changeFragment(Object object, Fragment fragment, String type) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(type, Parcels.wrap(object));
-        fragment.setArguments(bundle);
+    public void changeFragment(Fragment fragment) {
         // Replace frame layout with fragment
         fragmentManager.beginTransaction().replace(binding.flContainer.getId(), fragment).commit();
     }

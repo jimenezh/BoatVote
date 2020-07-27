@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.parse.ParseClassName;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
@@ -32,7 +31,7 @@ public class Election extends ParseObject {
     String electionInfoUrl;
     String absenteeBallotUrl;
     String electionRulesUrl;
-    String ocd_id;
+    String ocdId;
     boolean isStarred;
 
 
@@ -46,7 +45,7 @@ public class Election extends ParseObject {
     public Election() {
         earlyPolls = new ArrayList<>();
         electionDayPolls = new ArrayList<>();
-        absenteeBallotLocations=  new ArrayList<>();
+        absenteeBallotLocations = new ArrayList<>();
     }
 
     public List<Race> getRaces() {
@@ -58,7 +57,7 @@ public class Election extends ParseObject {
         election.title = json.getString("name");
         election.electionDate = json.getString("electionDay");
         election.googleId = json.getString("id");
-        election.ocd_id = json.getString("ocdDivisionId");
+        election.ocdId = json.getString("ocdDivisionId");
 
         Log.i("Election", election.googleId + " is starred:" + election.isStarred);
 
@@ -85,7 +84,7 @@ public class Election extends ParseObject {
         if (jsonObject.has("dropOffLocations"))
             election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
 
-        if(jsonObject.has("contests"))
+        if (jsonObject.has("contests"))
             election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
         else election.races = new ArrayList<>();
 
@@ -100,8 +99,10 @@ public class Election extends ParseObject {
             return "N/A";
     }
 
-    public String getOcd_id() {
-        return ocd_id;
+    public String getOcdId() {
+        if (ocdId == null)
+            return getString(KEY_OCD_ID);
+        return ocdId;
     }
 
     public String getTitle() {
@@ -165,7 +166,7 @@ public class Election extends ParseObject {
         put(KEY_NAME, this.getTitle());
         put(KEY_GOOGLE_ID, this.getGoogleId());
         put(KEY_ELECTION_DATE, this.getElectionDate());
-        put(KEY_OCD_ID, this.getOcd_id());
+        put(KEY_OCD_ID, this.getOcdId());
 
         final String id = this.getGoogleId();
         this.saveInBackground(saveCallback);

@@ -1,12 +1,9 @@
 package com.example.voteboat.fragments;
 
 import android.content.Intent;
-import android.content.IntentSender;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +18,11 @@ import androidx.fragment.app.Fragment;
 import com.example.voteboat.R;
 import com.example.voteboat.activities.MapActivity;
 import com.example.voteboat.activities.RaceDetailActivity;
-import com.example.voteboat.adapters.RaceAdapter;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
+import com.example.voteboat.models.User;
 
 import org.parceler.Parcels;
 
@@ -37,6 +34,7 @@ public class ElectionDetailFragment extends Fragment {
     public static final String TAG ="ElectionDetailFragment";
 
     Election election;
+    String userOcdId;
     FragmentDetailElectionBinding binding;
 
     @Nullable
@@ -46,6 +44,7 @@ public class ElectionDetailFragment extends Fragment {
         // Getting races + election from args
         Bundle args = getArguments();
         election = Parcels.unwrap( args.getParcelable(Election.class.getSimpleName()));
+        userOcdId = args.getString("userOcdId");
         return binding.getRoot();
     }
 
@@ -55,6 +54,7 @@ public class ElectionDetailFragment extends Fragment {
         setElectionInformation();
         addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
         if(election.getRaces().isEmpty()) binding.btnRaces.setVisibility(View.GONE);
+        if(!election.getOcdId().equals(userOcdId)) binding.llLinks.setVisibility(View.GONE);
         binding.btnRaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,6 +76,7 @@ public class ElectionDetailFragment extends Fragment {
         binding.tvAbsentee.setText(election.getAbsenteeBallotUrl());
         binding.tvElectionInfo.setText(election.getElectionInfoUrl());
         binding.tvRegister.setText(election.getRegistrationUrl());
+        binding.tvRules.setText(election.getElectionRulesUrl());
     }
 
     private void launchMapActivity() {

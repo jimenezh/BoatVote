@@ -63,7 +63,7 @@ public class ElectionFragment extends Fragment {
 
     // Interface to access listener on
     public interface ElectionListener {
-        void changeFragment(Object object, Fragment fragment, String type);
+        void changeFragment(Fragment fragment);
     }
 
     @Nullable

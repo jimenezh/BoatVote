@@ -20,4 +20,6 @@
 
     <!--  for Facebook SDK  -->
     <string name="facebook_app_id">647670929440821</string>
+    <string name="polling_locations">Polling Locations</string>
+    <string name="n_a">N/A</string>
 </resources>
