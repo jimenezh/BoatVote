@@ -84,12 +84,13 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         // Get current address
         getCurrentAddress();
 
-        // Custom address
+        // Custom address form visibility
         binding.switchAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     setAddressFormVisibility(View.VISIBLE);
+                    getCurrentAddress();
                 } else {
                     setAddressFormVisibility(View.GONE);
                     User.setUseCustomAddress(false);

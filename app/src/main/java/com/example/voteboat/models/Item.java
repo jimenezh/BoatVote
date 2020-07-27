@@ -23,6 +23,7 @@ public class Item extends RecyclerViewItem {
         super(level);
         this.type = TODO;
         this.toDoItem = toDoItem;
+        this.children = new ArrayList<>();
     }
 
     public Item(int level, String label) {
@@ -36,6 +37,7 @@ public class Item extends RecyclerViewItem {
         super(level);
         this.representative = representative;
         this.type = REP;
+        this.children = new ArrayList<>();
     }
 
     public ToDoItem getToDoItem() {
