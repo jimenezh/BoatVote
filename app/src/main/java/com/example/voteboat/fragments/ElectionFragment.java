@@ -158,10 +158,28 @@ public class ElectionFragment extends Fragment {
                 }
                 // Add to elections
                 elections.addAll(objects);
-                adapter.notifyDataSetChanged();
                 // We also need the starred elections
-//                getCachedStarredElections();
+                getCachedStarredElections();
 
+            }
+        });
+    }
+
+    private void getCachedStarredElections() {
+        ParseQuery query = new ParseQuery("Election");
+        query.fromPin("Starred");
+        query.findInBackground(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Error getting cached starred elections", e);
+                    return;
+                }
+                // Add all to starred elections
+                starredElections.addAll(objects);
+                // Notify adapter
+                adapter.notifyDataSetChanged();
+                ((MainActivity) getContext()).hideProgressBar();
             }
         });
     }
@@ -177,7 +195,7 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 // Pin to use when offline
-                ParseObject.pinAllInBackground(Election.class.getSimpleName(), starredElections);
+                ParseObject.pinAllInBackground("Starred", starredElections);
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded
