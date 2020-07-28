@@ -29,10 +29,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
@@ -94,12 +94,12 @@ public class ElectionFragment extends Fragment {
         adapter = new ElectionAdapter(getContext(), elections, starredElections);
         binding.rvElections.setAdapter(adapter);
         binding.rvElections.setLayoutManager(new LinearLayoutManager(getContext()));
-        // We get cached elections first
-        getCachedElections();
+        // Populate the election adapter
+        populateElectionFeed();
     }
-
-
     private void setUpSwipeRefresh() {
+        // First query is not a refresh
+        isRefresh = false;
 
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,18 +107,26 @@ public class ElectionFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                refreshElectionFeed();
+                isRefresh = true;
+                populateElectionFeed();
             }
         });
+        // Configure the refreshing colors
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
 
-    private void refreshElectionFeed() {
+    private void populateElectionFeed() {
+        ((MainActivity) getContext()).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
             // Now we get the address from parse and transform that into an Address Object
             String parseAddress = User.getCurrentAddress();
             try {
+                ((MainActivity) getContext()).showProgressBar();
                 List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
@@ -127,10 +135,11 @@ public class ElectionFragment extends Fragment {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Could not use address", Toast.LENGTH_SHORT).show();
-                binding.swipeContainer.setRefreshing(false);
+                // Likely to be offline, in this case we want to get the stashed elections
+                getCachedElections();
             }
-
+            // In case something fails
+            Toast.makeText(getContext(), "Could not use address", Toast.LENGTH_SHORT).show();
         }
         // Else, use device location
         ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
@@ -138,13 +147,12 @@ public class ElectionFragment extends Fragment {
     }
 
     private void getCachedElections() {
-        ((MainActivity) getContext()).showProgressBar();
         ParseQuery<Election> query = new ParseQuery<>("Election");
         query.fromPin(Election.class.getSimpleName());
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if (e != null) {
+                if(e != null){
                     Log.e(TAG, "Error getting cached elections", e);
                     return;
                 }
@@ -163,7 +171,7 @@ public class ElectionFragment extends Fragment {
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if (e != null) {
+                if(e != null){
                     Log.e(TAG, "Error getting cached starred elections", e);
                     return;
                 }
@@ -186,15 +194,15 @@ public class ElectionFragment extends Fragment {
                     return;
                 }
                 starredElections.addAll(objects);
-                // Unpin old cache and pin new cache to use when offline
-                ParseObject.unpinAllInBackground("Starred");
+                // Pin to use when offline
                 ParseObject.pinAllInBackground("Starred", starredElections);
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded
                 ((MainActivity) getContext()).hideProgressBar();
-                if (binding.swipeContainer != null) binding.swipeContainer.setRefreshing(false);
-
+                // Set swipe to false since at final query
+                if(binding.swipeContainer != null)
+                    binding.swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -224,7 +232,6 @@ public class ElectionFragment extends Fragment {
                         Log.d(TAG, "Error trying to get last GPS location");
                         Toast.makeText(getContext(), "No location", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
-                        ((MainActivity) getContext()).hideProgressBar();
                     }
                 });
     }
@@ -234,12 +241,8 @@ public class ElectionFragment extends Fragment {
         googleCivicClient.getElections(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                // Clear cached elections
-                ParseUser.unpinAllInBackground(Election.class.getSimpleName());
-                elections.clear();
-
                 // Clear if refresh
-                if (isRefresh) adapter.clear();
+                if(isRefresh) adapter.clear();
 
                 Log.i(TAG, "Elections are: " + json.toString());
                 try {
@@ -258,7 +261,7 @@ public class ElectionFragment extends Fragment {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "No elections " + response, throwable);
-                ((MainActivity) getContext()).hideProgressBar();
+
             }
         });
     }
