@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -111,7 +112,10 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             // Get correct election, then make query for election details
             Election election = elections.get(getAdapterPosition());
             try {
-                launchRaceFragment(election.getGoogleId(), address);
+                if(address != null)
+                    launchRaceFragment(election.getGoogleId(), address);
+                else
+                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.multilevelview.MultiLevelRecyclerView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.json.JSONException;
@@ -140,19 +141,29 @@ public class ToDoFragment extends Fragment {
 
     // Parse query for user's toDOItems
     private void populateToDo() {
+
+        // If possible, we get them 'fresh'
         ((MainActivity)getContext()).showProgressBar();
         User.getToDo(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
                 if(e != null){
-                    Log.e(TAG, "Could not get ToDo's");
+                    Log.e(TAG, "Could not get ToDo's from Parse Server");// Get cached to do's in this case
+                    getCachedToDos();
                     return;
                 }
+                // Since success, let's clear the cached ToDOItems
+                items.clear();
+                ParseObject.unpinAllInBackground(ToDoItem.class.getSimpleName());
+                items.add(new Item(0, "To Do:")); // Re-add label
+
                 for (int i = 0; i < objects.size(); i++) {
                     // Here, we check to see if the election has passed to see
                     // if the todoitem is still valid
                     addItemIfElectionHasNotPassed(i, objects.get(i));
                 }
+                // Caching
+                ParseObject.pinAllInBackground(ToDoItem.class.getSimpleName(), objects);
                 // We save the user
                 User.saveUser("Could not move item to past Elections", "Moved Item to past elections");
 
@@ -161,6 +172,29 @@ public class ToDoFragment extends Fragment {
             }
         });
     }
+
+    private void getCachedToDos() {
+        Toast.makeText(getContext(), "Could not connect to server", Toast.LENGTH_SHORT).show();
+        ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
+        query.fromPin(ToDoItem.class.getSimpleName());
+        query.findInBackground(new FindCallback<ToDoItem>() {
+            @Override
+            public void done(List<ToDoItem> objects, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Could not get cached todos");
+                    return;
+                }
+                Log.i(TAG, "Got cached todos");
+                // Adding to RV by wrapping it in Item object
+                for(ToDoItem todo : objects)
+                    addToDoToRecyclerView(todo);
+                multiLevelRecyclerView.openTill(0,1);
+                ((MainActivity)getContext()).hideProgressBar();
+            }
+        });
+    }
+
+
 
     private void addItemIfElectionHasNotPassed(int i, final ToDoItem item) {
         final Election election = (Election) item.get("election");
@@ -179,7 +213,7 @@ public class ToDoFragment extends Fragment {
                         updateElectionAndToDoItem(item, result);
                     else {
                         // Otherwise, still valid todoItem
-                        addToRecyclerView(item);
+                        addToDoToRecyclerView(item);
                     }
 
                 }
@@ -187,7 +221,7 @@ public class ToDoFragment extends Fragment {
         });
     }
 
-    private void addToRecyclerView(ToDoItem item) {
+    private void addToDoToRecyclerView(ToDoItem item) {
         Item itemLabel = items.get(0);
         Item newToDo = new Item(1, item);
         itemLabel.addChild(newToDo);
@@ -289,7 +323,8 @@ public class ToDoFragment extends Fragment {
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object to get reps
                         Address address = ElectionFragment.getAddressFromLocation(location, getContext());
-                        getRepresentatives(address.getAddressLine(0));
+                        if(address == null) Toast.makeText(getContext(), "Could not load representative", Toast.LENGTH_SHORT).show();
+                        else getRepresentatives(address.getAddressLine(0));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

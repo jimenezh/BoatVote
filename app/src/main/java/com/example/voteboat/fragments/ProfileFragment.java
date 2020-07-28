@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.voteboat.activities.LogInActivity;
+import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.adapters.PastElectionsAdapter;
 import com.example.voteboat.databinding.FragmentProfileBinding;
@@ -22,6 +23,7 @@ import com.example.voteboat.models.Election;
 import com.example.voteboat.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -34,6 +36,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     List<Election> pastElections;
     PastElectionsAdapter adapter;
+
+    public static final String CACHED_ELECTIONS="pastElections";
 
     boolean useCustomAddress;
 
@@ -136,20 +140,52 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void populatePastElectionsRV() {
+        ((MainActivity) getContext()).showProgressBar();
         User.getPastElections(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Could not get past elections");
+                    getCachedPastElections();
                     return;
                 }
                 Log.i(TAG, "Got " + objects.size() + " past elections");
-                pastElections.addAll(objects);
-                adapter.notifyDataSetChanged();
-                binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+                // Caching
+                storeElections(objects);
+                // Adapter
+                addToAdapter(objects);
+                // Progress bar
+                ((MainActivity) getContext()).hideProgressBar();
             }
         });
 
+    }
+
+    private void addToAdapter(List<Election> objects) {
+        pastElections.addAll(objects);
+        adapter.notifyDataSetChanged();
+        binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+    }
+
+    private void storeElections(List<Election> newElections){
+        ParseObject.pinAllInBackground(CACHED_ELECTIONS, newElections);
+    }
+
+    private void getCachedPastElections(){
+        ParseQuery<Election> query = new ParseQuery<Election>("Election");
+        query.fromPin(CACHED_ELECTIONS).findInBackground(new FindCallback<Election>() {
+            @Override
+            public void done(List<Election> objects, ParseException e) {
+                if( e!=null){
+                    Log.e(TAG, "Could not fet cached elections", e);
+                    return;
+                }
+                addToAdapter(objects);
+                Log.i(TAG, "Got "+objects.size()+" cached elections");
+                ((MainActivity) getContext()).hideProgressBar();
+
+            }
+        });
     }
 
     private void showEditUsernameDialog(String title) {
