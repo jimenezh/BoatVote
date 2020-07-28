@@ -49,12 +49,8 @@ public class Poll {
         return address;
     }
 
-    public static List<Poll> fromJsonArray(JSONArray jsonArray) throws JSONException {
-        List<Poll> polls = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            polls.add(Poll.fromJson(jsonArray.getJSONObject(i)));
-        }
-        return polls;
+    public static Poll fromJsonArray(JSONArray jsonArray) throws JSONException {
+        return Poll.fromJson(jsonArray.getJSONObject(0));
     }
 
     public String getPollingHours() {

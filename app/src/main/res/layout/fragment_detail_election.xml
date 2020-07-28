@@ -46,33 +46,69 @@
             android:id="@+id/tvPollTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvDateText"
             android:layout_marginTop="22dp"
+            android:layout_below="@id/tvDate"
             android:text="@string/polling_locations"
             android:textColor="#000000"
             android:textSize="20sp" />
 
-        <LinearLayout
-            android:id="@+id/llPoll"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:id="@+id/llDates"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPollTitle"
-            android:orientation="vertical" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/llPoll"
-            android:background="#03A9F4"
-            android:padding="10dp"
-            android:text="Polling Location Map" />
+
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:textColor="#292929"
+                tools:text="Some address" />
+
+            <TextView
+                android:id="@+id/tvTimesOpen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvAddress"
+                android:layout_alignStart="@id/tvAddress"
+                android:textColor="#292929"
+                tools:text="All day" />
+
+
+            <TextView
+                android:id="@+id/tvDateOpen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvTimesOpen"
+                android:layout_marginStart="2dp"
+                android:textColor="#292929"
+                tools:text="Today" />
+
+
+
+
+            <Button
+                android:id="@+id/btnMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#03A9F4"
+                android:padding="10dp"
+                android:layout_below="@id/tvDateOpen"
+                android:text="Polling Location Map" />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/llLinks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnMap"
+            android:layout_below="@id/llDates"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
@@ -81,8 +117,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Absentee Voting:"
-                android:textSize="18sp"
-                android:textColor="#292929" />
+                android:textColor="#292929"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvAbsentee"
@@ -91,15 +127,15 @@
                 android:layout_marginBottom="5dp"
                 android:autoLink="all"
                 android:linksClickable="true"
-                android:textColor="#292929"
-                android:text="@string/n_a" />
+                android:text="@string/n_a"
+                android:textColor="#292929" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Election Information:"
-                android:textSize="18sp"
-                android:textColor="#292929" />
+                android:textColor="#292929"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvElectionInfo"
@@ -115,9 +151,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register here:"
-                android:textSize="18sp"
                 android:textColor="#292929"
-                />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvRegister"
@@ -134,18 +169,17 @@
                 android:layout_height="wrap_content"
                 android:autoLink="all"
                 android:linksClickable="true"
-                android:textSize="18sp"
                 android:text="Election Rules:"
                 android:textColor="#292929"
-                />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvRules"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/n_a"
                 android:autoLink="all"
                 android:linksClickable="true"
+                android:text="@string/n_a"
                 android:textColor="#292929" />
         </LinearLayout>
 

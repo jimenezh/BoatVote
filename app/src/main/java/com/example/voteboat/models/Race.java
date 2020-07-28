@@ -39,6 +39,8 @@ public class Race extends ParseObject {
     }
 
     public void addCandidates(JSONArray jsonArray) throws JSONException {
+        Log.i(TAG, this.office+" has "+jsonArray.length()+" races");
+        final Race race = this;
         final ParseRelation<Candidate> relation = this.getRelation(KEY_CANDIDATES);
         for (int i = 0; i < jsonArray.length(); i++) {
             // Create
@@ -51,6 +53,7 @@ public class Race extends ParseObject {
                         return;
                     }
                     relation.add(c);
+                    race.saveInBackground();
                 }
             });
         }
@@ -59,12 +62,12 @@ public class Race extends ParseObject {
 
 
     public String getOffice() {
-        return office;
+        return getString(KEY_OFFICE);
     }
 
 
-    public List<Candidate> getCandidates() {
-        return candidates;
+    public ParseRelation<Candidate> getCandidates() {
+        return getRelation(KEY_CANDIDATES);
     }
 
     public boolean hasCandidates() {

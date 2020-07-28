@@ -97,6 +97,7 @@ public class ElectionFragment extends Fragment {
         // Populate the election adapter
         populateElectionFeed();
     }
+
     private void setUpSwipeRefresh() {
         // First query is not a refresh
         isRefresh = false;
@@ -152,7 +153,7 @@ public class ElectionFragment extends Fragment {
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error getting cached elections", e);
                     return;
                 }
@@ -171,7 +172,7 @@ public class ElectionFragment extends Fragment {
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error getting cached starred elections", e);
                     return;
                 }
@@ -201,7 +202,7 @@ public class ElectionFragment extends Fragment {
                 // Hide and set as false since at last query + everything succeeded
                 ((MainActivity) getContext()).hideProgressBar();
                 // Set swipe to false since at final query
-                if(binding.swipeContainer != null)
+                if (binding.swipeContainer != null)
                     binding.swipeContainer.setRefreshing(false);
             }
         });
@@ -242,7 +243,7 @@ public class ElectionFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 // Clear if refresh
-                if(isRefresh) adapter.clear();
+                if (isRefresh) adapter.clear();
 
                 Log.i(TAG, "Elections are: " + json.toString());
                 try {
@@ -269,24 +270,24 @@ public class ElectionFragment extends Fragment {
     private void synchronizeElectionsInParse(final JSONArray jsonArray) {
         // Get elections in parse
         ParseQuery<Election> query = new ParseQuery<>("Election");
-        query.whereEqualTo("hasPassed", false); // Getting only current elections
-        query.findInBackground(new FindCallback<Election>() {
-            @Override
-            public void done(List<Election> objects, ParseException e) {
-                if (e != null)
-                    Log.e(TAG, "Could not get elections", e);
-                else {
-                    // First we add the pre-existing elections to the list
-                    elections.addAll(objects);
-                    // Now we pin them so that they can be used when offline
-                    ParseObject.pinAllInBackground(Election.class.getSimpleName(), elections);
-                    // Notify the adapter
-                    adapter.notifyDataSetChanged();
-                    // We check the ids of all elections in jsonArray to make sure we have it in the database
-                    checkIfElectionsInParse(objects, jsonArray);
-                }
-            }
-        });
+        query.whereEqualTo("hasPassed", false) // Getting only current elections
+                .findInBackground(new FindCallback<Election>() {
+                    @Override
+                    public void done(List<Election> objects, ParseException e) {
+                        if (e != null)
+                            Log.e(TAG, "Could not get elections", e);
+                        else {
+                            // First we add the pre-existing elections to the list
+                            elections.addAll(objects);
+                            // Now we pin them so that they can be used when offline
+                            ParseObject.pinAllInBackground(Election.class.getSimpleName(), elections);
+                            // Notify the adapter
+                            adapter.notifyDataSetChanged();
+                            // We check the ids of all elections in jsonArray to make sure we have it in the database
+                            checkIfElectionsInParse(objects, jsonArray);
+                        }
+                    }
+                });
     }
 
     private void checkIfElectionsInParse(List<Election> objects, JSONArray jsonArray) {

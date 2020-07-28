@@ -18,6 +18,7 @@ import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.User;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
@@ -25,6 +26,7 @@ import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.HashMap;
@@ -119,44 +121,61 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
     // API request for more information on the election
     private void getElectionDetails(final Election election, Address address) {
-        Log.i(TAG, "Election id is " + election.getGoogleId());
-
         GoogleCivicClient googleCivicClient = new GoogleCivicClient();
         googleCivicClient
                 .voterInformationElections(election.getGoogleId(), address.getAddressLine(0), new JsonHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int statusCode, Headers headers, JSON json) {
-                        Log.i(TAG, "Got races " + json.toString());
-                        try {
-                            election.addDetails(json.jsonObject, new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e != null) {
-                                        Log.e(TAG, "Could not add election details", e);
-                                        return;
-                                    }
-                                    displayElectionDetail(election);
-                                }
-                            });
-                        } catch (JSONException jsonExceptions){
-                            jsonExceptions.printStackTrace();
-                        }
-
-
+                    public void onSuccess(int statusCode, Headers headers, final JSON json) {
+                        Log.i(TAG, "Got races " + json.toString()+" for "+election.getGoogleId());
+                        // if synched, then we just display election detail
+                        if (election.hasDetails())
+                            displayElectionDetail(election, getPoll(json.jsonObject));
+                        else
+                            synchElectionDetails(json, election);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                        Log.e(TAG, "Could not get races " + response, throwable);
+                        Log.e(TAG, "Could not get election details " + response, throwable);
+                        Toast.makeText(context, "Could not show details", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void synchElectionDetails(final JsonHttpResponseHandler.JSON json, final Election election) {
+        try {
+            election.addDetails(json.jsonObject, new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Could not add election details", e);
+                        return;
+                    }
+                    // Now we get poll + display the details
+                    displayElectionDetail(election, getPoll(json.jsonObject));
+                }
+            });
+        } catch (JSONException jsonExceptions) {
+            jsonExceptions.printStackTrace();
+        }
+    }
 
-    private void displayElectionDetail(Election e) {
+    private Poll getPoll(JSONObject jsonObject) {
+        try {
+            if (jsonObject.has("pollingLocations"))
+                return Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private void displayElectionDetail(Election e, Poll p) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(Election.class.getSimpleName(), Parcels.wrap(e));
         bundle.putString("userOcdId", getOcdId(address));
+        bundle.putParcelable(Poll.class.getSimpleName(), Parcels.wrap(p));
         ElectionDetailFragment electionDetailFragment = new ElectionDetailFragment();
         electionDetailFragment.setArguments(bundle);
 

@@ -40,14 +40,14 @@ public class Candidate extends ParseObject {
 
 
     public String getName() {
-        return name;
+        return getString(KEY_NAME);
     }
 
     public String getParty() {
-        return party;
+        return getString(KEY_PARTY);
     }
 
     public String getWebsiteUrl() {
-        return websiteUrl;
+        return getString(KEY_WEBSITE_URL);
     }
 }
