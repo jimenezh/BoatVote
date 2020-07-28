@@ -6,9 +6,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,6 +44,8 @@ public class Election extends ParseObject {
     public static final String KEY_ELECTION_DATE = "electionDay";
     public static final String KEY_OCD_ID = "ocdDivisionId";
     public static final String KEY_HAS_PASSED = "hasPassed";
+    public static final String KEY_RACES = "races";
+    public static final String KEY_HAS_RACES = "hasRaces";
 
     public Election() {
         earlyPolls = new ArrayList<>();
@@ -64,32 +69,48 @@ public class Election extends ParseObject {
         return election;
     }
 
-    public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
-        JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
-        Election election = Election.basicInformationFromJson(electionBasicInfo);
+    public void addDetails(JSONObject jsonObject, SaveCallback saveCallback) throws JSONException {
         JSONObject state = jsonObject
                 .getJSONArray("state")
                 .getJSONObject(0)
                 .getJSONObject("electionAdministrationBody");
-        election.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
-        election.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
-        election.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
-        election.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
-
+        // Adding this when online
+        this.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
+        this.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
+        this.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
+        this.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
         if (jsonObject.has("pollingLocations"))
-            election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
-
+            this.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
         if (jsonObject.has("earlyVoteSites"))
-            election.earlyPolls = Poll.fromJsonArray(jsonObject.getJSONArray("earlyVoteSites"));
+            this.earlyPolls = Poll.fromJsonArray(jsonObject.getJSONArray("earlyVoteSites"));
         if (jsonObject.has("dropOffLocations"))
-            election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
+            this.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
 
-        if (jsonObject.has("contests"))
-            election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
-        else election.races = new ArrayList<>();
+//         This is the info we synchronize with Parse
+        if (jsonObject.has("contests")) {
+            this.addRaces(jsonObject.getJSONArray("contests"));
+            this.saveInBackground(saveCallback);
+        }
 
-        return election;
+    }
 
+    public void addRaces(JSONArray jsonArray) throws JSONException{
+        final ParseRelation relation = this.getRelation(Election.KEY_RACES);
+        for (int i = 0; i < jsonArray.length() ; i++) {
+            // Creating race
+            final Race r = Race.fromJsonObject(jsonArray.getJSONObject(i));
+            // Saving
+            r.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e!= null){
+                        Log.e(TAG, "Could not save race");
+                        return;
+                    }
+                    relation.add(r);
+                }
+            });
+        }
     }
 
     private static String checkifExistsAndAdd(String field, JSONObject jsonObject) throws JSONException {
@@ -180,5 +201,9 @@ public class Election extends ParseObject {
 
     public boolean getHasPassed() {
         return getBoolean(KEY_HAS_PASSED);
+    }
+
+    public boolean hasDetails() {
+        return getBoolean(KEY_HAS_RACES);
     }
 }

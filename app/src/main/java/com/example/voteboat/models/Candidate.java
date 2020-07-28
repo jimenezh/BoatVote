@@ -11,7 +11,6 @@ import java.util.List;
 @Parcel
 public class Candidate {
 
-    String googleId;
     String name;
     String party;
     String websiteUrl;
@@ -41,9 +40,6 @@ public class Candidate {
             return "";
     }
 
-    public String getGoogleId() {
-        return googleId;
-    }
 
     public String getName() {
         return name;
@@ -55,13 +51,5 @@ public class Candidate {
 
     public String getWebsiteUrl() {
         return websiteUrl;
-    }
-
-    public String getParseElectionId() {
-        return parseElectionId;
-    }
-
-    public String getGoogleElectionId() {
-        return googleElectionId;
     }
 }

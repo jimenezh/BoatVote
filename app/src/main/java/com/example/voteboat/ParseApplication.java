@@ -3,6 +3,7 @@ package com.example.voteboat;
 import android.app.Application;
 
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.Race;
 import com.example.voteboat.models.ToDoItem;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -28,6 +29,7 @@ public class ParseApplication extends Application {
 
         ParseObject.registerSubclass(ToDoItem.class);
         ParseObject.registerSubclass(Election.class);
+        ParseObject.registerSubclass(Race.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured

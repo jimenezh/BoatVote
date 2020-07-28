@@ -1,64 +1,48 @@
 package com.example.voteboat.models;
 
-import com.example.voteboat.R;
+import android.util.Log;
+
+import com.parse.ParseClassName;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseRelation;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
-@Parcel
-public class Race {
+@ParseClassName("Race")
+public class Race extends ParseObject {
     String office;
-    String level;
-    String district;
+
     List<Candidate> candidates;
-    String ballotTitle;
+
+    public static final String KEY_OFFICE="office";
+    public static final String KEY_LEVEL="level";
+    public static final String KEY_DISTRICT= "district";
+    public static final String KEY_CANDIDATES="candidates";
+
+    public static final String TAG = "Race";
 
 
     public static Race fromJsonObject(JSONObject jsonObject) throws JSONException {
         Race race = new Race();
         if(jsonObject.has("office"))
-            race.office = jsonObject.getString("office");
-        if(jsonObject.has("level"))
-            race.level = jsonObject.getJSONArray("level").getString(0);
-        if(jsonObject.has("district"))
-            race.district = jsonObject.getJSONObject("district").getString("name");
-        if(jsonObject.has("candidates"))
-            race.candidates = Candidate.fromJsonArray(jsonObject.getJSONArray("candidates"));
-        if(jsonObject.has("ballotTitle")){
-            race.ballotTitle = jsonObject.getString("ballotTitle");
-        }
-
-
+            race.put(KEY_OFFICE, jsonObject.getString("office"));
+//        if(jsonObject.has("candidates"))
+//            race.candidates = Candidate.fromJsonArray(jsonObject.getJSONArray("candidates"));
         return  race;
     }
 
-    public static List<Race> fromJsonArray(JSONArray jsonArray) throws JSONException {
-        List<Race> races = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length() ; i++) {
-            races.add(Race.fromJsonObject(jsonArray.getJSONObject(i)));
-        }
-        return races;
-    }
 
-    public String getBallotTitle() {
-        return ballotTitle;
-    }
 
     public String getOffice() {
         return office;
     }
 
-    public String getLevel() {
-        return level;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
 
     public List<Candidate> getCandidates() {
         return candidates;
