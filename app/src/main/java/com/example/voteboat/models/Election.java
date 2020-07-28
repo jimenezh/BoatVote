@@ -89,6 +89,7 @@ public class Election extends ParseObject {
 //         This is the info we synchronize with Parse
         if (jsonObject.has("contests")) {
             this.addRaces(jsonObject.getJSONArray("contests"));
+            this.put(KEY_HAS_RACES, true); // Marking as true
             this.saveInBackground(saveCallback);
         }
 
