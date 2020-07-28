@@ -141,8 +141,6 @@ public class ToDoFragment extends Fragment {
 
     // Parse query for user's toDOItems
     private void populateToDo() {
-        // First we get the cached ones
-        getCachedToDos();
 
         // If possible, we get them 'fresh'
         ((MainActivity)getContext()).showProgressBar();
@@ -150,7 +148,8 @@ public class ToDoFragment extends Fragment {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
                 if(e != null){
-                    Log.e(TAG, "Could not get ToDo's from Parse Server");
+                    Log.e(TAG, "Could not get ToDo's from Parse Server");// Get cached to do's in this case
+                    getCachedToDos();
                     return;
                 }
                 // Since success, let's clear the cached ToDOItems
@@ -175,6 +174,7 @@ public class ToDoFragment extends Fragment {
     }
 
     private void getCachedToDos() {
+        Toast.makeText(getContext(), "Could not connect to server", Toast.LENGTH_SHORT).show();
         ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
         query.fromPin(ToDoItem.class.getSimpleName());
         query.findInBackground(new FindCallback<ToDoItem>() {
@@ -184,6 +184,7 @@ public class ToDoFragment extends Fragment {
                     Log.e(TAG, "Could not get cached todos");
                     return;
                 }
+                Log.i(TAG, "Got cached todos");
                 // Adding to RV by wrapping it in Item object
                 for(ToDoItem todo : objects)
                     addToDoToRecyclerView(todo);
@@ -322,7 +323,8 @@ public class ToDoFragment extends Fragment {
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object to get reps
                         Address address = ElectionFragment.getAddressFromLocation(location, getContext());
-                        getRepresentatives(address.getAddressLine(0));
+                        if(address == null) Toast.makeText(getContext(), "Could not load representative", Toast.LENGTH_SHORT).show();
+                        else getRepresentatives(address.getAddressLine(0));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
