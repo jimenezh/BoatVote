@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ParseClassName("Election")
@@ -40,7 +41,7 @@ public class Election extends ParseObject {
     public static final String KEY_HAS_PASSED = "hasPassed";
     public static final String KEY_RACES = "races";
     public static final String KEY_HAS_RACES = "hasRaces";
-    public static final String KEY_HAS_DETAILS="hasDetails";
+    public static final String KEY_HAS_DETAILS = "hasDetails";
 
     public ParseRelation<Race> getRaces() {
         return getRelation(KEY_RACES);
@@ -53,7 +54,7 @@ public class Election extends ParseObject {
         election.googleId = json.getString("id");
         election.ocdId = json.getString("ocdDivisionId");
 
-        Log.i(TAG, "Election "+election.googleId);
+        Log.i(TAG, "Election " + election.googleId);
 
         return election;
     }
@@ -73,39 +74,45 @@ public class Election extends ParseObject {
 //         This is the info we synchronize with Parse
         if (jsonObject.has("contests")) {
             this.addRaces(jsonObject.getJSONArray("contests"));
-            this.put(KEY_HAS_RACES, true); // Marking as true
-        } else{
-            Log.i(TAG, "No elections for "+this.getGoogleId() );
+
+        } else {
+            Log.i(TAG, "No elections for " + this.getGoogleId());
         }
 
-        // i.e. is synchronized with Parse
-        this.put(KEY_HAS_DETAILS, true);
+
         // Saving once more time
         this.saveInBackground(saveCallback);
 
 
     }
 
-    public void addRaces(JSONArray jsonArray) throws JSONException{
+    public void addRaces(JSONArray jsonArray) throws JSONException {
 
         final Election election = this;
         final ParseRelation relation = election.getRelation(Election.KEY_RACES);
-        for (int i = 0; i < jsonArray.length() ; i++) {
+        final List<Race> races = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
             // Creating race
             final Race r = Race.fromJsonObject(jsonArray.getJSONObject(i));
             // Saving
-            r.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!= null){
-                        Log.e(TAG, "Could not save race");
-                        return;
-                    }
-                    relation.add(r);
-                    election.saveInBackground();
-                }
-            });
+            races.add(r);
         }
+
+        ParseObject.saveAllInBackground(races, new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if( e !=null) {
+                    Log.e(TAG, "Could not save races", e);
+                    return;
+                }
+                for(Race r: races)
+                    relation.add(r);
+                election.put(KEY_HAS_RACES, true); // Marking as true
+                election.put(KEY_HAS_DETAILS, true);
+                election.saveInBackground();
+                Log.i(TAG, "Finished saving "+election.getGoogleId());
+            }
+        });
     }
 
     private static String checkifExistsAndAdd(String field, JSONObject jsonObject) throws JSONException {
@@ -193,7 +200,7 @@ public class Election extends ParseObject {
         return getBoolean(KEY_HAS_DETAILS);
     }
 
-    public boolean hasRaces(){
+    public boolean hasRaces() {
         return getBoolean(KEY_HAS_RACES);
     }
 }

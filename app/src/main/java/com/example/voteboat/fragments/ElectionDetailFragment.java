@@ -130,19 +130,21 @@ public class ElectionDetailFragment extends Fragment {
 
     private void launchRacesActivity() {
         ParseRelation<Race> relation = election.getRaces();
-        relation.getQuery().include("candidates").findInBackground(new FindCallback<Race>() {
-            @Override
-            public void done(List<Race> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Could not get races", e);
-                    return;
-                }
-
-                Intent intent = new Intent(getContext(), RaceDetailActivity.class);
-                intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(objects));
-                startActivity(intent);
-            }
-        });
+        relation.getQuery()
+                .include("candidates")
+                .orderByDescending("score")
+                .findInBackground(new FindCallback<Race>() {
+                    @Override
+                    public void done(List<Race> objects, ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Could not get races", e);
+                            return;
+                        }
+                        Intent intent = new Intent(getContext(), RaceDetailActivity.class);
+                        intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(objects));
+                        startActivity(intent);
+                    }
+                });
 
     }
 

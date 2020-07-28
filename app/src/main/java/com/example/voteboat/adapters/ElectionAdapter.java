@@ -155,8 +155,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     displayElectionDetail(election, getPoll(json.jsonObject));
                 }
             });
-        } catch (JSONException jsonExceptions) {
-            jsonExceptions.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

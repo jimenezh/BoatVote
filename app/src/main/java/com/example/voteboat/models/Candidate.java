@@ -14,9 +14,7 @@ import java.util.List;
 @ParseClassName("Candidate")
 public class Candidate extends ParseObject {
 
-    String name;
-    String party;
-    String websiteUrl;
+
 
     public static final String KEY_NAME="name";
     public static final String KEY_PARTY="party";
