@@ -126,12 +126,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 .voterInformationElections(election.getGoogleId(), address.getAddressLine(0), new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, final JSON json) {
-                        Log.i(TAG, "Got races " + json.toString()+" for "+election.getGoogleId());
-                        // if synched, then we just display election detail
-                        if (election.hasDetails())
-                            displayElectionDetail(election, getPoll(json.jsonObject));
-                        else
-                            synchElectionDetails(json, election);
+                        Log.i(TAG, "Got races " + json.toString() + " for " + election.getGoogleId());
+                        synchElectionDetails(json, election);
                     }
 
                     @Override

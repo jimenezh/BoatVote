@@ -124,7 +124,7 @@ public class ElectionDetailFragment extends Fragment {
         Geocoder geocoder = new Geocoder(getContext());
         Address address = geocoder.getFromLocationName(addressLine, 1).get(0);
         intent.putExtra("address", Parcels.wrap(address));
-        intent.putExtra("hours", election.getElectionDayPoll().getPollingHours());
+        intent.putExtra("hours", poll.getPollingHours());
 
     }
 
