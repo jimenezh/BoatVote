@@ -31,10 +31,6 @@ Rock the Vote is an application that provides election data at a local, state, a
 * User can see detailed election information
     * Can click to view races
     * Polling dates/times/locations 
-        * Registration
-        * Early voting
-        * Election day
-        * Absentee ballots
     * User can click to view nearest locations on map
         * Show polling location/details w/ respect to user
 * User can see races for a specific election
@@ -44,15 +40,13 @@ Rock the Vote is an application that provides election data at a local, state, a
     * User can check off to do item
 * User can see a list of current representatives and their information
 * User can set/receive reminders for starred elections
-* User can upload a profile picture
-    * Alternatively: share picture on social media
+* User can share picture on social media
 
 Ideas for algorithm:
-* Get nearest polling place
 * Most relevant races
     * Based on # of candidates running
     * When candidates are of different parties
-    * At what level of government they are
+    * At what level/scope of government they are
 
 **Optional Nice-to-have Stories**
 
@@ -134,7 +128,8 @@ Ideas for algorithm:
 | createdAt | DateTime | default field |
 | updatedTime | DateTime | date when post is last updated (default field) |
 | username | String |  |
-| elections | Array | Ids of elections that the user has starred | 
+| elections | Relation | Target class - Election | 
+| starredElections | Relation| Target class - Election | 
 | calendarEvents | Array | Pointers to events that the user will be notified of |
 
 #### Election
@@ -143,13 +138,25 @@ Ideas for algorithm:
 | objectId | String | unique identifier for Parse |
 | createdAt | DateTime | default field |
 | updatedTime | DateTime | date when post is last updated (default field) |
-| googleElectionId | String | unique identifier for Google civic API |
-| electionDate | DateTime | date of the election |
-| candidates | Array | pointers to candidate to all candidates running in the election |
-| earlyPolls | Array | pointers to Poll objects for early polls |
-| electionDayPolls | Array | pointers to Poll objects for election day |
-| absenteeBallotLocations | Array | pointers to Poll objects to drop off absentee ballots |
-| registrationLink | String | url to register for the election | 
+| googleId | String | unique identifier for Google civic API |
+| electionDay | String | date of the election (MM/dd/yyyy) |
+| races | Relation | Target class - Race |
+| hasRaces | boolean | keeps track of whether details have been synched to Parse |
+| absenteeVotingUrl| String | url for absentee voting info|
+| electionInfoUrl | String | url for election info|
+| electionRegistrationUrl | String | url to register for the election | 
+| hasPassed | boolean | tracks whether the election date has passed |
+
+#### Race
+| Property  | Type |  Description | 
+| --- | --- | --- |
+| objectId | String | unique identifier for Parse |
+| createdAt | DateTime | default field |
+| updatedTime | DateTime | date when post is last updated (default field) |
+| office | String | name of the office |
+| candidates | Relation | race's candidates |
+| score | int | relevance score for user's |
+| level | String | level of election |
 
 
 #### Candidate
@@ -159,21 +166,6 @@ Ideas for algorithm:
 | objectId | String | unique identifier for Parse |
 | createdAt | DateTime | default field |
 | updatedTime | DateTime | date when post is last updated (default field) |
-| candidateId | String | unique identifier for Google civic API|
 | name | String | name of candidate|
 | party | String | candidate's running party |
 | websiteUrl | String | link to candidate's website|
-| parseElectionId | String | election id in Parse for which the candidate is running for|
-| googleElectionId | String | election id (Google API) for which the candidate is running for|
-
-
-#### Poll
-| Property  | Type |  Description | 
-| --- | --- | --- |
-| objectId | String | unique identifier for Parse |
-| createdAt | DateTime | default field |
-| updatedTime | DateTime | date when post is last updated (default field) |
-| location| String | full address for polling location |
-| datesOpen | String | dates for which the polling location is available for |
-| openTime | DateTime | opening time of location|
-| closingTime | DateTime | closing time of location |
