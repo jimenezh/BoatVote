@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
 import com.example.voteboat.models.User;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseRelation;
 
 import org.parceler.Parcels;
 
@@ -31,10 +35,11 @@ import java.util.List;
 
 public class ElectionDetailFragment extends Fragment {
 
-    public static final String TAG ="ElectionDetailFragment";
+    public static final String TAG = "ElectionDetailFragment";
 
     Election election;
     String userOcdId;
+    Poll poll;
     FragmentDetailElectionBinding binding;
 
     @Nullable
@@ -43,8 +48,9 @@ public class ElectionDetailFragment extends Fragment {
         binding = FragmentDetailElectionBinding.inflate(getLayoutInflater());
         // Getting races + election from args
         Bundle args = getArguments();
-        election = Parcels.unwrap( args.getParcelable(Election.class.getSimpleName()));
+        election = Parcels.unwrap(args.getParcelable(Election.class.getSimpleName()));
         userOcdId = args.getString("userOcdId");
+        poll = Parcels.unwrap(args.getParcelable(Poll.class.getSimpleName()));
         return binding.getRoot();
     }
 
@@ -52,15 +58,8 @@ public class ElectionDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setElectionInformation();
-        addElectionDayPollViews(election.getElectionDayPolls(), binding.llPoll);
-        if(election.getRaces().isEmpty()) binding.btnRaces.setVisibility(View.GONE);
-        if(!election.getOcdId().equals(userOcdId)) binding.llLinks.setVisibility(View.GONE);
-        binding.btnRaces.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchRacesActivity();
-            }
-        });
+        setPollInformation();
+        setRaces();
         binding.btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,18 +69,48 @@ public class ElectionDetailFragment extends Fragment {
 
     }
 
+    private void setRaces() {
+        if (!election.hasRaces()) binding.btnRaces.setVisibility(View.GONE);
+        else {
+            binding.btnRaces.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchRacesActivity();
+                }
+            });
+        }
+    }
+
+    private void setPollInformation() {
+        if (poll == null) {
+            binding.llDates.setVisibility(View.GONE);
+            binding.tvPollTitle.setText("No polls nears you");
+        } else {
+            binding.tvAddress.setText(poll.getLocation());
+            binding.tvDateOpen.setText(poll.getOpenDate());
+            binding.tvTimesOpen.setText(poll.getPollingHours());
+        }
+    }
+
+
     private void setElectionInformation() {
+        if (!election.getOcdId().equals(userOcdId)) {
+            binding.llLinks.setVisibility(View.GONE);
+        } else {
+            binding.tvAbsentee.setText(election.getAbsenteeBallotUrl());
+            binding.tvElectionInfo.setText(election.getElectionInfoUrl());
+            binding.tvRegister.setText(election.getRegistrationUrl());
+            binding.tvRules.setText(election.getElectionRulesUrl());
+        }
+
         binding.tvElectionName.setText(election.getTitle());
         binding.tvDate.setText(election.getElectionDate());
-        binding.tvAbsentee.setText(election.getAbsenteeBallotUrl());
-        binding.tvElectionInfo.setText(election.getElectionInfoUrl());
-        binding.tvRegister.setText(election.getRegistrationUrl());
-        binding.tvRules.setText(election.getElectionRulesUrl());
+
     }
 
     private void launchMapActivity() {
-        Intent intent= new Intent(getContext(), MapActivity.class);
-        String addressLine = election.getElectionDayPolls().get(0).getLocation();
+        Intent intent = new Intent(getContext(), MapActivity.class);
+        String addressLine = poll.getLocation();
         try {
             putLatAndLngInIntent(intent, addressLine);
             startActivity(intent);
@@ -93,41 +122,30 @@ public class ElectionDetailFragment extends Fragment {
 
     private void putLatAndLngInIntent(Intent intent, String addressLine) throws IOException {
         Geocoder geocoder = new Geocoder(getContext());
-        Address address = geocoder.getFromLocationName(addressLine,1).get(0);
-        intent.putExtra("address",Parcels.wrap(address));
-        intent.putExtra("hours",election.getElectionDayPolls().get(0).getPollingHours() );
+        Address address = geocoder.getFromLocationName(addressLine, 1).get(0);
+        intent.putExtra("address", Parcels.wrap(address));
+        intent.putExtra("hours", election.getElectionDayPoll().getPollingHours());
 
     }
 
     private void launchRacesActivity() {
-        Intent intent = new Intent(getContext(), RaceDetailActivity.class);
-        intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(election.getRaces()));
-        startActivity(intent);
-    }
+        ParseRelation<Race> relation = election.getRaces();
+        relation.getQuery()
+                .include("candidates")
+                .orderByDescending("score")
+                .findInBackground(new FindCallback<Race>() {
+                    @Override
+                    public void done(List<Race> objects, ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Could not get races", e);
+                            return;
+                        }
+                        Intent intent = new Intent(getContext(), RaceDetailActivity.class);
+                        intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(objects));
+                        startActivity(intent);
+                    }
+                });
 
-    private void addElectionDayPollViews(List<Poll> pollLocations, LinearLayout llPoll) {
-        if (pollLocations.isEmpty()) {
-            binding.btnMap.setVisibility(View.GONE);
-            binding.tvPollTitle.setText("No polls near you");
-        }
-        for(Poll pollLocation : pollLocations){
-            View v = getLayoutInflater().inflate(R.layout.item_poll_location,null,false);
-            TextView title = v.findViewById(R.id.tvAddress);
-            title.setText(pollLocation.getLocation());
-
-            TextView time = v.findViewById(R.id.tvTimesOpen);
-            time.setText(pollLocation.getPollingHours());
-
-            if(pollLocation.hasDates()) {
-                TextView openDate = v.findViewById(R.id.tvDateOpen);
-                TextView closeDate = v.findViewById(R.id.tvDateClose);
-                openDate.setText(pollLocation.getOpenDate());
-                closeDate.setText(pollLocation.getCloseDate());
-            }
-             else
-                v.findViewById(R.id.llDates).setVisibility(View.GONE);
-            llPoll.addView(v);
-        }
     }
 
 

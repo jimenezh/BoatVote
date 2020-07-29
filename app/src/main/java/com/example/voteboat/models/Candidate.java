@@ -1,5 +1,8 @@
 package com.example.voteboat.models;
 
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,29 +11,21 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
-@Parcel
-public class Candidate {
+@ParseClassName("Candidate")
+public class Candidate extends ParseObject {
 
-    String googleId;
-    String name;
-    String party;
-    String websiteUrl;
-    String parseElectionId;
-    String googleElectionId;
 
-    public static List<Candidate> fromJsonArray(JSONArray jsonArray) throws JSONException {
-        List<Candidate> candidates = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            candidates.add(Candidate.fromJsonObject(jsonArray.getJSONObject(i)));
-        }
-        return candidates;
-    }
+
+    public static final String KEY_NAME="name";
+    public static final String KEY_PARTY="party";
+    public static final String KEY_WEBSITE_URL="url";
+
 
     public static Candidate fromJsonObject(JSONObject jsonObject) throws JSONException {
         Candidate candidate = new Candidate();
-        candidate.name = jsonObject.getString("name");
-        candidate.party = jsonObject.getString("party");
-        candidate.websiteUrl = checkifExistsAndAdd("candidateUrl", jsonObject);
+        candidate.put(KEY_NAME, jsonObject.getString("name"));
+        candidate.put(KEY_PARTY, jsonObject.getString("party"));
+        candidate.put(KEY_WEBSITE_URL, checkifExistsAndAdd("candidateUrl", jsonObject));
         return candidate;
     }
 
@@ -41,27 +36,16 @@ public class Candidate {
             return "";
     }
 
-    public String getGoogleId() {
-        return googleId;
-    }
 
     public String getName() {
-        return name;
+        return getString(KEY_NAME);
     }
 
     public String getParty() {
-        return party;
+        return getString(KEY_PARTY);
     }
 
     public String getWebsiteUrl() {
-        return websiteUrl;
-    }
-
-    public String getParseElectionId() {
-        return parseElectionId;
-    }
-
-    public String getGoogleElectionId() {
-        return googleElectionId;
+        return getString(KEY_WEBSITE_URL);
     }
 }

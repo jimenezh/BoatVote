@@ -1,6 +1,7 @@
 package com.example.voteboat.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.databinding.ItemRaceBinding;
 import com.example.voteboat.models.Candidate;
 import com.example.voteboat.models.Race;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseRelation;
 
 import java.util.List;
 
@@ -56,19 +60,32 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
 
         public void bind(Race race) {
             binding.tvTitle.setText(race.getOffice());
-            if (race.hasCandidates()) {
-                List<Candidate> candidates = race.getCandidates();
-                //TODO: make this a list?, rather than just one candidate
+            ParseRelation<Candidate> relation = race.getCandidates();
+            relation.getQuery().findInBackground(new FindCallback<Candidate>() {
+                @Override
+                public void done(List<Candidate> objects, ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Could not get race candidates", e);
+                        return;
+                    }
+                    if (!objects.isEmpty())
+                        setCandidateInfo(objects);
+                    else {
+                        binding.rlCandidate1.setVisibility(View.GONE);
+                        binding.rlCandidate2.setVisibility(View.GONE);
+                    }
+                }
+            });
 
-                setCandidate1Info(candidates.get(0));
-                if (candidates.size() > 1) {
-                    setCandidate2Info(candidates.get(1));
-                } else
-                    binding.rlCandidate2.setVisibility(View.GONE);
-            } else {
-                binding.rlCandidate1.setVisibility(View.GONE);
+        }
+
+        void setCandidateInfo(List<Candidate> candidates) {
+            setCandidate1Info(candidates.get(0));
+            if (candidates.size() > 1) {
+                setCandidate2Info(candidates.get(1));
+            } else
                 binding.rlCandidate2.setVisibility(View.GONE);
-            }
+
         }
 
         private void setCandidate1Info(Candidate candidate) {
@@ -78,6 +95,9 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
             binding.tvUrl1.setText(candidate.getWebsiteUrl());
             if (candidate.getWebsiteUrl().isEmpty())
                 binding.tvUrl1.setVisibility(View.GONE);
+            else
+                binding.tvUrl1.setVisibility(View.VISIBLE);
+
         }
 
         private void setCandidate2Info(Candidate candidate) {
@@ -85,8 +105,10 @@ public class RaceAdapter extends RecyclerView.Adapter<RaceAdapter.ViewHolder> {
             binding.tvCandidate2Name.setText(candidate.getName());
             binding.tvCandidate2Party.setText("(" + candidate.getParty() + ")");
             binding.tvUrl2.setText(candidate.getWebsiteUrl());
-            if (!candidate.getWebsiteUrl().isEmpty())
+            if (candidate.getWebsiteUrl().isEmpty())
                 binding.tvUrl2.setVisibility(View.GONE);
+            else
+                binding.tvUrl2.setVisibility(View.VISIBLE);
         }
     }
 }

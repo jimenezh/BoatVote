@@ -6,9 +6,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,17 +26,12 @@ public class Election extends ParseObject {
     String title;
     String googleId;
     String electionDate;
-    List<Race> races;
-    List<Poll> earlyPolls;
-    List<Poll> electionDayPolls;
-    List<Poll> absenteeBallotLocations;
+    Poll electionDayPoll;
     String registrationUrl;
     String electionInfoUrl;
     String absenteeBallotUrl;
     String electionRulesUrl;
     String ocdId;
-    boolean isStarred;
-
 
     // Parse Keys
     public static final String KEY_NAME = "name";
@@ -41,15 +39,12 @@ public class Election extends ParseObject {
     public static final String KEY_ELECTION_DATE = "electionDay";
     public static final String KEY_OCD_ID = "ocdDivisionId";
     public static final String KEY_HAS_PASSED = "hasPassed";
+    public static final String KEY_RACES = "races";
+    public static final String KEY_HAS_RACES = "hasRaces";
+    public static final String KEY_HAS_DETAILS = "hasDetails";
 
-    public Election() {
-        earlyPolls = new ArrayList<>();
-        electionDayPolls = new ArrayList<>();
-        absenteeBallotLocations = new ArrayList<>();
-    }
-
-    public List<Race> getRaces() {
-        return races;
+    public ParseRelation<Race> getRaces() {
+        return getRelation(KEY_RACES);
     }
 
     public static Election basicInformationFromJson(JSONObject json) throws JSONException {
@@ -59,37 +54,65 @@ public class Election extends ParseObject {
         election.googleId = json.getString("id");
         election.ocdId = json.getString("ocdDivisionId");
 
-        Log.i("Election", election.googleId + " is starred:" + election.isStarred);
+        Log.i(TAG, "Election " + election.googleId);
 
         return election;
     }
 
-    public static Election fromJsonObject(JSONObject jsonObject) throws JSONException {
-        JSONObject electionBasicInfo = jsonObject.getJSONObject("election");
-        Election election = Election.basicInformationFromJson(electionBasicInfo);
+    public void addDetails(JSONObject jsonObject, SaveCallback saveCallback) throws JSONException {
         JSONObject state = jsonObject
                 .getJSONArray("state")
                 .getJSONObject(0)
                 .getJSONObject("electionAdministrationBody");
-        election.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
-        election.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
-        election.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
-        election.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
-
+        // Adding this when online
+        this.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
+        this.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
+        this.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
+        this.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
         if (jsonObject.has("pollingLocations"))
-            election.electionDayPolls = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+            this.electionDayPoll = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
+//         This is the info we synchronize with Parse
+        if (jsonObject.has("contests")) {
+            this.addRaces(jsonObject.getJSONArray("contests"));
 
-        if (jsonObject.has("earlyVoteSites"))
-            election.earlyPolls = Poll.fromJsonArray(jsonObject.getJSONArray("earlyVoteSites"));
-        if (jsonObject.has("dropOffLocations"))
-            election.absenteeBallotLocations = Poll.fromJsonArray(jsonObject.getJSONArray("dropOffLocations"));
+        } else {
+            Log.i(TAG, "No elections for " + this.getGoogleId());
+        }
 
-        if (jsonObject.has("contests"))
-            election.races = Race.fromJsonArray(jsonObject.getJSONArray("contests"));
-        else election.races = new ArrayList<>();
 
-        return election;
+        // Saving once more time
+        this.saveInBackground(saveCallback);
 
+
+    }
+
+    public void addRaces(JSONArray jsonArray) throws JSONException {
+
+        final Election election = this;
+        final ParseRelation relation = election.getRelation(Election.KEY_RACES);
+        final List<Race> races = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            // Creating race
+            final Race r = Race.fromJsonObject(jsonArray.getJSONObject(i));
+            // Saving
+            races.add(r);
+        }
+
+        ParseObject.saveAllInBackground(races, new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if( e !=null) {
+                    Log.e(TAG, "Could not save races", e);
+                    return;
+                }
+                for(Race r: races)
+                    relation.add(r);
+                election.put(KEY_HAS_RACES, true); // Marking as true
+                election.put(KEY_HAS_DETAILS, true);
+                election.saveInBackground();
+                Log.i(TAG, "Finished saving "+election.getGoogleId());
+            }
+        });
     }
 
     private static String checkifExistsAndAdd(String field, JSONObject jsonObject) throws JSONException {
@@ -125,16 +148,8 @@ public class Election extends ParseObject {
         return electionDate;
     }
 
-    public List<Poll> getEarlyPolls() {
-        return earlyPolls;
-    }
-
-    public List<Poll> getElectionDayPolls() {
-        return electionDayPolls;
-    }
-
-    public List<Poll> getAbsenteeBallotLocations() {
-        return absenteeBallotLocations;
+    public Poll getElectionDayPoll() {
+        return electionDayPoll;
     }
 
     public String getRegistrationUrl() {
@@ -168,7 +183,6 @@ public class Election extends ParseObject {
         put(KEY_ELECTION_DATE, this.getElectionDate());
         put(KEY_OCD_ID, this.getOcdId());
 
-        final String id = this.getGoogleId();
         this.saveInBackground(saveCallback);
     }
 
@@ -180,5 +194,13 @@ public class Election extends ParseObject {
 
     public boolean getHasPassed() {
         return getBoolean(KEY_HAS_PASSED);
+    }
+
+    public boolean hasDetails() {
+        return getBoolean(KEY_HAS_DETAILS);
+    }
+
+    public boolean hasRaces() {
+        return getBoolean(KEY_HAS_RACES);
     }
 }
