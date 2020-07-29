@@ -67,6 +67,9 @@ public class ElectionFragment extends Fragment {
     // To prevent GeoCoder from crashing
     Context context;
 
+    public static final String KEY_CACHED_STARRED="starred";
+
+
     // Interface to access listener on
     public interface ElectionListener {
         void changeFragment(Fragment fragment);
@@ -172,7 +175,7 @@ public class ElectionFragment extends Fragment {
 
     private void getCachedStarredElections() {
         ParseQuery query = new ParseQuery("Election");
-        query.fromPin("Starred");
+        query.fromPin(KEY_CACHED_STARRED);
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
@@ -200,7 +203,7 @@ public class ElectionFragment extends Fragment {
                 }
                 starredElections.addAll(objects);
                 // Pin to use when offline
-                ParseObject.pinAllInBackground("Starred", starredElections);
+                ParseObject.pinAllInBackground(KEY_CACHED_STARRED, starredElections);
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded

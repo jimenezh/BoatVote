@@ -1,8 +1,10 @@
 package com.example.voteboat.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,8 +22,11 @@ import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.adapters.PastElectionsAdapter;
 import com.example.voteboat.databinding.FragmentProfileBinding;
 import com.example.voteboat.models.Election;
+import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -37,9 +42,11 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     List<Election> pastElections;
     PastElectionsAdapter adapter;
 
+    Context context;
+
+
     public static final String CACHED_ELECTIONS="pastElections";
 
-    boolean useCustomAddress;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -59,6 +66,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
             @Override
             public void onClick(View view) {
                 ParseUser.logOut();
+                unPinCachedData();
                 launchLogInActivity();
             }
         });
@@ -78,9 +86,9 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         });
         // User past elections RV
         pastElections = new ArrayList<>();
-        adapter = new PastElectionsAdapter(getContext(), pastElections);
+        adapter = new PastElectionsAdapter(context, pastElections);
         binding.rvPastElections.setAdapter(adapter);
-        binding.rvPastElections.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvPastElections.setLayoutManager(new LinearLayoutManager(context));
         // Query for past elections
         populatePastElectionsRV();
 
@@ -112,10 +120,17 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         return binding.getRoot();
     }
 
+    private void unPinCachedData() {
+        ParseObject.unpinAllInBackground(ToDoItem.class.getSimpleName());
+        ParseObject.unpinAllInBackground(Election.class.getSimpleName());
+        ParseObject.unpinAllInBackground(ElectionFragment.KEY_CACHED_STARRED);
+        ParseObject.unpinAllInBackground(CACHED_ELECTIONS);
+    }
+
     private void setAddress() {
         String address = binding.etAddress.getText().toString();
         if (address.isEmpty())
-            Toast.makeText(getContext(), "Address cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Address cannot be empty", Toast.LENGTH_SHORT).show();
         else {
             User.setAddress(address);
             binding.tvCurrentAddress.setText(address);
@@ -140,7 +155,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void populatePastElectionsRV() {
-        ((MainActivity) getContext()).showProgressBar();
+        ((MainActivity) getActivity()).showProgressBar();
         User.getPastElections(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
@@ -184,7 +199,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                 }
                 addToAdapter(objects);
                 Log.i(TAG, "Got "+objects.size()+" cached elections");
-                ((MainActivity) getContext()).hideProgressBar();
+                ((MainActivity) getActivity()).hideProgressBar();
 
             }
         });
@@ -198,17 +213,23 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void launchLogInActivity() {
-        Toast.makeText(getContext(), "User logged out", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getContext(), LogInActivity.class);
+        Toast.makeText(context, "User logged out", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, LogInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent);
+        context.startActivity(intent);
         getActivity().finish();
     }
 
     // This is called when the dialog is completed and the results have been passed
     @Override
     public void onFinishEditDialog(String inputText) {
-        Toast.makeText(getContext(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
         binding.tvUsername.setText(inputText);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 }

@@ -159,7 +159,6 @@ public class ToDoFragment extends Fragment {
                 }
                 // Since success, let's clear the cached ToDOItems
                 items.clear();
-                ParseObject.unpinAllInBackground(ToDoItem.class.getSimpleName());
                 items.add(new Item(0, "To Do:")); // Re-add label
 
                 for (int i = 0; i < objects.size(); i++) {
