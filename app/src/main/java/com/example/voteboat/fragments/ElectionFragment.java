@@ -226,7 +226,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         Toast.makeText(context, "Got location", Toast.LENGTH_LONG).show();
-                        Log.i(TAG, "Location is " + location.toString());
+                        Log.i(TAG, "Location is " + location);
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
                         adapter.address = getAddressFromLocation(location, context);
