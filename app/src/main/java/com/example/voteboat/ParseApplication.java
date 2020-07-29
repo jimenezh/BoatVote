@@ -7,6 +7,7 @@ import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Race;
 import com.example.voteboat.models.ToDoItem;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 import okhttp3.OkHttpClient;
@@ -42,5 +43,9 @@ public class ParseApplication extends Application {
                 .clientBuilder(builder)
                 .enableLocalDataStore()
                 .server("https://vote-boat.herokuapp.com/parse/").build());
+
+
+        // Push notifications set up
+        ParseInstallation.getCurrentInstallation().saveInBackground();
     }
 }

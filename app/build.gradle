@@ -75,5 +75,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation "com.github.parse-community.Parse-SDK-Android:fcm:1.25.0"
+    implementation 'com.google.firebase:firebase-messaging:20.2.3'
+
 
 }
