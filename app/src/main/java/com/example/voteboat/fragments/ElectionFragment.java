@@ -1,6 +1,7 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -63,6 +64,9 @@ public class ElectionFragment extends Fragment {
     private static final int MAX_LOCATION_RESULTS = 5;
     boolean isRefresh;
 
+    // To prevent GeoCoder from crashing
+    Context context;
+
     // Interface to access listener on
     public interface ElectionListener {
         void changeFragment(Fragment fragment);
@@ -91,9 +95,9 @@ public class ElectionFragment extends Fragment {
         // Swipe refresh
         setUpSwipeRefresh();
         // Setting the election adapter
-        adapter = new ElectionAdapter(getContext(), elections, starredElections);
+        adapter = new ElectionAdapter(context, elections, starredElections);
         binding.rvElections.setAdapter(adapter);
-        binding.rvElections.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvElections.setLayoutManager(new LinearLayoutManager(context));
         // Populate the election adapter
         populateElectionFeed();
     }
@@ -121,26 +125,26 @@ public class ElectionFragment extends Fragment {
 
 
     private void populateElectionFeed() {
-        ((MainActivity) getContext()).showProgressBar(); // Progress bar start
+        ((MainActivity) context).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
             // Now we get the address from parse and transform that into an Address Object
             String parseAddress = User.getCurrentAddress();
             try {
-                ((MainActivity) getContext()).showProgressBar();
-                List<Address> addressList = (new Geocoder(getContext())).getFromLocationName(parseAddress, 1);
+                ((MainActivity) context).showProgressBar();
+                List<Address> addressList = (new Geocoder(context)).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
                     getElections();
                     return;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed ot get address", e);
                 // Likely to be offline, in this case we want to get the stashed elections
                 getCachedElections();
             }
             // In case something fails
-            Toast.makeText(getContext(), "Could not use address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Could not use address", Toast.LENGTH_SHORT).show();
         }
         // Else, use device location
         ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
@@ -180,7 +184,7 @@ public class ElectionFragment extends Fragment {
                 starredElections.addAll(objects);
                 // Notify adapter
                 adapter.notifyDataSetChanged();
-                ((MainActivity) getContext()).hideProgressBar();
+                ((MainActivity) context).hideProgressBar();
             }
         });
     }
@@ -200,7 +204,7 @@ public class ElectionFragment extends Fragment {
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded
-                ((MainActivity) getContext()).hideProgressBar();
+                ((MainActivity) getActivity()).hideProgressBar();
                 // Set swipe to false since at final query
                 if (binding.swipeContainer != null)
                     binding.swipeContainer.setRefreshing(false);
@@ -213,16 +217,16 @@ public class ElectionFragment extends Fragment {
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     protected void getLocation() {
         // Google API to get location
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(getContext());
+        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);
         locationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        Toast.makeText(getContext(), "Got location", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
-                        adapter.address = getAddressFromLocation(location, getContext());
+                        adapter.address = getAddressFromLocation(location, context);
                         // Gets all elections
                         getElections();
                     }
@@ -231,7 +235,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Error trying to get last GPS location");
-                        Toast.makeText(getContext(), "No location", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "No location", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 });
@@ -348,5 +352,11 @@ public class ElectionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context =  context;
     }
 }

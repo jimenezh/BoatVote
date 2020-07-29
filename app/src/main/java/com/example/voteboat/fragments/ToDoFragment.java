@@ -1,6 +1,8 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +69,9 @@ public class ToDoFragment extends Fragment {
     List<Item> items;
     MultiLevelRecyclerView multiLevelRecyclerView;
 
+    // To prevent Geocoder from crashing
+    Context context;
+
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
 
@@ -95,14 +100,14 @@ public class ToDoFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ToDoFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        ToDoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     private void configureRecyclerView() {
         multiLevelRecyclerView = binding.rvItems;
-        adapter = new ToDoAdapter(getContext(), items,this, multiLevelRecyclerView);
+        adapter = new ToDoAdapter(context, items, this, multiLevelRecyclerView);
         multiLevelRecyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
         linearLayoutManager.getStackFromEnd();
         multiLevelRecyclerView.setLayoutManager(linearLayoutManager);
         multiLevelRecyclerView.setAccordion(true);
@@ -115,7 +120,7 @@ public class ToDoFragment extends Fragment {
         googleCivicClient.getRepresentatives(address, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                ((MainActivity)getContext()).hideProgressBar();
+                ((MainActivity) context).hideProgressBar();
                 Log.i(TAG, "onSuccess: retreived reps ");
                 try {
                     // Transform json into list of Representative objects
@@ -124,7 +129,7 @@ public class ToDoFragment extends Fragment {
                     items.add(repLabel);
                     // Notify adapter + expand
                     adapter.notifyDataSetChanged();
-                    multiLevelRecyclerView.openTill(0,1);
+                    multiLevelRecyclerView.openTill(0, 1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -132,9 +137,9 @@ public class ToDoFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                ((MainActivity)getContext()).hideProgressBar();
+                ((MainActivity) context).hideProgressBar();
                 Log.e(TAG, "onFailure: failed to retreive reps: " + response, throwable);
-                Toast.makeText(getContext(), "Could not get representatives", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Could not get representatives", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -143,11 +148,11 @@ public class ToDoFragment extends Fragment {
     private void populateToDo() {
 
         // If possible, we get them 'fresh'
-        ((MainActivity)getContext()).showProgressBar();
+        ((MainActivity) context).showProgressBar();
         User.getToDo(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Could not get ToDo's from Parse Server");// Get cached to do's in this case
                     getCachedToDos();
                     return;
@@ -174,26 +179,25 @@ public class ToDoFragment extends Fragment {
     }
 
     private void getCachedToDos() {
-        Toast.makeText(getContext(), "Could not connect to server", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Could not connect to server", Toast.LENGTH_SHORT).show();
         ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
         query.fromPin(ToDoItem.class.getSimpleName());
         query.findInBackground(new FindCallback<ToDoItem>() {
             @Override
             public void done(List<ToDoItem> objects, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Could not get cached todos");
                     return;
                 }
                 Log.i(TAG, "Got cached todos");
                 // Adding to RV by wrapping it in Item object
-                for(ToDoItem todo : objects)
+                for (ToDoItem todo : objects)
                     addToDoToRecyclerView(todo);
-                multiLevelRecyclerView.openTill(0,1);
-                ((MainActivity)getContext()).hideProgressBar();
+                multiLevelRecyclerView.openTill(0, 1);
+                ((MainActivity) context).hideProgressBar();
             }
         });
     }
-
 
 
     private void addItemIfElectionHasNotPassed(int i, final ToDoItem item) {
@@ -204,16 +208,18 @@ public class ToDoFragment extends Fragment {
         query.findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
-                if(e != null)
+                if (e != null)
                     Log.e(TAG, "Could not get election", e);
-                else{
-                    Election result = objects.get(0);
-                    if (hasElectionPassed(result))
-                        // Delete the item, add it to past election, update election
-                        updateElectionAndToDoItem(item, result);
-                    else {
-                        // Otherwise, still valid todoItem
-                        addToDoToRecyclerView(item);
+                else {
+                    if (!objects.isEmpty()) {
+                        Election result = objects.get(0);
+                        if (hasElectionPassed(result))
+                            // Delete the item, add it to past election, update election
+                            updateElectionAndToDoItem(item, result);
+                        else {
+                            // Otherwise, still valid todoItem
+                            addToDoToRecyclerView(item);
+                        }
                     }
 
                 }
@@ -259,7 +265,7 @@ public class ToDoFragment extends Fragment {
                 // Photo is on disk, we now publish it
                 publishToFacebook();
             } else { // Result was a failure
-                Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -273,11 +279,10 @@ public class ToDoFragment extends Fragment {
 
     private void openShareDialog(SharePhotoContent content) {
         ShareDialog shareDialog = new ShareDialog(this);
-        if(!shareDialog.canShow(content)) {
+        if (!shareDialog.canShow(content)) {
             Log.e(TAG, "Cannot share to Facebook");
-            Toast.makeText(getContext(), "Please install Facebook", Toast.LENGTH_SHORT).show();
-        }
-        else
+            Toast.makeText(context, "Please install Facebook", Toast.LENGTH_SHORT).show();
+        } else
             shareDialog.show(this, content);
     }
 
@@ -299,7 +304,7 @@ public class ToDoFragment extends Fragment {
     // Use `getExternalFilesDir` on Context to access package-specific directories.
     // This way, we don't need to request external read/write runtime permissions.
     public File getPhotoFileUri(String fileName) {
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+        File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(TAG, "failed to create directory");
@@ -314,16 +319,16 @@ public class ToDoFragment extends Fragment {
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     protected void getLocation() {
         // Google API to get location
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(getContext());
+        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);
         locationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        Toast.makeText(getContext(), "Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object to get reps
-                        Address address = ElectionFragment.getAddressFromLocation(location, getContext());
-                        if(address == null) Toast.makeText(getContext(), "Could not load representative", Toast.LENGTH_SHORT).show();
+                        Address address = ElectionFragment.getAddressFromLocation(location,context);
+                        if (address == null)
+                            Toast.makeText(getContext(), "Could not load representative", Toast.LENGTH_SHORT).show();
                         else getRepresentatives(address.getAddressLine(0));
                     }
                 })
@@ -331,10 +336,16 @@ public class ToDoFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Error trying to get last GPS location");
-                        Toast.makeText(getContext(), "No location", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "No location", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 
 }

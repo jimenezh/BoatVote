@@ -155,7 +155,9 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                 // Adapter
                 addToAdapter(objects);
                 // Progress bar
-                ((MainActivity) getContext()).hideProgressBar();
+                if(getActivity() == null)
+                    return;
+                ((MainActivity) getActivity()).hideProgressBar();
             }
         });
 
