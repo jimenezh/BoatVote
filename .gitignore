@@ -5,6 +5,7 @@
 ## API keys
 app/src/main/res/values/keys.xml
 apikey.properties
+app/google-services.json
 
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
