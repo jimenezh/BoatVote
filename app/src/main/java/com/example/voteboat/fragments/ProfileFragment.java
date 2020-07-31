@@ -116,21 +116,6 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         // Get current address
         getCurrentAddress();
 
-        binding.etAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID,  Place.Field.ADDRESS);
-
-                // Start the autocomplete intent.
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                        .build(context);
-                ProfileFragment.this.startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-            }
-        });
-
         // Custom address form visibility
         binding.switchAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -148,11 +133,22 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         binding.btnSetAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setAddress();
+                launchGooglePlacesActivity();
             }
         });
 
         return binding.getRoot();
+    }
+
+    private void launchGooglePlacesActivity() {
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID,  Place.Field.ADDRESS);
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(context);
+        ProfileFragment.this.startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     private void unPinCachedData() {
@@ -162,14 +158,12 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         ParseObject.unpinAllInBackground(CACHED_ELECTIONS);
     }
 
-    private void setAddress() {
-        String address = binding.etAddress.getText().toString();
+    private void setAddress(String address) {
         if (address.isEmpty())
             Toast.makeText(context, "Address cannot be empty", Toast.LENGTH_SHORT).show();
         else {
             User.setAddress(address);
             binding.tvCurrentAddress.setText(address);
-            binding.etAddress.setText("");
             User.setUseCustomAddress(true);
         }
     }
@@ -185,8 +179,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     private void setAddressFormVisibility(int visibility) {
         binding.tvCurrentAddress.setVisibility(visibility);
-        binding.etAddress.setVisibility(visibility);
         binding.btnSetAddress.setVisibility(visibility);
+        binding.tvAddressLabel.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {
@@ -274,6 +268,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place: " + place.getAddress() + ", " + place.getId());
+                setAddress(place.getAddress());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
