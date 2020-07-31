@@ -1,8 +1,13 @@
 package com.example.voteboat.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Address;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,16 +20,26 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.voteboat.R;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
 import com.example.voteboat.fragments.ToDoFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.parse.Parse;
+import com.parse.ParseCloud;
+import com.parse.ParsePush;
+import com.parse.ParsePushBroadcastReceiver;
 
 import org.parceler.Parcels;
+
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity implements ElectionFragment.ElectionListener {
@@ -36,6 +51,30 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     Address address;
 
     ProgressBar miActionProgressItem;
+
+
+//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+//        }
+//    };
+
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(BroadCastReceiver.intentAction));
+//    }
+
 
 
     @Override
@@ -56,6 +95,32 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
+
+        HashMap<String, HashMap> payload = new HashMap<>();
+        HashMap<String, String> date = new HashMap<>();
+        date.put("date","July 19, 2020 18:46:00");
+        payload.put("params", date);
+        ParseCloud.callFunctionInBackground("schedule", payload);
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG,token);
+                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
     }
 

@@ -45,6 +45,9 @@
             <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel"
+                android:value="schedule"/>
         </activity>
         <activity android:name=".activities.MapActivity">
 
@@ -81,6 +84,25 @@
             android:authorities="com.facebook.app.FacebookContentProvider647670929440821"
             android:exported="true" />
 
+
+        <service
+            android:name="com.parse.fcm.ParseFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
+
     </application>
+
 
 </manifest>

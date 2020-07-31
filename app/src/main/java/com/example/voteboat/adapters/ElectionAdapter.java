@@ -23,6 +23,7 @@ import com.example.voteboat.models.User;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.parse.ParseException;
+import com.parse.ParsePush;
 import com.parse.SaveCallback;
 
 import org.json.JSONException;
@@ -82,11 +83,17 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate());
             binding.btnStar.getRoot();
-            binding.btnStar.starButton.setLiked(starredElections.contains(election));
-            setOnStarListener(election);
+            setStar(election);
         }
 
-        private void setOnStarListener(final Election election) {
+        private void setStar(final Election election) {
+            boolean isStarred = starredElections.contains(election);
+            // Setting initial star (filled in or not)
+            binding.btnStar.starButton.setLiked(isStarred);
+            // Setting subscription for notifications
+            if(isStarred) ParsePush.subscribeInBackground(election.getGoogleId());
+
+            // On star listener
             binding.btnStar.starButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
@@ -94,6 +101,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     if (!starredElections.contains(election)) {
                         User.starElection(election);
                     }
+                    // Subscribe to channel notifs
+                    ParsePush.subscribeInBackground(election.getGoogleId());
                 }
 
                 @Override
@@ -102,6 +111,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     if (starredElections.contains(election)) {
                         User.unstarElection(election);
                     }
+                    // Unsubscribe to channel notifs
+                    ParsePush.unsubscribeInBackground(election.getGoogleId());
                 }
             });
         }

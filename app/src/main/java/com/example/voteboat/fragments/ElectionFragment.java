@@ -23,6 +23,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
+import com.example.voteboat.clients.PushNotificationClient;
 import com.example.voteboat.databinding.FragmentElectionBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.User;
@@ -226,7 +227,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         Toast.makeText(context, "Got location", Toast.LENGTH_LONG).show();
-                        Log.i(TAG, "Location is " + location.toString());
+                        Log.i(TAG, "Location is " + location);
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
                         adapter.address = getAddressFromLocation(location, context);
@@ -313,6 +314,7 @@ public class ElectionFragment extends Fragment {
 
     private void addElectionToParse(final Election election) {
         Log.i(TAG, election + " not in parse");
+        // Adding to database
         election.putInParse(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -326,6 +328,9 @@ public class ElectionFragment extends Fragment {
                 }
             }
         });
+
+        // Adding to push notification channel
+        PushNotificationClient.addChannel(election);
 
     }
 

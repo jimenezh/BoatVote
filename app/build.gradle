@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
@@ -34,6 +35,7 @@ ext {
     permissionDispatcherVersion = "4.7.0"
     supportLibVersion = "1.0.0"
     googlePlayVersion = "17.0.0"
+    parseVersion = "1.25.0"
 }
 
 dependencies {
@@ -47,7 +49,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.2' // Parse
+    implementation "com.github.parse-community.Parse-SDK-Android:parse:$parseVersion" // Parse
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
 
     // To get location
@@ -72,5 +74,12 @@ dependencies {
     implementation 'com.muditsen.multilevelrecyclerview:multilevelview:1.0.0'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation "com.github.parse-community.Parse-SDK-Android:fcm:$parseVersion"
+
+    implementation 'com.google.firebase:firebase-messaging:20.2.3'
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+
+
 
 }
