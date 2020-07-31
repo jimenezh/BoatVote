@@ -56,39 +56,38 @@
         android:layout_marginTop="20dp"
         android:foregroundTint="@color/colorPrimaryDark"
         android:text="Use custom address"
-
+        android:textSize="20sp"
         android:textColor="@color/textPrimary" />
+
+    <TextView
+        android:id="@+id/tvAddressLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Address: "
+        android:layout_below="@id/switchAddress"
+        android:textColor="@color/textPrimary"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/tvCurrentAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/switchAddress"
-        android:layout_marginTop="5dp"
+        android:layout_alignTop="@id/tvAddressLabel"
+        android:layout_toRightOf="@id/tvAddressLabel"
         android:textColor="@color/textLight"
         android:textSize="16sp"
         tools:text="This is my current address" />
 
-    <EditText
-        android:id="@+id/etAddress"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvCurrentAddress"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:textColor="@color/textLight"
-        android:visibility="gone"
-        tools:visibility="visible" />
+
 
     <Button
         android:id="@+id/btnSetAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/etAddress"
-        android:layout_alignBottom="@id/etAddress"
-        android:layout_toRightOf="@id/etAddress"
+        android:layout_below="@id/tvCurrentAddress"
         android:backgroundTint="@color/colorAccent"
-        android:text="Set Address"
+        android:text="Set new Address"
         android:textSize="12sp"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -98,7 +97,7 @@
         android:id="@+id/tvElectionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etAddress"
+        android:layout_below="@id/btnSetAddress"
         android:layout_marginTop="20dp"
         android:text="You have voted in "
         android:textColor="@color/textPrimary"

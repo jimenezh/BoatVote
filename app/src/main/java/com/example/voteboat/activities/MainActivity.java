@@ -16,19 +16,24 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.example.voteboat.R;
 import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
 import com.example.voteboat.fragments.ToDoFragment;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -76,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 //    }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
         HashMap<String, HashMap> payload = new HashMap<>();
         HashMap<String, String> date = new HashMap<>();
-        date.put("date","July 19, 2020 18:46:00");
+        date.put("date", "July 19, 2020 18:46:00");
         payload.put("params", date);
         ParseCloud.callFunctionInBackground("schedule", payload);
 
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
                         // Log and toast
 //                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG,token);
+                        Log.d(TAG, token);
                         Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }
                 });

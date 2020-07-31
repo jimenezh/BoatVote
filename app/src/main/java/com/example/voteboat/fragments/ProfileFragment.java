@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.example.voteboat.BuildConfig;
 import com.example.voteboat.activities.LogInActivity;
 import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ElectionAdapter;
@@ -24,6 +26,13 @@ import com.example.voteboat.databinding.FragmentProfileBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.ToDoItem;
 import com.example.voteboat.models.User;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -33,7 +42,11 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment implements EditUsernameFragment.EditNameDialogListener {
     public static final String TAG = "ProfileFragment";
@@ -43,6 +56,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     PastElectionsAdapter adapter;
 
     Context context;
+
+    private static int AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
     public static final String CACHED_ELECTIONS="pastElections";
@@ -55,6 +70,11 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize the SDK
+        Places.initialize(context, BuildConfig.GOOGLE_API_KEY);
+
+        // Create a new PlacesClient instance
+        PlacesClient placesClient = Places.createClient(context);
     }
 
     @Override
@@ -113,11 +133,22 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         binding.btnSetAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setAddress();
+                launchGooglePlacesActivity();
             }
         });
 
         return binding.getRoot();
+    }
+
+    private void launchGooglePlacesActivity() {
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID,  Place.Field.ADDRESS);
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(context);
+        ProfileFragment.this.startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     private void unPinCachedData() {
@@ -127,14 +158,12 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
         ParseObject.unpinAllInBackground(CACHED_ELECTIONS);
     }
 
-    private void setAddress() {
-        String address = binding.etAddress.getText().toString();
+    private void setAddress(String address) {
         if (address.isEmpty())
             Toast.makeText(context, "Address cannot be empty", Toast.LENGTH_SHORT).show();
         else {
             User.setAddress(address);
             binding.tvCurrentAddress.setText(address);
-            binding.etAddress.setText("");
             User.setUseCustomAddress(true);
         }
     }
@@ -150,8 +179,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     private void setAddressFormVisibility(int visibility) {
         binding.tvCurrentAddress.setVisibility(visibility);
-        binding.etAddress.setVisibility(visibility);
         binding.btnSetAddress.setVisibility(visibility);
+        binding.tvAddressLabel.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {
@@ -231,5 +260,24 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + place.getAddress() + ", " + place.getId());
+                setAddress(place.getAddress());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
