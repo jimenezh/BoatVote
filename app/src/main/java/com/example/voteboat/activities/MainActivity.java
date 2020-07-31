@@ -81,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ParsePush.subscribeInBackground("pushChannelTest");
-        ParsePush.subscribeInBackground("schedule");
+        ParsePush.subscribeInBackground("2000");
         ParsePush.subscribeInBackground("others");
 
         // View Binding. Inflating XML file
