@@ -208,7 +208,7 @@ public class ElectionFragment extends Fragment {
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded
-                ((MainActivity) getActivity()).hideProgressBar();
+                ((MainActivity) context).hideProgressBar();
                 // Set swipe to false since at final query
                 if (binding.swipeContainer != null)
                     binding.swipeContainer.setRefreshing(false);

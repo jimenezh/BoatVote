@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voteboat.R;
 import com.example.voteboat.databinding.ItemLabelBinding;
 import com.example.voteboat.databinding.ItemRepresentativeBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
@@ -80,7 +81,7 @@ public class ToDoAdapter extends MultiLevelAdapter {
         Item item = toDoItems.get(i);
         switch (item.getType()) {
             case Item.LABEL:
-                ((LabelHolder) viewHolder).bind(item.getLabel());
+                ((LabelHolder) viewHolder).bind(item);
                 break;
             case Item.TODO:
                 ((ToDoHolder) viewHolder).bind(item.getToDoItem());
@@ -105,9 +106,21 @@ public class ToDoAdapter extends MultiLevelAdapter {
             itemLabelBinding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(String label) {
-            binding.tvLabel.setText(label);
-            setArrowPosition();
+        public void bind(Item item) {
+            binding.tvLabel.setText(item.getLabel());
+            if (item.isExpanded() && item.hasChildren()) {
+                showArrow();
+                rotateArrow();
+            } else if(!item.hasChildren())
+                hideArrow();
+        }
+
+        private void showArrow() {
+            binding.ivArrow.setVisibility(View.VISIBLE);
+        }
+
+        private void hideArrow() {
+            binding.ivArrow.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -115,13 +128,11 @@ public class ToDoAdapter extends MultiLevelAdapter {
             Toast.makeText(context, "Clicked on item " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
             // Animating arrow
-            setArrowPosition();
+            rotateArrow();
         }
 
-        private void setArrowPosition() {
-            binding.ivArrow.animate()
-                    .rotation(toDoItems.get(getAdapterPosition()).isExpanded() ? 180 : 0)
-                    .start();
+        private void rotateArrow() {
+            binding.ivArrow.animate().rotation(toDoItems.get(getAdapterPosition()).isExpanded() ? -180 : 0).start();
         }
     }
 
