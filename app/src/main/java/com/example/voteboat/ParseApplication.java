@@ -47,5 +47,7 @@ public class ParseApplication extends Application {
 
         // Push notifications set up
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
+
     }
 }
