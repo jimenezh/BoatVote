@@ -185,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
                     .replace(R.id.flContainer, fragment)
                     .addToBackStack(null)
                     .commit();
+
+            electionFragment.setExitTransition(new AutoTransition());
         }
     }
 }
