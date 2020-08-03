@@ -119,6 +119,8 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
         @Override
         public void onClick(View view) {
+            // Show progress bar
+            ((MainActivity) context).showProgressBar();
             // Get correct election, then make query for election details
             Election election = elections.get(getAdapterPosition());
             if (address != null)
@@ -145,6 +147,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                         Log.e(TAG, "Could not get election details " + response, throwable);
                         Toast.makeText(context, "Could not show details", Toast.LENGTH_SHORT).show();
+                        ((MainActivity) context).hideProgressBar();
                     }
                 });
     }
@@ -163,7 +166,9 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 }
             });
         } catch (JSONException e) {
-            e.printStackTrace();
+            Toast.makeText(context, "Could not show details", Toast.LENGTH_SHORT).show();
+            ((MainActivity) context).hideProgressBar();
+            Log.e(TAG, "synchElectionDetails", e);
         }
     }
 
@@ -179,15 +184,17 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
 
 
     private void displayElectionDetail(Election e, Poll p) {
+        // Transfer into to new activity
         Bundle bundle = new Bundle();
         bundle.putParcelable(Election.class.getSimpleName(), Parcels.wrap(e));
         bundle.putString("userOcdId", getOcdId(address));
         bundle.putParcelable(Poll.class.getSimpleName(), Parcels.wrap(p));
         ElectionDetailFragment electionDetailFragment = new ElectionDetailFragment();
         electionDetailFragment.setArguments(bundle);
-
+        // Change fragment
         MainActivity mainActivity = (MainActivity) context;
         mainActivity.changeFragment(electionDetailFragment);
+        mainActivity.hideProgressBar();
     }
 
     private String getOcdId(Address address) {

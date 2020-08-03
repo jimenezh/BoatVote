@@ -29,6 +29,7 @@ import com.example.voteboat.databinding.ActivityMainBinding;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
 import com.example.voteboat.fragments.ToDoFragment;
+import com.example.voteboat.models.ToDoItem;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -57,30 +58,9 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
     ProgressBar miActionProgressItem;
 
-    final static ElectionFragment electionFragment =  new ElectionFragment();
-
-
-//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
-//        }
-//    };
-
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(BroadCastReceiver.intentAction));
-//    }
+    final ElectionFragment electionFragment =  new ElectionFragment();
+    final ToDoFragment toDoFragment = new ToDoFragment();
+    final ProfileFragment profileFragment = new ProfileFragment();
 
 
     @Override
@@ -144,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
                         fragment = electionFragment;
                         break;
                     case R.id.action_todo:
-                        fragment = new ToDoFragment();
+                        fragment = toDoFragment;
                         break;
                     case R.id.action_profile:
-                        fragment = new ProfileFragment();
+                        fragment = profileFragment;
                         break;
                 }
 
