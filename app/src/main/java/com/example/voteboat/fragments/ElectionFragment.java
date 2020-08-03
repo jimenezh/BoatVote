@@ -211,7 +211,7 @@ public class ElectionFragment extends Fragment {
                     return;
                 ((MainActivity) context).hideProgressBar();
                 // Set swipe to false since at final query
-                if (binding.swipeContainer != null)
+                if (binding != null && binding.swipeContainer != null)
                     binding.swipeContainer.setRefreshing(false);
             }
         });
