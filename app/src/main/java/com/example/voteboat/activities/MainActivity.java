@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
     ProgressBar miActionProgressItem;
 
+    final static ElectionFragment electionFragment =  new ElectionFragment();
+
 
 //    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 //
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        fragment = new ElectionFragment();
+                        fragment = electionFragment;
                         break;
                     case R.id.action_todo:
                         fragment = new ToDoFragment();

@@ -68,7 +68,7 @@ public class ElectionFragment extends Fragment {
     // To prevent GeoCoder from crashing
     Context context;
 
-    public static final String KEY_CACHED_STARRED="starred";
+    public static final String KEY_CACHED_STARRED = "starred";
 
 
     // Interface to access listener on
@@ -129,13 +129,12 @@ public class ElectionFragment extends Fragment {
 
 
     private void populateElectionFeed() {
-        ((MainActivity) context).showProgressBar(); // Progress bar start
+        if (!isRefresh) ((MainActivity) context).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
             // Now we get the address from parse and transform that into an Address Object
             String parseAddress = User.getCurrentAddress();
             try {
-                ((MainActivity) context).showProgressBar();
                 List<Address> addressList = (new Geocoder(context)).getFromLocationName(parseAddress, 1);
                 if (!addressList.isEmpty()) {
                     adapter.address = addressList.get(0);
@@ -208,7 +207,7 @@ public class ElectionFragment extends Fragment {
                 // Notify the adapter
                 adapter.notifyDataSetChanged();
                 // Hide and set as false since at last query + everything succeeded
-                if(context == null)
+                if (context == null)
                     return;
                 ((MainActivity) context).hideProgressBar();
                 // Set swipe to false since at final query
@@ -367,6 +366,6 @@ public class ElectionFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.context =  context;
+        this.context = context;
     }
 }
