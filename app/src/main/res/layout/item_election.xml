@@ -9,6 +9,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
+        android:transitionName="electionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -23,6 +24,7 @@
 
     <TextView
         android:id="@+id/tvDate"
+        android:transitionName="electionDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvTitle"
