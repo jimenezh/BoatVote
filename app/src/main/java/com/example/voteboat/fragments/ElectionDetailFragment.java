@@ -8,22 +8,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.voteboat.R;
 import com.example.voteboat.activities.MapActivity;
 import com.example.voteboat.activities.RaceDetailActivity;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
-import com.example.voteboat.models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseRelation;
@@ -115,8 +112,8 @@ public class ElectionDetailFragment extends Fragment {
             putLatAndLngInIntent(intent, addressLine);
             startActivity(intent);
         } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Could not show map", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "launchMapActivity", e);
+            Snackbar.make(binding.getRoot(), "Could not show map", Snackbar.LENGTH_SHORT).show();;
         }
     }
 

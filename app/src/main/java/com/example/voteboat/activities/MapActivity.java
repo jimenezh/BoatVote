@@ -12,12 +12,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.voteboat.R;
 import com.example.voteboat.databinding.ActivityMapBinding;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.parceler.Parcels;
 
@@ -46,6 +45,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MapActivity extends AppCompatActivity {
 
     ActivityMapBinding binding;
+    public static final String TAG = "MapActivity";
 
     private SupportMapFragment mapFragment;
     private GoogleMap map;
@@ -80,8 +80,8 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void extractPollLocationDetails() {
-        Address address = Parcels.unwrap( getIntent().getParcelableExtra("address"));
-        pollLocation = new LatLng(address.getLatitude(),address.getLongitude());
+        Address address = Parcels.unwrap(getIntent().getParcelableExtra("address"));
+        pollLocation = new LatLng(address.getLatitude(), address.getLongitude());
         addressLine = address.getAddressLine(0);
         pollingHours = getIntent().getStringExtra("hours");
     }
@@ -105,7 +105,7 @@ public class MapActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(binding.getRoot(), "Cannot display map", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -124,12 +124,10 @@ public class MapActivity extends AppCompatActivity {
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
-            // Q: Where is this generated class being generated???? Is it from the annotation?
             MapActivityPermissionsDispatcher.getMyLocationWithPermissionCheck(this);
             MapActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
         } else {
-            Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(binding.getRoot(), "Could not display map", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -183,12 +181,12 @@ public class MapActivity extends AppCompatActivity {
         // Display the connection status
 
         if (mCurrentLocation != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
         } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Current location was null, enable GPS on emulator!");
+            Snackbar.make(binding.getRoot(), "Please enable GPS", Snackbar.LENGTH_SHORT).show();
         }
         MapActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }

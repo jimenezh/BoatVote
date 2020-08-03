@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.voteboat.R;
 import com.example.voteboat.databinding.ActivityLogInBinding;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -17,7 +18,7 @@ import com.parse.SignUpCallback;
 
 public class LogInActivity extends AppCompatActivity {
 
-    public static final String TAG="LogInActivity";
+    public static final String TAG = "LogInActivity";
     ActivityLogInBinding binding;
 
     @Override
@@ -26,7 +27,7 @@ public class LogInActivity extends AppCompatActivity {
         binding = ActivityLogInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // If user is already signed in, redirect to MainActivity
-        if(ParseUser.getCurrentUser() != null){
+        if (ParseUser.getCurrentUser() != null) {
             launchMainActivity();
         }
 
@@ -35,8 +36,8 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String username = binding.etUsername.getText().toString();
                 String password = binding.etPassword.getText().toString();
-                if(username.isEmpty() || password.isEmpty())
-                    Toast.makeText(LogInActivity.this,"Please fill out all fields",Toast.LENGTH_LONG).show();
+                if (username.isEmpty() || password.isEmpty())
+                    Snackbar.make(binding.getRoot(), "Please fill out all fields", Snackbar.LENGTH_LONG).show();
                 else
                     logInUser(username, password);
             }
@@ -47,10 +48,10 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String username = binding.etUsername.getText().toString();
                 String password = binding.etPassword.getText().toString();
-                if(username.isEmpty() || password.isEmpty())
-                    Toast.makeText(LogInActivity.this,"Please fill out all fields",Toast.LENGTH_LONG).show();
+                if (username.isEmpty() || password.isEmpty())
+                    Snackbar.make(binding.getRoot(), "Please fill out all fields", Snackbar.LENGTH_LONG).show();
                 else
-                    signUpUser(username,password);
+                    signUpUser(username, password);
             }
         });
     }
@@ -67,25 +68,24 @@ public class LogInActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException e) {
                 if (e == null) {
                     Log.i(TAG, user.getUsername() + " is signed in");
-                    Toast.makeText(LogInActivity.this, user.getUsername() + " is signed in", Toast.LENGTH_SHORT);
                     launchMainActivity();
                 } else {
                     Log.e(TAG, "Parse Log In exception", e);
-                    Toast.makeText(LogInActivity.this, "Could not sign in", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(binding.getRoot(), "Could not sign in. Please try again.", Snackbar.LENGTH_LONG).show();
                 }
             }
         });
     }
 
     private void signUpUser(final String username, final String password) {
-        Log.i(TAG,"in Sign up user");
+        Log.i(TAG, "in Sign up user");
         // Create the ParseUser
         final ParseUser user = new ParseUser();
         // Set core properties
         user.setUsername(username);
         user.setPassword(password);
 
-        Log.i(TAG,"User has "+username+" "+password);
+        Log.i(TAG, "User has " + username + " " + password);
 
         // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {
@@ -93,13 +93,11 @@ public class LogInActivity extends AppCompatActivity {
 
                 if (e == null) {
                     // Hooray! Let them use the app now.
-                    Toast.makeText(LogInActivity.this, "User signed up!",Toast.LENGTH_LONG).show();
                     logInUser(username, password);
                 } else {
                     // Sign up didn't succeed. Look at the ParseException
                     // to figure out what went wrong
                     Log.e(TAG, "Error SignUp", e);
-                    Toast.makeText(LogInActivity.this, "Could not sign up",Toast.LENGTH_LONG).show();
                 }
             }
         });

@@ -1,7 +1,6 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.activities.MainActivity;
@@ -39,6 +37,7 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.multilevelview.MultiLevelRecyclerView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -139,7 +138,7 @@ public class ToDoFragment extends Fragment {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 ((MainActivity) context).hideProgressBar();
                 Log.e(TAG, "onFailure: failed to retreive reps: " + response, throwable);
-                Toast.makeText(context, "Could not get representatives", Toast.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), "Could not get representatives", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -178,7 +177,7 @@ public class ToDoFragment extends Fragment {
     }
 
     private void getCachedToDos() {
-        Toast.makeText(context, "Could not connect to server", Toast.LENGTH_SHORT).show();
+        Snackbar.make(binding.getRoot(), "No internet connection", Snackbar.LENGTH_SHORT).show();
         ParseQuery<ToDoItem> query = new ParseQuery<>("ToDoItem");
         query.fromPin(ToDoItem.class.getSimpleName());
         query.findInBackground(new FindCallback<ToDoItem>() {
@@ -264,7 +263,7 @@ public class ToDoFragment extends Fragment {
                 // Photo is on disk, we now publish it
                 publishToFacebook();
             } else { // Result was a failure
-                Toast.makeText(context, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), "Picture wasn't taken!", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -280,7 +279,7 @@ public class ToDoFragment extends Fragment {
         ShareDialog shareDialog = new ShareDialog(this);
         if (!shareDialog.canShow(content)) {
             Log.e(TAG, "Cannot share to Facebook");
-            Toast.makeText(context, "Please install Facebook", Toast.LENGTH_SHORT).show();
+            Snackbar.make(binding.getRoot(), "Please install Facebook", Snackbar.LENGTH_SHORT).show();
         } else
             shareDialog.show(this, content);
     }
@@ -327,7 +326,7 @@ public class ToDoFragment extends Fragment {
                         // Getting address from Location Object to get reps
                         Address address = ElectionFragment.getAddressFromLocation(location,context);
                         if (address == null)
-                            Toast.makeText(getContext(), "Could not load representative", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(binding.getRoot(), "Could not load representative", Snackbar.LENGTH_SHORT).show();
                         else getRepresentatives(address.getAddressLine(0));
                     }
                 })
@@ -335,7 +334,7 @@ public class ToDoFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Error trying to get last GPS location");
-                        Toast.makeText(context, "No location", Toast.LENGTH_LONG).show();
+                        Snackbar.make(binding.getRoot(), "Error trying to get location",Snackbar.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 });

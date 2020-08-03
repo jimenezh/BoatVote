@@ -10,13 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.voteboat.R;
 import com.example.voteboat.databinding.ItemLabelBinding;
 import com.example.voteboat.databinding.ItemRepresentativeBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
@@ -125,7 +123,6 @@ public class ToDoAdapter extends MultiLevelAdapter {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(context, "Clicked on item " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
             // Animating arrow
             rotateArrow();

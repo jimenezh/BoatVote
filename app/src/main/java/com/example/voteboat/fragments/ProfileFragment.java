@@ -15,12 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.example.voteboat.BuildConfig;
 import com.example.voteboat.activities.LogInActivity;
 import com.example.voteboat.activities.MainActivity;
-import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.adapters.PastElectionsAdapter;
 import com.example.voteboat.databinding.FragmentProfileBinding;
 import com.example.voteboat.models.Election;
@@ -33,6 +31,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -160,7 +159,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     private void setAddress(String address) {
         if (address.isEmpty())
-            Toast.makeText(context, "Address cannot be empty", Toast.LENGTH_SHORT).show();
+            Snackbar.make(binding.getRoot(), "Address cannot be empty", Snackbar.LENGTH_SHORT).show();
         else {
             User.setAddress(address);
             binding.tvCurrentAddress.setText(address);
@@ -242,7 +241,6 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void launchLogInActivity() {
-        Toast.makeText(context, "User logged out", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(context, LogInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -252,7 +250,6 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     // This is called when the dialog is completed and the results have been passed
     @Override
     public void onFinishEditDialog(String inputText) {
-        Toast.makeText(context, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
         binding.tvUsername.setText(inputText);
     }
 

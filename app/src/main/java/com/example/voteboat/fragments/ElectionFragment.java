@@ -1,7 +1,6 @@
 package com.example.voteboat.fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,8 +28,8 @@ import com.example.voteboat.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -61,7 +59,6 @@ public class ElectionFragment extends Fragment {
     ElectionAdapter adapter;
     List<Election> elections;
     List<Election> starredElections;
-    public FusedLocationProviderClient fusedLocationProviderClient;
     private static final int MAX_LOCATION_RESULTS = 5;
     boolean isRefresh;
 
@@ -132,7 +129,7 @@ public class ElectionFragment extends Fragment {
         if (!isRefresh) ((MainActivity) context).showProgressBar(); // Progress bar start
         // Check if the user wants to use a custom address
         if (User.useCustomAddress()) {
-            // Now we get the address from parse and transform that into an Address Object
+            // Now we get the address from parse and transform that into an Address object for the adapter
             String parseAddress = User.getCurrentAddress();
             try {
                 List<Address> addressList = (new Geocoder(context)).getFromLocationName(parseAddress, 1);
@@ -143,11 +140,10 @@ public class ElectionFragment extends Fragment {
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Failed ot get address", e);
+                Snackbar.make(binding.getRoot(), "Could not use custom address", Snackbar.LENGTH_SHORT).show();
                 // Likely to be offline, in this case we want to get the stashed elections
                 getCachedElections();
             }
-            // In case something fails
-            Toast.makeText(context, "Could not use address", Toast.LENGTH_SHORT).show();
         }
         // Else, use device location
         ElectionFragmentPermissionsDispatcher.getLocationWithPermissionCheck(this);
@@ -227,7 +223,6 @@ public class ElectionFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        Toast.makeText(context, "Got location", Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Location is " + location);
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
@@ -240,7 +235,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Error trying to get last GPS location");
-                        Toast.makeText(context, "No location", Toast.LENGTH_LONG).show();
+                        Snackbar.make(binding.getRoot(), "Error getting location", Snackbar.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 });
@@ -271,7 +266,7 @@ public class ElectionFragment extends Fragment {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "No elections " + response, throwable);
-
+                Snackbar.make(binding.getRoot(), "Error getting elections", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -284,7 +279,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void done(List<Election> objects, ParseException e) {
                         if (e != null)
-                            Log.e(TAG, "Could not get elections", e);
+                            Log.e(TAG, "synchronizeElectionsInParse", e);
                         else {
                             // First we add the pre-existing elections to the list
                             elections.addAll(objects);
@@ -308,7 +303,7 @@ public class ElectionFragment extends Fragment {
                     addElectionToParse(election);
                 }
             } catch (JSONException ex) {
-                ex.printStackTrace();
+                Log.i(TAG, "checkIfElectionsInParse", ex);
             }
         }
     }
@@ -345,13 +340,9 @@ public class ElectionFragment extends Fragment {
         Geocoder geocoder = new Geocoder(context);
         try {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, MAX_LOCATION_RESULTS);
-            Toast.makeText(context, "Success in getting address", Toast.LENGTH_SHORT).show();
             address = addressList.get(0);
-            // Setting address in MainActivity so other fragments can access it
         } catch (IOException e) {
-            Toast.makeText(context, "Could not get address", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "No addresses available");
-            e.printStackTrace();
+            Log.e(TAG, "getAddressFromLocation", e);
         }
 
         return address;
