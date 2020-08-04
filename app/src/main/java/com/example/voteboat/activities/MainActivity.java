@@ -1,60 +1,30 @@
 package com.example.voteboat.activities;
 
-import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Address;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.transition.AutoTransition;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.voteboat.R;
-import com.example.voteboat.adapters.ElectionAdapter;
 import com.example.voteboat.databinding.ActivityMainBinding;
-import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
 import com.example.voteboat.fragments.ToDoFragment;
-import com.example.voteboat.models.ToDoItem;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-import com.parse.Parse;
 import com.parse.ParseCloud;
-import com.parse.ParsePush;
-import com.parse.ParsePushBroadcastReceiver;
-
-import org.parceler.Parcels;
 
 import java.util.HashMap;
 
@@ -159,23 +129,24 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         miActionProgressItem.setVisibility(View.INVISIBLE);
     }
 
+
+    /**
+     * Adds custom transition when going from electionFragment to fragment
+     * @param fragment
+     * @param title
+     * @param date
+     */
     public void transitionToDetailView(Fragment fragment, TextView title, TextView date) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            Transition explodeTransform = new Explode();
-            Transition slideTransform = new Slide();
-            Transition fadeTransform = new Fade();
-//            Transition
+            Transition floatTransform = TransitionInflater.from(this).inflateTransition(R.transition.election_title_transform);
 
-            // Setup exit transition on first fragment
-            electionFragment.setSharedElementReturnTransition(fadeTransform);
-            electionFragment.setExitTransition(explodeTransform);
+            // Setup exit transition on first fragment for shared elements
+            electionFragment.setSharedElementReturnTransition(floatTransform);
 
             // Setup enter transition on second fragment
-            fragment.setSharedElementEnterTransition(fadeTransform);
-            fragment.setEnterTransition(slideTransform);
-
-            // Find the shared element (in Fragment A)
+            fragment.setSharedElementEnterTransition(floatTransform);
+            fragment.setSharedElementReturnTransition(floatTransform);
 
             // Add second fragment by replacing first
             fragmentManager
@@ -185,8 +156,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
                     .replace(R.id.flContainer, fragment)
                     .addToBackStack(null)
                     .commit();
-
-            electionFragment.setExitTransition(new AutoTransition());
         }
     }
 }
