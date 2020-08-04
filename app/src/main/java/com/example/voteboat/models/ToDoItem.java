@@ -13,27 +13,29 @@ public class ToDoItem extends ParseObject {
     public static final String KEY_VOTED = "hasVoted";
     public static final String KEY_HAS_REGISTERED = "isRegistered";
     public static final String KEY_GATHERED_DOCS = "hasGatheredDocuments";
+    public static final String KEY_ELECTION = "election";
     public static final String TAG = "ToDoItem";
+
     public ToDoItem() {
     }
 
-    public String getName(){
+    public String getName() {
         return (String) get(KEY_NAME);
     }
 
-    public boolean hasVoted(){
+    public boolean hasVoted() {
         return (boolean) get(KEY_VOTED);
     }
 
-    public boolean isRegistered(){
-        return  (boolean) get(KEY_HAS_REGISTERED);
+    public boolean isRegistered() {
+        return (boolean) get(KEY_HAS_REGISTERED);
     }
 
-    public boolean hasDocuments(){
-        return  (boolean) get(KEY_GATHERED_DOCS);
+    public boolean hasDocuments() {
+        return (boolean) get(KEY_GATHERED_DOCS);
     }
 
-    public void setRegistered(boolean isRegistered){
+    public void setRegistered(boolean isRegistered) {
         put(KEY_HAS_REGISTERED, isRegistered);
         saveField(KEY_HAS_REGISTERED);
     }
@@ -48,15 +50,24 @@ public class ToDoItem extends ParseObject {
         saveField(KEY_VOTED);
     }
 
+    public void setElection(Election election) {
+        put(KEY_ELECTION, election);
+        saveField(KEY_ELECTION);
+    }
+
     private void saveField(final String field) {
         this.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e != null)
-                    Log.e(TAG, "Error setting "+field);
+                if (e != null)
+                    Log.e(TAG, "Error setting " + field);
                 else
-                    Log.i(TAG, "Saved "+field);
+                    Log.i(TAG, "Saved " + field);
             }
         });
+    }
+
+    public Election getElection() {
+        return (Election) get(KEY_ELECTION);
     }
 }

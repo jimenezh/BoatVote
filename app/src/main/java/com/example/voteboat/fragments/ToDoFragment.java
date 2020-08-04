@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.voteboat.R;
 import com.example.voteboat.activities.MainActivity;
 import com.example.voteboat.adapters.ToDoAdapter;
 import com.example.voteboat.clients.GoogleCivicClient;
@@ -52,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import okhttp3.Headers;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -111,6 +117,7 @@ public class ToDoFragment extends Fragment {
         multiLevelRecyclerView.setLayoutManager(linearLayoutManager);
         multiLevelRecyclerView.setAccordion(true);
         multiLevelRecyclerView.removeItemClickListeners();
+        addSwipeDecorator();
     }
 
     // Call to API using GoogleCivicAPI
@@ -322,14 +329,14 @@ public class ToDoFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        if(location == null){
+                        if (location == null) {
                             Log.e(TAG, "Null location");
                             Snackbar.make(binding.getRoot(), "Could not load representative", Snackbar.LENGTH_SHORT).show();
                         }
 
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object to get reps
-                        Address address = ElectionFragment.getAddressFromLocation(location,context);
+                        Address address = ElectionFragment.getAddressFromLocation(location, context);
                         if (address == null)
                             Snackbar.make(binding.getRoot(), "Could not load representative", Snackbar.LENGTH_SHORT).show();
                         else getRepresentatives(address.getAddressLine(0));
@@ -339,7 +346,7 @@ public class ToDoFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Error trying to get last GPS location");
-                        Snackbar.make(binding.getRoot(), "Error trying to get location",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(binding.getRoot(), "Error trying to get location", Snackbar.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 });
@@ -349,6 +356,101 @@ public class ToDoFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    public void addSwipeDecorator() {
+        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.i(TAG, String.valueOf(direction));
+                int position = viewHolder.getAdapterPosition();
+                // if not a valid position then we stop
+                if(position == RecyclerView.NO_POSITION) return;
+                // else we continue
+                Item item = items.get(position);
+
+                switch (item.getType()) {
+                    case Item.TODO:
+                        removeToDo(position, item);
+                        break;
+                    case Item.REP:
+//                        callRepresentative();
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                int position = viewHolder.getAdapterPosition();
+                // if not a valid position then we stop
+                if(position == RecyclerView.NO_POSITION) return;
+                // else we continue
+                Item item = items.get(position);
+                int color = 0;
+                int icon = 0;
+                String label = "";
+                switch (item.getType()) {
+                    case Item.TODO:
+                        color = R.color.quantum_googred;
+                        icon = R.drawable.delete;
+                        label = "Delete";
+                        break;
+                    case Item.REP:
+                        color = R.color.quantum_googgreen;
+                        icon = R.drawable.call;
+                        label = "Call";
+                        break;
+                    default:
+                        return;
+                }
+
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(context, color))
+                        .addSwipeLeftActionIcon(icon)
+                        .addSwipeLeftLabel(label)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(binding.rvItems);
+    }
+
+    private void removeToDo(int position, Item toDoItem) {
+        // get label item for todoitems and delete child
+        Item label = items.get(0);
+        label.getChildren().remove(toDoItem);
+        // Delete from adapter
+        items.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        // Unstar election
+        User.unstarElection(toDoItem.getToDoItem().getElection());
+
+
+
+    }
+
+    private void swipeRightToDelete(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+    }
+
+    private void swipeLeftToCall(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                .addBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .addActionIcon(R.drawable.quantum_ic_search_grey600_24)
+                .create()
+                .decorate();
     }
 
 }
