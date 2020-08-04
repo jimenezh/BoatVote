@@ -176,7 +176,6 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     private void setAddressFormVisibility(int visibility) {
         binding.tvCurrentAddress.setVisibility(visibility);
         binding.btnSetAddress.setVisibility(visibility);
-        binding.tvAddressLabel.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {

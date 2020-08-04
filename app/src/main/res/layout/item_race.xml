@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="30dp"
     android:orientation="horizontal"
     android:padding="5dp">
 
@@ -17,6 +17,7 @@
         android:layout_marginEnd="10dp"
         android:layout_toStartOf="@+id/btnStar"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Maryland State Governor" />

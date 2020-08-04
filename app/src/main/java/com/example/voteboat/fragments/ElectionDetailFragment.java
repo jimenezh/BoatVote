@@ -81,7 +81,7 @@ public class ElectionDetailFragment extends Fragment {
     private void setPollInformation() {
         if (poll == null) {
             binding.llDates.setVisibility(View.GONE);
-            binding.tvPollTitle.setText("No polls nears you");
+            binding.tvPollTitle.setText("No polls near you");
         } else {
             binding.tvAddress.setText(poll.getLocation());
             binding.tvDateOpen.setText(poll.getOpenDate());

@@ -14,11 +14,11 @@
 
         <TextView
             android:id="@+id/tvElectionName"
-            android:transitionName="electionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="28sp"
+            android:transitionName="electionTitle"
             tools:text="Election 1" />
 
         <TextView
@@ -47,8 +47,8 @@
             android:id="@+id/tvPollTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
             android:layout_below="@id/tvDate"
+            android:layout_marginTop="22dp"
             android:text="@string/polling_locations"
             android:textColor="#000000"
             android:textSize="20sp" />
@@ -60,7 +60,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPollTitle"
             android:orientation="vertical">
-
 
 
             <TextView
@@ -91,16 +90,15 @@
                 tools:text="Today" />
 
 
-
-
             <Button
                 android:id="@+id/btnMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/tvDateOpen"
                 android:background="#03A9F4"
                 android:padding="10dp"
-                android:layout_below="@id/tvDateOpen"
-                android:text="Polling Location Map" />
+                android:text="Polling Location Map"
+                android:textColor="@color/textWhite" />
 
         </RelativeLayout>
 
@@ -192,7 +190,8 @@
             android:layout_marginTop="20dp"
             android:background="#03A9F4"
             android:padding="10dp"
-            android:text="Who is Running?" />
+            android:text="Who is Running?"
+            android:textColor="@color/textWhite" />
 
 
     </RelativeLayout>

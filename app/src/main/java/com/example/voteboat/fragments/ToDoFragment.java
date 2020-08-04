@@ -322,6 +322,11 @@ public class ToDoFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
+                        if(location == null){
+                            Log.e(TAG, "Null location");
+                            Snackbar.make(binding.getRoot(), "Could not load representative", Snackbar.LENGTH_SHORT).show();
+                        }
+
                         Log.i(TAG, "Location is " + location.toString());
                         // Getting address from Location Object to get reps
                         Address address = ElectionFragment.getAddressFromLocation(location,context);
