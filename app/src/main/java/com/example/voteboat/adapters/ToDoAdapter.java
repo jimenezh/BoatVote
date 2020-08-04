@@ -152,7 +152,7 @@ public class ToDoAdapter extends MultiLevelAdapter {
             setDocumentsListener(item);
             setVoteListener(item);
             // Camera listener
-            binding.btnCamera.setOnClickListener(new View.OnClickListener() {
+            binding.ivCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     launchCamera();
