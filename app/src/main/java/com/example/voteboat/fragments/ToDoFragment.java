@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +23,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Environment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.R;
@@ -79,6 +78,8 @@ public class ToDoFragment extends Fragment {
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
+
+    public static final int CALL_ACTIVITY_REQUEST_CODE = 47;
 
 
     public ToDoFragment() {
@@ -272,6 +273,8 @@ public class ToDoFragment extends Fragment {
             } else { // Result was a failure
                 Snackbar.make(binding.getRoot(), "Picture wasn't taken!", Snackbar.LENGTH_SHORT).show();
             }
+        } else if (requestCode == CALL_ACTIVITY_REQUEST_CODE) {
+            multiLevelRecyclerView.smoothScrollToPosition(0);
         }
     }
 
@@ -359,7 +362,7 @@ public class ToDoFragment extends Fragment {
     }
 
     public void addSwipeDecorator() {
-        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -370,7 +373,7 @@ public class ToDoFragment extends Fragment {
                 Log.i(TAG, String.valueOf(direction));
                 int position = viewHolder.getAdapterPosition();
                 // if not a valid position then we stop
-                if(position == RecyclerView.NO_POSITION) return;
+                if (position == RecyclerView.NO_POSITION) return;
                 // else we continue
                 Item item = items.get(position);
 
@@ -379,7 +382,7 @@ public class ToDoFragment extends Fragment {
                         removeToDo(position, item);
                         break;
                     case Item.REP:
-//                        callRepresentative();
+                        callRepresentative(item.getRepresentative());
                         break;
                     default:
                         return;
@@ -390,7 +393,7 @@ public class ToDoFragment extends Fragment {
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 int position = viewHolder.getAdapterPosition();
                 // if not a valid position then we stop
-                if(position == RecyclerView.NO_POSITION) return;
+                if (position == RecyclerView.NO_POSITION) return;
                 // else we continue
                 Item item = items.get(position);
                 int color = 0;
@@ -426,6 +429,20 @@ public class ToDoFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(binding.rvItems);
     }
 
+    private void callRepresentative(Representative representative) {
+        String phoneNumber = representative.getPhoneNumber();
+        if (phoneNumber == null)
+            Snackbar.make(binding.getRoot(), "No phone number", Snackbar.LENGTH_SHORT).show();
+        else {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                ToDoFragment.this.startActivityForResult(intent, CALL_ACTIVITY_REQUEST_CODE);
+            }
+        }
+
+    }
+
     private void removeToDo(int position, Item toDoItem) {
         // get label item for todoitems and delete child
         Item label = items.get(0);
@@ -436,21 +453,7 @@ public class ToDoFragment extends Fragment {
 
         // Unstar election
         User.unstarElection(toDoItem.getToDoItem().getElection());
-
-
-
     }
 
-    private void swipeRightToDelete(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
-    }
-
-    private void swipeLeftToCall(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                .addBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .addActionIcon(R.drawable.quantum_ic_search_grey600_24)
-                .create()
-                .decorate();
-    }
 
 }
