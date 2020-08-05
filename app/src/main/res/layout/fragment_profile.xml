@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="?attr/colorPrimary"
         android:text="Change Username" />
 
     <Button
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="?attr/colorPrimary"
         android:text="Change Password" />
 
 
@@ -45,7 +45,7 @@
         android:layout_below="@id/btnPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="?attr/colorAccent"
         android:textColor="@color/textWhite"
         android:text="Logout" />
 
@@ -79,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvCurrentAddress"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="?attr/colorAccent"
         android:text="Set new Address"
         android:textColor="@color/textWhite"
         android:layout_alignStart="@id/switchAddress"

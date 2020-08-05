@@ -2,6 +2,8 @@ package com.example.voteboat;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.example.voteboat.models.Candidate;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Race;
@@ -16,6 +18,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ParseApplication extends Application {
     @Override
     public void onCreate() {
+        // Dark mode
+        AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_YES);
+
         super.onCreate();
 
         // Use for troubleshooting -- remove this line for production

@@ -9,7 +9,7 @@
         android:id="@+id/tvLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:paddingLeft="10dp"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
