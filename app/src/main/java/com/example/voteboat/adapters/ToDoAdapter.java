@@ -16,6 +16,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voteboat.R;
 import com.example.voteboat.databinding.ItemLabelBinding;
 import com.example.voteboat.databinding.ItemRepresentativeBinding;
 import com.example.voteboat.databinding.ItemTodoBinding;
@@ -111,13 +112,15 @@ public class ToDoAdapter extends MultiLevelAdapter {
             binding.tvLabel.setText(item.getLabel());
             if (item.isExpanded() && item.hasChildren()) {
                 showArrow();
-                rotateArrow();
             } else if (!item.hasChildren())
                 hideArrow();
         }
 
         private void showArrow() {
             binding.ivArrow.setVisibility(View.VISIBLE);
+            if(toDoItems.get(getAdapterPosition()).isExpanded())
+                binding.ivArrow.animate().rotation(-180).start();
+
         }
 
         private void hideArrow() {
@@ -126,19 +129,36 @@ public class ToDoAdapter extends MultiLevelAdapter {
 
         @Override
         public void onClick(View view) {
+            // use this boolean to fix the scroll animation
+            boolean topExpanded = toDoItems.get(0).isExpanded();
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
-            scrollAnimation();
+            // Function to fix scroll animation
+            scrollAnimation(topExpanded);
             // Animating arrow
             rotateArrow();
         }
 
-        private void scrollAnimation() {
-            if (getAdapterPosition() != 0 && !toDoItems.get(0).isExpanded())
+        private void scrollAnimation(boolean isTopExpanded) {
+            if (getAdapterPosition() != 0 && toDoItems.get(getAdapterPosition()).isExpanded() && isTopExpanded)
                 linearLayoutManager.scrollToPosition(toDoItems.size() - 1);
         }
 
         private void rotateArrow() {
-            binding.ivArrow.animate().rotation(toDoItems.get(getAdapterPosition()).isExpanded() ? -180 : 0).start();
+            // First, we get the positions of the label, then we get the labels, finally we rotate the items accordingly
+            int topLabelPosition = 0;
+            LabelHolder topLabel = (LabelHolder) multiLevelRecyclerView.findViewHolderForAdapterPosition(topLabelPosition);
+            topLabel.binding.ivArrow.animate().rotation(toDoItems.get(topLabelPosition).isExpanded() ? -180 : 0).start();
+
+            // To find the position of the bottom (rep) label, it's right below the top label
+            int bottomLabelPosition = topLabelPosition +1;
+            // When top label is expanded, bottomLabel is below the childre
+            if(toDoItems.get(topLabelPosition).isExpanded())
+                 bottomLabelPosition += toDoItems.get(0).getChildren().size();
+            LabelHolder bottomLabel = (LabelHolder) multiLevelRecyclerView.findViewHolderForAdapterPosition(bottomLabelPosition);
+            // When bottom label doesn't exist (offline app)
+            if (bottomLabel != null)
+                bottomLabel.binding.ivArrow.animate().rotation(toDoItems.get(bottomLabelPosition).isExpanded() ? -180 : 0).start();
+
         }
     }
 
