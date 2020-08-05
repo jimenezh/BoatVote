@@ -72,6 +72,7 @@ public class ToDoFragment extends Fragment {
     ToDoAdapter adapter;
     List<Item> items;
     MultiLevelRecyclerView multiLevelRecyclerView;
+    LinearLayoutManager linearLayoutManager;
 
     // To prevent Geocoder from crashing
     Context context;
@@ -111,10 +112,10 @@ public class ToDoFragment extends Fragment {
 
     private void configureRecyclerView() {
         multiLevelRecyclerView = binding.rvItems;
-        adapter = new ToDoAdapter(context, items, this, multiLevelRecyclerView);
+        linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+
+        adapter = new ToDoAdapter(context, items, this, multiLevelRecyclerView, linearLayoutManager);
         multiLevelRecyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-        linearLayoutManager.getStackFromEnd();
         multiLevelRecyclerView.setLayoutManager(linearLayoutManager);
         multiLevelRecyclerView.setAccordion(true);
         multiLevelRecyclerView.removeItemClickListeners();
@@ -273,8 +274,6 @@ public class ToDoFragment extends Fragment {
             } else { // Result was a failure
                 Snackbar.make(binding.getRoot(), "Picture wasn't taken!", Snackbar.LENGTH_SHORT).show();
             }
-        } else if (requestCode == CALL_ACTIVITY_REQUEST_CODE) {
-            multiLevelRecyclerView.smoothScrollToPosition(0);
         }
     }
 
@@ -382,7 +381,7 @@ public class ToDoFragment extends Fragment {
                         removeToDo(position, item);
                         break;
                     case Item.REP:
-                        callRepresentative(item.getRepresentative());
+                        callRepresentative(item.getRepresentative(), viewHolder.getAdapterPosition());
                         break;
                     default:
                         return;
@@ -429,7 +428,7 @@ public class ToDoFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(binding.rvItems);
     }
 
-    private void callRepresentative(Representative representative) {
+    private void callRepresentative(Representative representative, int position) {
         String phoneNumber = representative.getPhoneNumber();
         if (phoneNumber == null)
             Snackbar.make(binding.getRoot(), "No phone number", Snackbar.LENGTH_SHORT).show();
@@ -439,6 +438,9 @@ public class ToDoFragment extends Fragment {
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 ToDoFragment.this.startActivityForResult(intent, CALL_ACTIVITY_REQUEST_CODE);
             }
+            // to reset swipe state
+            adapter.notifyItemChanged(position);
+
         }
 
     }

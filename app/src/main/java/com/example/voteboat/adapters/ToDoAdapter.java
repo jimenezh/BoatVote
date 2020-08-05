@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voteboat.databinding.ItemLabelBinding;
@@ -38,6 +39,7 @@ public class ToDoAdapter extends MultiLevelAdapter {
     private List<Item> toDoItems;
     private ToDoFragment fragment;
     private MultiLevelRecyclerView multiLevelRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
 
     public static final String TAG = "ToDoAdapter";
 
@@ -47,12 +49,13 @@ public class ToDoAdapter extends MultiLevelAdapter {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
 
 
-    public ToDoAdapter(Context context, List<Item> elections, ToDoFragment fragment, MultiLevelRecyclerView multiLevelRecyclerView) {
+    public ToDoAdapter(Context context, List<Item> elections, ToDoFragment fragment, MultiLevelRecyclerView multiLevelRecyclerView, LinearLayoutManager linearLayoutManager) {
         super(elections);
         this.context = context;
         this.toDoItems = elections;
         this.fragment = fragment;
         this.multiLevelRecyclerView = multiLevelRecyclerView;
+        this.linearLayoutManager = linearLayoutManager;
     }
 
     @Override
@@ -109,7 +112,7 @@ public class ToDoAdapter extends MultiLevelAdapter {
             if (item.isExpanded() && item.hasChildren()) {
                 showArrow();
                 rotateArrow();
-            } else if(!item.hasChildren())
+            } else if (!item.hasChildren())
                 hideArrow();
         }
 
@@ -124,8 +127,14 @@ public class ToDoAdapter extends MultiLevelAdapter {
         @Override
         public void onClick(View view) {
             multiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
+            scrollAnimation();
             // Animating arrow
             rotateArrow();
+        }
+
+        private void scrollAnimation() {
+            if (getAdapterPosition() != 0 && !toDoItems.get(0).isExpanded())
+                linearLayoutManager.scrollToPosition(toDoItems.size() - 1);
         }
 
         private void rotateArrow() {
