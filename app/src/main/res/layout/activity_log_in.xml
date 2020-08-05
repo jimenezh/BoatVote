@@ -25,6 +25,7 @@
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/username"
+            android:layout_marginBottom="10dp"
             android:inputType="textPersonName" />
 
         <EditText
@@ -35,6 +36,7 @@
             android:autofillHints=""
             android:ems="10"
             android:hint="@string/password"
+            android:layout_marginBottom="10dp"
             android:inputType="textPassword" />
 
         <Button
@@ -42,12 +44,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:textColor="@color/textWhite"
+            android:layout_marginBottom="10dp"
             android:text="@string/login" />
 
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/textWhite"
             android:layout_weight="1"
             android:text="@string/sign_up" />
 
