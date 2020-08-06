@@ -44,6 +44,9 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 @RuntimePermissions
 public class MapActivity extends AppCompatActivity {
 
+    private final float ZOOM_COUNTRY_LEVEL = 5.0f;
+    private final float ZOOM_STREET_LEVEL = 15.0f;
+
     ActivityMapBinding binding;
     public static final String TAG = "MapActivity";
 
@@ -114,6 +117,12 @@ public class MapActivity extends AppCompatActivity {
                 .position(pollLocation)
                 .title(addressLine)
                 .snippet(pollingHours));
+        Log.i(TAG, "Max zoom is "+map.getMaxZoomLevel()+ " with min "+map.getMinZoomLevel());
+        // Set max zoom level to country
+        map.setMinZoomPreference(ZOOM_COUNTRY_LEVEL);
+        // Moving to street level zoom or to device's max zoom if device is unable to zoom to street level
+        map.moveCamera(CameraUpdateFactory.zoomTo(map.getMaxZoomLevel() < ZOOM_STREET_LEVEL ? map.getMaxZoomLevel() : ZOOM_STREET_LEVEL));
+        // Pan camera to polling Location
         map.moveCamera(CameraUpdateFactory.newLatLng(pollLocation));
     }
 
