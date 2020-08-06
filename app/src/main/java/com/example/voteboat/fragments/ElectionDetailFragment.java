@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.voteboat.activities.MapActivity;
@@ -63,6 +64,9 @@ public class ElectionDetailFragment extends Fragment {
                 launchMapActivity();
             }
         });
+
+        // Back button
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

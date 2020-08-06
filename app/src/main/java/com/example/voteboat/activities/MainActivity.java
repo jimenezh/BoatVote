@@ -1,6 +1,5 @@
 package com.example.voteboat.activities;
 
-import android.location.Address;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,12 +7,9 @@ import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,9 +21,6 @@ import com.example.voteboat.fragments.ElectionFragment;
 import com.example.voteboat.fragments.ProfileFragment;
 import com.example.voteboat.fragments.ToDoFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseCloud;
-
-import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity implements ElectionFragment.ElectionListener {
@@ -51,25 +44,17 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Toolbar set up
         Toolbar toolbarMain = (Toolbar) binding.inToolbar.toolbar;
         setSupportActionBar(toolbarMain);
-
 
         // Setting listener for bottom navigation
         setBottomNavigationListener();
 
-        // Location
         // Checking if key is null
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
         }
-
-        HashMap<String, HashMap> payload = new HashMap<>();
-        HashMap<String, String> date = new HashMap<>();
-        date.put("date", "July 19, 2020 18:46:00");
-        payload.put("params", date);
-        ParseCloud.callFunctionInBackground("schedule", payload);
-
     }
 
 
@@ -164,5 +149,17 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    // Method when back button is pressed
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                super.onBackPressed();
+                MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
