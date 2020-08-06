@@ -2,9 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.voteboat.activities.MainActivity">
-    <item
-        android:id="@+id/action_settings"
+    <item android:id="@+id/miProgressBar"
+        android:title="Loading..."
+        app:showAsAction="always"
+        android:visible="false"
+        tools:visible="true"
+        android:actionLayout="@layout/progress_bar"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
+        />
 </menu>

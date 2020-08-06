@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         Toolbar toolbarMain = (Toolbar) binding.inToolbar.toolbar;
         setSupportActionBar(toolbarMain);
 
-        miActionProgressItem = findViewById(R.id.pbProgressAction);
 
         // Setting listener for bottom navigation
         setBottomNavigationListener();
@@ -121,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        miActionProgressItem = (ProgressBar) menu.findItem(R.id.progress_bar);
+
         return true;
     }
 
