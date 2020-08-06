@@ -2,6 +2,7 @@ package com.example.voteboat.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
@@ -12,6 +13,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.voteboat.R;
 import com.example.voteboat.databinding.ActivityMapBinding;
@@ -80,6 +83,10 @@ public class MapActivity extends AppCompatActivity {
         // Initializing map fragment + checking that it's valid + loading map
         initializeMapFragment();
         extractPollLocationDetails();
+        // Toolbar
+        Toolbar toolbarMain = (Toolbar) binding.inToolbar.toolbar;
+        setSupportActionBar(toolbarMain);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void extractPollLocationDetails() {
@@ -265,5 +272,23 @@ public class MapActivity extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.findItem(R.id.miActionProgress).setVisible(false);
+        return true;
+    }
+
+    // Method when back button is pressed
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                super.onBackPressed();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

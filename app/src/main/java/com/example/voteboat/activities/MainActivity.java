@@ -60,13 +60,14 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
 
     private void setBottomNavigationListener() {
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             Fragment fragment;
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // Guarantees that we cannot switch out of election feed until we have the address
-
+                // Back button
+                MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
                 switch (item.getItemId()) {
                     case R.id.action_home:

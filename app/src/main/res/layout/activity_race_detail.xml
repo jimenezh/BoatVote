@@ -6,9 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activities.RaceDetailActivity"
     android:background="?attr/background">
+
+    <include
+        android:id="@+id/inToolbar"
+        layout="@layout/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRaces"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/inToolbar"/>
 
 </RelativeLayout>
