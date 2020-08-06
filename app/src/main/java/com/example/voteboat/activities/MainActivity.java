@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Toolbar toolbarMain = (Toolbar) binding.inToolbar.toolbar;
+        setSupportActionBar(toolbarMain);
+
         miActionProgressItem = findViewById(R.id.pbProgressAction);
 
         // Setting listener for bottom navigation
@@ -70,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         ParseCloud.callFunctionInBackground("schedule", payload);
 
     }
+
+
 
     private void setBottomNavigationListener() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -113,18 +119,21 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
 
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
-        return super.onPrepareOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     public void showProgressBar() {
+        if(miActionProgressItem == null)
+            return;
         // Show progress item
         miActionProgressItem.setVisibility(View.VISIBLE);
     }
 
     public void hideProgressBar() {
+        if(miActionProgressItem == null)
+            return;
         // Hide progress item
         miActionProgressItem.setVisibility(View.INVISIBLE);
     }
