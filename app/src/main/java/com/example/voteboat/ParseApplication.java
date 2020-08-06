@@ -18,10 +18,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ParseApplication extends Application {
     @Override
     public void onCreate() {
-        // Dark mode
-        AppCompatDelegate.setDefaultNightMode(
-                AppCompatDelegate.MODE_NIGHT_YES);
-
         super.onCreate();
 
         // Use for troubleshooting -- remove this line for production

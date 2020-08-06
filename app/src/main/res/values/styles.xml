@@ -7,16 +7,20 @@
 
     <style name="Base.MyTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/quantum_black_100</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="background">@color/quantum_white_100</item>
 
-
+        <item name="textAppearanceButton">@color/quantum_white_100</item>
+        <item name="colorButtonNormal">@color/colorPrimary</item>
 
         <item name="textAppearanceHeadline1">@color/quantum_white_100</item>
-        <item name="textAppearanceBody1">@color/textPrimary</item>
+        <item name="textAppearanceBody1">@color/quantum_black_100</item>
         <item name="textAppearanceBody2">@color/textLight</item>
+
+        <item name="itemIconTint">@color/quantum_white_100</item>
+        <item name="itemTextColor">@color/quantum_white_100</item>
 
     </style>
 

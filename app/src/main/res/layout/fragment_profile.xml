@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="?attr/colorPrimary"
+        android:backgroundTint="?attr/colorButtonNormal"
         android:text="Change Username"
-        android:textColor="?attr/textAppearanceHeadline1" />
+        android:textColor="?attr/textAppearanceButton" />
 
     <Button
         android:id="@+id/btnPassword"
@@ -33,9 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="?attr/colorPrimary"
+        android:backgroundTint="?attr/colorButtonNormal"
         android:text="Change Password"
-        android:textColor="?attr/textAppearanceHeadline1"/>
+        android:textColor="?attr/textAppearanceButton"  />
 
 
     <Button
@@ -47,7 +47,7 @@
         android:layout_marginTop="4dp"
         android:backgroundTint="?attr/colorAccent"
         android:text="Logout"
-        android:textColor="@color/textWhite" />
+        android:textColor="?attr/textAppearanceButton" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchAddress"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogout"
         android:layout_marginTop="20dp"
-        android:foregroundTint="@color/colorPrimaryDark"
+        android:foregroundTint="?attr/colorButtonNormal"
         android:text="Use custom address"
         android:textColor="?attr/textAppearanceBody1"
         android:textSize="20sp" />
@@ -80,9 +80,10 @@
         android:layout_below="@id/tvCurrentAddress"
         android:layout_alignStart="@id/switchAddress"
         android:layout_marginTop="5dp"
-        android:backgroundTint="?attr/colorAccent"
+        android:backgroundTint="?attr/colorButtonNormal"
         android:text="Set new Address"
-        android:textColor="?attr/textAppearanceHeadline1"        android:textSize="12sp"
+        android:textColor="?attr/textAppearanceButton"
+        android:textSize="12sp"
         android:visibility="gone"
         tools:visibility="visible" />
 

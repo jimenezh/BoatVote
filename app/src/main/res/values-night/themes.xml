@@ -6,16 +6,20 @@
 
     <style name="Base.MyTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryNight</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
-        <item name="colorSecondary">@color/colorPrimaryDarkNight</item>
+        <item name="colorPrimaryDark">@color/quantum_black_100</item>
+        <item name="colorSecondary">@color/colorPrimaryNight</item>
         <item name="colorAccent">@color/colorAccentNight</item>
 
-        <item name="textAppearanceHeadline1">@color/textWhiteNight</item>
+        <item name="textAppearanceHeadline1">@color/textPrimaryNight</item>
         <item name="textAppearanceBody1">@color/textWhiteNight</item>
         <item name="textAppearanceBody2">@color/textLightNight</item>
-        <item name="background">@color/colorPrimaryDark</item>
 
-        <item name="iconTint">@color/colorPrimary</item>
+        <item name="textAppearanceButton">@color/quantum_black_100</item>
+        <item name="colorButtonNormal">@color/colorPrimaryVariant</item>
+        <item name="background">@color/backgroundNight</item>
+
+        <item name="itemIconTint">@color/textLightNight</item>
+        <item name="itemTextColor">@color/textLightNight</item>
 
     </style>
 </resources>

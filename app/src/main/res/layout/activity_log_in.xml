@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/colorAccent"
-            android:textColor="@color/textWhite"
+            android:textColor="?attr/textAppearanceButton"
             android:layout_marginBottom="10dp"
             android:text="@string/login" />
 
@@ -54,8 +54,8 @@
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:textColor="@color/textWhite"
+            android:background="?attr/colorButtonNormal"
+            android:textColor="?attr/textAppearanceButton"
             android:layout_weight="1"
             android:text="@string/sign_up" />
 
