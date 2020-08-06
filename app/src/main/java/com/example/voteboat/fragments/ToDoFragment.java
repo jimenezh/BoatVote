@@ -334,6 +334,7 @@ public class ToDoFragment extends Fragment {
                         if (location == null) {
                             Log.e(TAG, "Null location");
                             Snackbar.make(binding.getRoot(), "Could not load representative", Snackbar.LENGTH_SHORT).show();
+                            return;
                         }
 
                         Log.i(TAG, "Location is " + location.toString());

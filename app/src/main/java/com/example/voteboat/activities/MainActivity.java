@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     ActivityMainBinding binding;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    Address address;
-
-    ProgressBar miActionProgressItem;
+    MenuItem miActionProgressItem;
 
     final ElectionFragment electionFragment = new ElectionFragment();
     final ToDoFragment toDoFragment = new ToDoFragment();
@@ -120,8 +118,7 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        miActionProgressItem = (ProgressBar) menu.findItem(R.id.progress_bar);
-
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
         return true;
     }
 
@@ -129,14 +126,14 @@ public class MainActivity extends AppCompatActivity implements ElectionFragment.
         if(miActionProgressItem == null)
             return;
         // Show progress item
-        miActionProgressItem.setVisibility(View.VISIBLE);
+        miActionProgressItem.setVisible(true);
     }
 
     public void hideProgressBar() {
         if(miActionProgressItem == null)
             return;
         // Hide progress item
-        miActionProgressItem.setVisibility(View.INVISIBLE);
+        miActionProgressItem.setVisible(false);
     }
 
 

@@ -213,7 +213,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void getCachedPastElections(){
-        ParseQuery<Election> query = new ParseQuery<Election>("Election");
+        ParseQuery<Election> query = new ParseQuery<>("Election");
         query.fromPin(CACHED_ELECTIONS).findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {
