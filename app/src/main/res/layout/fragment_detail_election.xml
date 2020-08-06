@@ -15,7 +15,7 @@
             android:id="@+id/tvElectionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
+            android:textColor="?attr/textAppearanceBody1"
             android:textSize="28sp"
             android:transitionName="electionTitle"
             tools:text="Election 1" />
@@ -27,7 +27,7 @@
             android:layout_below="@id/tvElectionName"
             android:layout_alignStart="@id/tvElectionName"
             android:layout_marginTop="5dp"
-            android:textColor="#000000"
+            android:textColor="?attr/textAppearanceBody1"
             android:textSize="18sp"
             tools:text="Election Day: " />
 
@@ -38,7 +38,7 @@
             android:layout_alignTop="@+id/tvDateText"
             android:layout_alignBottom="@+id/tvDateText"
             android:layout_toEndOf="@+id/tvDateText"
-            android:textColor="#292929"
+            android:textColor="?attr/textAppearanceBody2"
             android:textSize="16sp"
             tools:text="06/21/2020" />
 
@@ -49,7 +49,7 @@
             android:layout_below="@id/tvDate"
             android:layout_marginTop="22dp"
             android:text="@string/polling_locations"
-            android:textColor="#000000"
+            android:textColor="?attr/textAppearanceBody1"
             android:textSize="20sp" />
 
 
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 tools:text="Some address" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvAddress"
                 android:layout_alignStart="@id/tvAddress"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 tools:text="All day" />
 
 
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvTimesOpen"
                 android:layout_marginStart="2dp"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 tools:text="Today" />
 
 
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Absentee Voting:"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 android:textSize="18sp" />
 
             <TextView
@@ -126,13 +126,14 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:text="@string/n_a"
-                android:textColor="#292929" />
+                android:textColor="?attr/textAppearanceBody2"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Election Information:"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 android:textSize="18sp" />
 
             <TextView
@@ -143,13 +144,15 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:text="@string/n_a"
-                android:textColor="#292929" />
+                android:textColor="?attr/textAppearanceBody2"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register here:"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
+
                 android:textSize="18sp" />
 
             <TextView
@@ -160,7 +163,8 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:text="@string/n_a"
-                android:textColor="#292929" />
+                android:textColor="?attr/textAppearanceBody2"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -168,7 +172,7 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:text="Election Rules:"
-                android:textColor="#292929"
+                android:textColor="?attr/textAppearanceBody2"
                 android:textSize="18sp" />
 
             <TextView
@@ -178,7 +182,8 @@
                 android:autoLink="all"
                 android:linksClickable="true"
                 android:text="@string/n_a"
-                android:textColor="#292929" />
+                android:textColor="?attr/textAppearanceBody2"
+                />
         </LinearLayout>
 
         <Button

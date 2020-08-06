@@ -20,6 +20,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textColor="?attr/textAppearanceBody1"
         tools:text="Maryland State Governor" />
 
     <RelativeLayout

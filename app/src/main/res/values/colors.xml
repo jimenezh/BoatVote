@@ -3,10 +3,18 @@
     <color name="colorPrimary">#0015BC</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#CE0000</color>
+    <color name="background">#FFFFFF</color>
 
-    <color name="colorPrimaryNight">#212121</color>
-    <color name="colorPrimaryDarkNight">#000000</color>
-    <color name="colorAccentNight">#FFFFFF</color>
+    <color name="colorPrimaryNight">#181818</color>
+    <color name="colorPrimaryDarkNight">#282828</color>
+    <color name="colorAccentNight">#F0280C</color>
+    <color name="backgroundNight">#101010</color>
+
+
+    <color name="textPrimaryNight">#F5F5F5</color>
+    <color name="textLightNight">#D0D0D0</color>
+    <color name="textWhiteNight">#F5F5F5</color>
+
 
     <color name="textPrimary">#000000</color>
     <color name="textLight">#292929</color>
