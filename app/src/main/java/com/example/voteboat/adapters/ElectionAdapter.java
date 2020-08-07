@@ -31,11 +31,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Headers;
+
+import static com.example.voteboat.models.Poll.KEY_DROP_OFF;
+import static com.example.voteboat.models.Poll.KEY_EARLY_VOTE;
+import static com.example.voteboat.models.Poll.KEY_POLL;
 
 public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHolder> {
 
@@ -164,7 +169,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                             return;
                         }
                         // Now we get poll + display the details
-                        displayElectionDetail(election, getPoll(json.jsonObject), tvTitle, tvDate);
+                        displayElectionDetail(election, getPolls(json.jsonObject), tvTitle, tvDate);
                     }
                 });
             } catch (JSONException e) {
@@ -174,18 +179,28 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             }
         }
 
-        private Poll getPoll(JSONObject jsonObject) {
+        private HashMap<String, Poll> getPolls(JSONObject jsonObject) {
+            HashMap<String, Poll> polls = new HashMap<>();
+
+            // All voting locations, only when online
             try {
-                if (jsonObject.has("pollingLocations"))
-                    return Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+                if (jsonObject.has(KEY_POLL))
+                    polls.put(KEY_POLL, Poll.fromJsonArray(jsonObject.getJSONArray(KEY_POLL)));
+                if (jsonObject.has(KEY_EARLY_VOTE))
+                    polls.put(KEY_EARLY_VOTE, Poll.fromJsonArray(jsonObject.getJSONArray(KEY_EARLY_VOTE)));
+                if (jsonObject.has(KEY_DROP_OFF))
+                    polls.put(KEY_DROP_OFF, Poll.fromJsonArray(jsonObject.getJSONArray(KEY_DROP_OFF)));
+
+                return polls;
+            } catch (JSONException e){
+                Log.e(TAG ,"getPolls", e);
+                return polls;
             }
-            return null;
+
         }
 
 
-        private void displayElectionDetail(Election e, Poll p, TextView tvTitle, TextView tvDate) {
+        private void displayElectionDetail(Election e, HashMap<String, Poll> p, TextView tvTitle, TextView tvDate) {
             // Transfer into to new activity
             Bundle bundle = new Bundle();
             bundle.putParcelable(Election.class.getSimpleName(), Parcels.wrap(e));

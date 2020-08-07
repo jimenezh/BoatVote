@@ -19,6 +19,10 @@ public class Poll {
     String closeDate;
     String pollingHours;
 
+    public static final String KEY_POLL = "pollingLocations";
+    public static final String KEY_EARLY_VOTE = "earlyVoteSites";
+    public static final String KEY_DROP_OFF = "dropOffLocations";
+
     public static Poll fromJson(JSONObject jsonObject) throws JSONException {
         Poll poll = new Poll();
         // Getting full address

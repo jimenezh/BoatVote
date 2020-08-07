@@ -20,6 +20,11 @@
 
     <!--  for Facebook SDK  -->
     <string name="facebook_app_id">647670929440821</string>
-    <string name="polling_locations">Polling Locations</string>
+    <string name="polling_locations">Election Day Polls</string>
     <string name="n_a">N/A</string>
+    <string name="absentee_locations">Absentee Ballot Drop Off Location</string>
+    <string name="early_polling_locations">Early Vote Sites</string>
+    <string name="empty_poll">No election day polls nearby</string>
+    <string name="empty_early_vote_site">No early voting sites nearby</string>
+    <string name="empty_drop_off_site">No absentee ballot drop off locations nearby</string>
 </resources>

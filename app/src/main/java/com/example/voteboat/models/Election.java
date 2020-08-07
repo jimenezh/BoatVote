@@ -23,15 +23,17 @@ public class Election extends ParseObject {
 
     public static final String TAG = "Election";
 
-    String title;
-    String googleId;
-    String electionDate;
-    Poll electionDayPoll;
-    String registrationUrl;
-    String electionInfoUrl;
-    String absenteeBallotUrl;
-    String electionRulesUrl;
-    String ocdId;
+    private String title;
+    private String googleId;
+    private String electionDate;
+    private Poll electionDayPoll;
+    private Poll earlyVoteSites;
+    private Poll dropOffLocations;
+    private String registrationUrl;
+    private String electionInfoUrl;
+    private String absenteeBallotUrl;
+    private String electionRulesUrl;
+    private String ocdId;
 
     // Parse Keys
     public static final String KEY_NAME = "name";
@@ -64,26 +66,21 @@ public class Election extends ParseObject {
                 .getJSONArray("state")
                 .getJSONObject(0)
                 .getJSONObject("electionAdministrationBody");
+
         // Adding this when online
         this.registrationUrl = checkifExistsAndAdd("electionRegistrationUrl", state);
         this.electionInfoUrl = checkifExistsAndAdd("electionInfoUrl", state);
         this.absenteeBallotUrl = checkifExistsAndAdd("absenteeVotingInfoUrl", state);
         this.electionRulesUrl = checkifExistsAndAdd("electionRulesUrl", state);
-        if (jsonObject.has("pollingLocations"))
-            this.electionDayPoll = Poll.fromJsonArray(jsonObject.getJSONArray("pollingLocations"));
-//         This is the info we synchronize with Parse
+
+        // This is the info we synchronize with Parse
         if (jsonObject.has("contests")) {
             this.addRaces(jsonObject.getJSONArray("contests"));
-
         } else {
             Log.i(TAG, "No elections for " + this.getGoogleId());
         }
-
-
         // Saving once more time
         this.saveInBackground(saveCallback);
-
-
     }
 
     public void addRaces(JSONArray jsonArray) throws JSONException {
@@ -101,16 +98,16 @@ public class Election extends ParseObject {
         ParseObject.saveAllInBackground(races, new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if( e !=null) {
+                if (e != null) {
                     Log.e(TAG, "Could not save races", e);
                     return;
                 }
-                for(Race r: races)
+                for (Race r : races)
                     relation.add(r);
                 election.put(KEY_HAS_RACES, true); // Marking as true
                 election.put(KEY_HAS_DETAILS, true);
                 election.saveInBackground();
-                Log.i(TAG, "Finished saving "+election.getGoogleId());
+                Log.i(TAG, "Finished saving " + election.getGoogleId());
             }
         });
     }
@@ -150,6 +147,14 @@ public class Election extends ParseObject {
 
     public Poll getElectionDayPoll() {
         return electionDayPoll;
+    }
+
+    public Poll getEarlyVoteSites() {
+        return earlyVoteSites;
+    }
+
+    public Poll getDropOffLocations() {
+        return dropOffLocations;
     }
 
     public String getRegistrationUrl() {

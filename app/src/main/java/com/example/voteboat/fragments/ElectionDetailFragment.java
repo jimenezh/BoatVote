@@ -8,16 +8,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.voteboat.R;
 import com.example.voteboat.activities.MapActivity;
 import com.example.voteboat.activities.RaceDetailActivity;
 import com.example.voteboat.databinding.FragmentDetailElectionBinding;
+import com.example.voteboat.databinding.ItemPollBinding;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
 import com.example.voteboat.models.Race;
@@ -29,7 +32,12 @@ import com.parse.ParseRelation;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.example.voteboat.models.Poll.KEY_DROP_OFF;
+import static com.example.voteboat.models.Poll.KEY_EARLY_VOTE;
+import static com.example.voteboat.models.Poll.KEY_POLL;
 
 public class ElectionDetailFragment extends Fragment {
 
@@ -37,7 +45,9 @@ public class ElectionDetailFragment extends Fragment {
 
     Election election;
     String userOcdId;
-    Poll poll;
+    Poll electionDayPoll;
+    Poll absenteeDropOffLocation;
+    Poll earlyVotingPoll;
     FragmentDetailElectionBinding binding;
 
     @Nullable
@@ -48,7 +58,15 @@ public class ElectionDetailFragment extends Fragment {
         Bundle args = getArguments();
         election = Parcels.unwrap(args.getParcelable(Election.class.getSimpleName()));
         userOcdId = args.getString("userOcdId");
-        poll = Parcels.unwrap(args.getParcelable(Poll.class.getSimpleName()));
+
+        // Polling locations
+        HashMap<String, Poll> polls = Parcels.unwrap(args.getParcelable(Poll.class.getSimpleName()));
+        electionDayPoll = polls.get(KEY_POLL);
+        absenteeDropOffLocation = polls.get(KEY_DROP_OFF);
+        earlyVotingPoll = polls.get(KEY_EARLY_VOTE);
+        setPolls();
+
+
         return binding.getRoot();
     }
 
@@ -56,14 +74,9 @@ public class ElectionDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setElectionInformation();
-        setPollInformation();
+        // For election day poll, absentee locations, early voting
+        setPolls();
         setRaces();
-        binding.btnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchMapActivity();
-            }
-        });
 
         // Back button
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,14 +95,26 @@ public class ElectionDetailFragment extends Fragment {
         }
     }
 
-    private void setPollInformation() {
+    private void setPolls() {
+        setPoll(electionDayPoll, binding.tvPollTitle, binding.electionDayPoll, getString(R.string.empty_poll));
+        setPoll(earlyVotingPoll, binding.tvEarlyPollTitle, binding.earlyPoll, getString(R.string.empty_early_vote_site));
+        setPoll(absenteeDropOffLocation, binding.tvAbsenteeTitle, binding.absenteePoll, getString(R.string.empty_drop_off_site));
+    }
+
+    private void setPoll(final Poll poll, TextView title, ItemPollBinding itemPollBinding, String isEmpty) {
         if (poll == null) {
-            binding.llDates.setVisibility(View.GONE);
-            binding.tvPollTitle.setText("No polls near you");
+            itemPollBinding.llDates.setVisibility(View.GONE);
+            title.setText(isEmpty);
         } else {
-            binding.tvAddress.setText(poll.getLocation());
-            binding.tvDateOpen.setText(poll.getOpenDate());
-            binding.tvTimesOpen.setText(poll.getPollingHours());
+            itemPollBinding.tvAddress.setText(poll.getLocation());
+            itemPollBinding.tvDateOpen.setText(poll.getOpenDate());
+            itemPollBinding.tvTimesOpen.setText(poll.getPollingHours());
+            itemPollBinding.btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchMapActivity(poll);
+                }
+            });
         }
     }
 
@@ -109,7 +134,7 @@ public class ElectionDetailFragment extends Fragment {
 
     }
 
-    private void launchMapActivity() {
+    private void launchMapActivity(Poll poll) {
         Intent intent = new Intent(getContext(), MapActivity.class);
         String addressLine = poll.getLocation();
         try {
@@ -125,7 +150,7 @@ public class ElectionDetailFragment extends Fragment {
         Geocoder geocoder = new Geocoder(getContext());
         Address address = geocoder.getFromLocationName(addressLine, 1).get(0);
         intent.putExtra("address", Parcels.wrap(address));
-        intent.putExtra("hours", poll.getPollingHours());
+        intent.putExtra("hours", electionDayPoll.getPollingHours());
 
     }
 
