@@ -21,5 +21,8 @@
         <item name="itemIconTint">@color/textLightNight</item>
         <item name="itemTextColor">@color/textLightNight</item>
 
+        <item name="colorControlNormal">@color/textLightNight</item>
+
+
     </style>
 </resources>

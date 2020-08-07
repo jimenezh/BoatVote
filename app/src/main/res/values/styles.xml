@@ -22,6 +22,8 @@
         <item name="itemIconTint">@color/quantum_white_100</item>
         <item name="itemTextColor">@color/quantum_white_100</item>
 
+        <item name="colorControlNormal">@color/quantum_white_100</item>
+
     </style>
 
 
