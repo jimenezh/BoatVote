@@ -3,18 +3,17 @@ package com.example.voteboat.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.example.voteboat.BuildConfig;
 import com.example.voteboat.activities.LogInActivity;
@@ -32,9 +31,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -179,7 +176,6 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     private void setAddressFormVisibility(int visibility) {
         binding.tvCurrentAddress.setVisibility(visibility);
         binding.btnSetAddress.setVisibility(visibility);
-        binding.tvAddressLabel.setVisibility(visibility);
     }
 
     private void populatePastElectionsRV() {
@@ -217,7 +213,7 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
     }
 
     private void getCachedPastElections(){
-        ParseQuery<Election> query = new ParseQuery<Election>("Election");
+        ParseQuery<Election> query = new ParseQuery<>("Election");
         query.fromPin(CACHED_ELECTIONS).findInBackground(new FindCallback<Election>() {
             @Override
             public void done(List<Election> objects, ParseException e) {

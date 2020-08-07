@@ -5,7 +5,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.EditText;
+
+import com.example.voteboat.R;
 import com.example.voteboat.models.User;
 
 import androidx.appcompat.app.AlertDialog;
@@ -44,14 +47,15 @@ public class EditUsernameFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final String title = getArguments().getString("title");
 
-        final EditText editText = new EditText(getContext());
+        final View view =  getLayoutInflater().inflate(R.layout.popupdialog, null);
         // Hides the input in case of password
+        final EditText editText = view.findViewById(R.id.etUserInfo);
         if (!title.equals(USERNAME))
             editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setView(editText);
+        alertDialogBuilder.setView(view);
         alertDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

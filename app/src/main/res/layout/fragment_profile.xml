@@ -13,29 +13,29 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
-        android:textColor="@color/textPrimary"
+        android:textColor="?attr/textAppearanceBody1"
         android:textSize="24sp"
         tools:text="A username" />
 
     <Button
-        android:textColor="@color/textWhite"
         android:id="@+id/btnUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Change Username" />
+        android:backgroundTint="?attr/colorButtonNormal"
+        android:text="Change Username"
+        android:textColor="?attr/textAppearanceButton" />
 
     <Button
-        android:textColor="@color/textWhite"
         android:id="@+id/btnPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnUsername"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Change Password" />
+        android:backgroundTint="?attr/colorButtonNormal"
+        android:text="Change Password"
+        android:textColor="?attr/textAppearanceButton"  />
 
 
     <Button
@@ -45,8 +45,9 @@
         android:layout_below="@id/btnPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
-        android:backgroundTint="@color/colorAccent"
-        android:text="Logout" />
+        android:backgroundTint="?attr/colorAccent"
+        android:text="Logout"
+        android:textColor="?attr/textAppearanceButton" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchAddress"
@@ -54,31 +55,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogout"
         android:layout_marginTop="20dp"
-        android:foregroundTint="@color/colorPrimaryDark"
+        android:foregroundTint="?attr/colorButtonNormal"
         android:text="Use custom address"
-        android:textSize="20sp"
-        android:textColor="@color/textPrimary" />
+        android:textColor="?attr/textAppearanceBody1"
+        android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/tvAddressLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Address: "
-        android:layout_below="@id/switchAddress"
-        android:textColor="@color/textPrimary"
-        android:layout_marginTop="5dp"
-        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/tvCurrentAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/tvAddressLabel"
-        android:layout_toRightOf="@id/tvAddressLabel"
-        android:textColor="@color/textLight"
+        android:layout_below="@id/switchAddress"
+        android:layout_alignStart="@id/switchAddress"
+        android:layout_marginTop="5dp"
+        android:textColor="?attr/textAppearanceBody2"
         android:textSize="16sp"
         tools:text="This is my current address" />
-
 
 
     <Button
@@ -86,8 +78,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvCurrentAddress"
-        android:backgroundTint="@color/colorAccent"
+        android:layout_alignStart="@id/switchAddress"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="?attr/colorButtonNormal"
         android:text="Set new Address"
+        android:textColor="?attr/textAppearanceButton"
         android:textSize="12sp"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -100,7 +95,7 @@
         android:layout_below="@id/btnSetAddress"
         android:layout_marginTop="20dp"
         android:text="You have voted in "
-        android:textColor="@color/textPrimary"
+        android:textColor="?attr/textAppearanceBody1"
         android:textSize="20sp" />
 
     <TextView
@@ -110,7 +105,7 @@
         android:layout_alignTop="@id/tvElectionTitle"
         android:layout_toRightOf="@id/tvElectionTitle"
         android:text="0"
-        android:textColor="@color/textPrimary"
+        android:textColor="?attr/textAppearanceBody1"
         android:textSize="20sp" />
 
     <TextView
@@ -121,12 +116,13 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/tvNumElections"
         android:text="elections:"
-        android:textColor="@color/textLight"
+        android:textColor="?attr/textAppearanceBody1"
         android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPastElections"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvElectionTitle" />
+        android:layout_below="@id/tvElectionTitle"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

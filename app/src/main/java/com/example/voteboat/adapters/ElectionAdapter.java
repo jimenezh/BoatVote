@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -80,6 +81,9 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         }
 
         public void bind(final Election election) {
+            // For animated transition
+            binding.tvTitle.setTransitionName(election.getGoogleId());
+            // Setting text/info
             binding.tvTitle.setText(election.getTitle());
             binding.tvDate.setText(election.getElectionDate());
             binding.btnStar.getRoot();
@@ -124,21 +128,21 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             // Get correct election, then make query for election details
             Election election = elections.get(getAdapterPosition());
             if (address != null)
-                getElectionDetails(election, address);
+                getElectionDetails(election, address, binding.tvTitle, binding.tvDate);
             else
                 Snackbar.make(binding.getRoot(), "No internet connection", Snackbar.LENGTH_SHORT).show();
 
         }
 
         // API request for more information on the election
-        private void getElectionDetails(final Election election, Address address) {
+        private void getElectionDetails(final Election election, Address address, final TextView tvTitle, final TextView tvDate) {
             GoogleCivicClient googleCivicClient = new GoogleCivicClient();
             googleCivicClient
                     .voterInformationElections(election.getGoogleId(), address.getAddressLine(0), new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, final JSON json) {
                             Log.i(TAG, "Got races " + json.toString() + " for " + election.getGoogleId());
-                            synchElectionDetails(json, election);
+                            synchElectionDetails(json, election, tvTitle, tvDate);
                         }
 
                         @Override
@@ -150,7 +154,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                     });
         }
 
-        private void synchElectionDetails(final JsonHttpResponseHandler.JSON json, final Election election) {
+        private void synchElectionDetails(final JsonHttpResponseHandler.JSON json, final Election election, final TextView tvTitle, final TextView tvDate) {
             try {
                 election.addDetails(json.jsonObject, new SaveCallback() {
                     @Override
@@ -160,7 +164,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                             return;
                         }
                         // Now we get poll + display the details
-                        displayElectionDetail(election, getPoll(json.jsonObject));
+                        displayElectionDetail(election, getPoll(json.jsonObject), tvTitle, tvDate);
                     }
                 });
             } catch (JSONException e) {
@@ -181,7 +185,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
         }
 
 
-        private void displayElectionDetail(Election e, Poll p) {
+        private void displayElectionDetail(Election e, Poll p, TextView tvTitle, TextView tvDate) {
             // Transfer into to new activity
             Bundle bundle = new Bundle();
             bundle.putParcelable(Election.class.getSimpleName(), Parcels.wrap(e));
@@ -191,7 +195,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             electionDetailFragment.setArguments(bundle);
             // Change fragment
             MainActivity mainActivity = (MainActivity) context;
-            mainActivity.changeFragment(electionDetailFragment);
+            mainActivity.changeFragment(electionDetailFragment, tvTitle, tvDate);
             mainActivity.hideProgressBar();
         }
 

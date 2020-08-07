@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.voteboat.activities.MapActivity;
@@ -64,6 +65,9 @@ public class ElectionDetailFragment extends Fragment {
             }
         });
 
+        // Back button
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     private void setRaces() {
@@ -81,7 +85,7 @@ public class ElectionDetailFragment extends Fragment {
     private void setPollInformation() {
         if (poll == null) {
             binding.llDates.setVisibility(View.GONE);
-            binding.tvPollTitle.setText("No polls nears you");
+            binding.tvPollTitle.setText("No polls near you");
         } else {
             binding.tvAddress.setText(poll.getLocation());
             binding.tvDateOpen.setText(poll.getOpenDate());

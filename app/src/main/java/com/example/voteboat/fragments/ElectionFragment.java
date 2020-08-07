@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,7 +71,7 @@ public class ElectionFragment extends Fragment {
 
     // Interface to access listener on
     public interface ElectionListener {
-        void changeFragment(Fragment fragment);
+        void changeFragment(Fragment fragment, TextView title, TextView date);
     }
 
     @Nullable
@@ -224,6 +225,10 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         Log.i(TAG, "Location is " + location);
+                        if(location == null) {
+                            Snackbar.make(binding.getRoot(), "Could not get GPS location", Snackbar.LENGTH_LONG).show();
+                            return;
+                        }
                         // Getting address from Location Object. Add this to adapter
                         // This will later be used to get details of the elections
                         adapter.address = getAddressFromLocation(location, context);

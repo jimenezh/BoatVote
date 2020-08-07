@@ -2,6 +2,8 @@ package com.example.voteboat;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.example.voteboat.models.Candidate;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Race;
