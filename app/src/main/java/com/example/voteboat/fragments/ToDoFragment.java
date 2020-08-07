@@ -166,8 +166,8 @@ public class ToDoFragment extends Fragment {
                     return;
                 }
                 // Since success, let's clear the cached ToDOItems
-                items.clear();
-                items.add(new Item(0, "To Do:")); // Re-add label
+//                items.clear();
+//                items.add(new Item(0, "To Do:")); // Re-add label
 
                 for (int i = 0; i < objects.size(); i++) {
                     // Here, we check to see if the election has passed to see

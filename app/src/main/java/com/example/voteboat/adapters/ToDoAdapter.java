@@ -110,17 +110,18 @@ public class ToDoAdapter extends MultiLevelAdapter {
 
         public void bind(Item item) {
             binding.tvLabel.setText(item.getLabel());
-            if (item.isExpanded() && item.hasChildren()) {
-                showArrow();
+            if (item.hasChildren()) {
+                showArrow(item);
             } else if (!item.hasChildren())
                 hideArrow();
         }
 
-        private void showArrow() {
+        private void showArrow(Item item) {
             binding.ivArrow.setVisibility(View.VISIBLE);
-            if(toDoItems.get(getAdapterPosition()).isExpanded())
+            if(item.isExpanded())
                 binding.ivArrow.animate().rotation(-180).start();
-
+            else
+                binding.ivArrow.animate().rotation(0).start();
         }
 
         private void hideArrow() {
@@ -144,21 +145,17 @@ public class ToDoAdapter extends MultiLevelAdapter {
         }
 
         private void rotateArrow() {
-            // First, we get the positions of the label, then we get the labels, finally we rotate the items accordingly
+            // First, we change the arrow of the first label
             int topLabelPosition = 0;
-            LabelHolder topLabel = (LabelHolder) multiLevelRecyclerView.findViewHolderForAdapterPosition(topLabelPosition);
-            topLabel.binding.ivArrow.animate().rotation(toDoItems.get(topLabelPosition).isExpanded() ? -180 : 0).start();
+            notifyItemChanged(topLabelPosition);
 
+            // Now we find the position of the second label and change it
             // To find the position of the bottom (rep) label, it's right below the top label
             int bottomLabelPosition = topLabelPosition +1;
             // When top label is expanded, bottomLabel is below the childre
             if(toDoItems.get(topLabelPosition).isExpanded())
                  bottomLabelPosition += toDoItems.get(0).getChildren().size();
-            LabelHolder bottomLabel = (LabelHolder) multiLevelRecyclerView.findViewHolderForAdapterPosition(bottomLabelPosition);
-            // When bottom label doesn't exist (offline app)
-            if (bottomLabel != null)
-                bottomLabel.binding.ivArrow.animate().rotation(toDoItems.get(bottomLabelPosition).isExpanded() ? -180 : 0).start();
-
+            notifyItemChanged(bottomLabelPosition);
         }
     }
 
