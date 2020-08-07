@@ -47,66 +47,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvDate"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="20dp"
             android:text="@string/polling_locations"
             android:textColor="?attr/textAppearanceBody1"
             android:textSize="20sp" />
 
-
-        <RelativeLayout
-            android:id="@+id/llDates"
-            android:layout_width="match_parent"
+        <include
+            android:id="@+id/electionDayPoll"
+            layout="@layout/item_poll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPollTitle"
-            android:orientation="vertical">
+            android:layout_alignStart="@id/tvElectionName" />
+
+        <TextView
+            android:id="@+id/tvAbsenteeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/electionDayPoll"
+            android:layout_marginTop="20dp"
+            android:text="@string/absentee_locations"
+            android:textColor="?attr/textAppearanceBody1"
+            android:textSize="20sp" />
+
+        <include
+            android:id="@+id/absenteePoll"
+            layout="@layout/item_poll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvAbsenteeTitle"
+            android:layout_alignStart="@id/tvElectionName" />
 
 
-            <TextView
-                android:id="@+id/tvAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:textColor="?attr/textAppearanceBody2"
-                tools:text="Some address" />
+        <TextView
+            android:id="@+id/tvEarlyPollTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/absenteePoll"
+            android:layout_marginTop="20dp"
+            android:text="@string/early_polling_locations"
+            android:textColor="?attr/textAppearanceBody1"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/tvTimesOpen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvAddress"
-                android:layout_alignStart="@id/tvAddress"
-                android:textColor="?attr/textAppearanceBody2"
-                tools:text="All day" />
-
-
-            <TextView
-                android:id="@+id/tvDateOpen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvTimesOpen"
-                android:layout_marginStart="2dp"
-                android:textColor="?attr/textAppearanceBody2"
-                tools:text="Today" />
-
-
-            <Button
-                android:id="@+id/btnMap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvDateOpen"
-                android:backgroundTint="?attr/colorButtonNormal"
-                android:padding="10dp"
-                android:text="Polling Location Map"
-                android:textColor="?attr/textAppearanceButton" />
-
-        </RelativeLayout>
+        <include
+            android:id="@+id/earlyPoll"
+            layout="@layout/item_poll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvEarlyPollTitle"
+            android:layout_alignStart="@id/tvElectionName" />
 
 
         <LinearLayout
             android:id="@+id/llLinks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/llDates"
+            android:layout_below="@id/earlyPoll"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 

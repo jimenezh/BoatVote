@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llDates"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:textColor="?attr/textAppearanceBody2"
+        tools:text="Some address" />
+
+    <TextView
+        android:id="@+id/tvTimesOpen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddress"
+        android:layout_toRightOf="@id/tvDateOpen"
+        android:textColor="?attr/textAppearanceBody2"
+        tools:text="All day" />
+
+
+    <TextView
+        android:id="@+id/tvDateOpen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddress"
+        android:layout_alignStart="@id/tvAddress"
+        android:layout_marginRight="5dp"
+        android:textColor="?attr/textAppearanceBody2"
+        tools:text="Today" />
+
+
+    <Button
+        android:id="@+id/btnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDateOpen"
+        android:backgroundTint="?attr/colorButtonNormal"
+        android:padding="10dp"
+        android:text="See map"
+        android:textColor="?attr/textAppearanceButton" />
+
+</RelativeLayout>
