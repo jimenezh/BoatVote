@@ -186,8 +186,9 @@
             android:layout_marginTop="20dp"
             android:backgroundTint="?attr/colorButtonNormal"
             android:padding="10dp"
-            android:text="Who is Running?"
-            android:textColor="?attr/textAppearanceButton" />
+            android:text="Who's Running?"
+            android:textColor="?attr/textAppearanceButton"
+            android:layout_centerHorizontal="true"/>
 
 
     </RelativeLayout>
