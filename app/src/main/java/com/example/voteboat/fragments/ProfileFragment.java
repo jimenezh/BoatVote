@@ -193,6 +193,8 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                 storeElections(objects);
                 // Adapter
                 addToAdapter(objects);
+                // Set number of electio s
+                setNumberOfElections();
                 // Progress bar
                 if(getActivity() == null)
                     return;
@@ -202,10 +204,16 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
 
     }
 
+    private void setNumberOfElections() {
+        binding.tvNumElections.setVisibility(View.VISIBLE);
+        binding.tvElectionTitle.setVisibility(View.VISIBLE);
+        binding.tvElectionText.setVisibility(View.VISIBLE);
+        binding.tvNumElections.setText(String.valueOf(pastElections.size()));
+    }
+
     private void addToAdapter(List<Election> objects) {
         pastElections.addAll(objects);
         adapter.notifyDataSetChanged();
-        binding.tvNumElections.setText(String.valueOf(pastElections.size()));
     }
 
     private void storeElections(List<Election> newElections){
@@ -222,8 +230,10 @@ public class ProfileFragment extends Fragment implements EditUsernameFragment.Ed
                     return;
                 }
                 addToAdapter(objects);
+                setNumberOfElections();
                 Log.i(TAG, "Got "+objects.size()+" cached elections");
-                ((MainActivity) getActivity()).hideProgressBar();
+
+                if(getActivity() != null)  ((MainActivity) getActivity()).hideProgressBar();
 
             }
         });

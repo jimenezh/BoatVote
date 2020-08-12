@@ -272,6 +272,7 @@ public class ElectionFragment extends Fragment {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "No elections " + response, throwable);
                 Snackbar.make(binding.getRoot(), "Error getting elections", Snackbar.LENGTH_SHORT).show();
+                getCachedElections();
             }
         });
     }

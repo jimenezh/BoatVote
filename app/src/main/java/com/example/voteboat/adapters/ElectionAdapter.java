@@ -1,6 +1,7 @@
 package com.example.voteboat.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,17 +15,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.voteboat.activities.MainActivity;
+import com.example.voteboat.activities.RaceDetailActivity;
 import com.example.voteboat.clients.GoogleCivicClient;
 import com.example.voteboat.databinding.ItemElectionBinding;
 import com.example.voteboat.fragments.ElectionDetailFragment;
 import com.example.voteboat.models.Election;
 import com.example.voteboat.models.Poll;
+import com.example.voteboat.models.Race;
 import com.example.voteboat.models.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import org.json.JSONException;
@@ -134,8 +140,9 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             Election election = elections.get(getAdapterPosition());
             if (address != null)
                 getElectionDetails(election, address, binding.tvTitle, binding.tvDate);
-            else
+            else {
                 Snackbar.make(binding.getRoot(), "No internet connection", Snackbar.LENGTH_SHORT).show();
+            }
 
         }
 
@@ -154,7 +161,19 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                             Log.e(TAG, "Could not get election details " + response, throwable);
                             Snackbar.make(binding.getRoot(), "Could not show details", Snackbar.LENGTH_SHORT).show();
-                            ((MainActivity) context).hideProgressBar();
+                            ParseQuery query = new ParseQuery<Race>(Race.class.getSimpleName()).fromPin(Election.KEY_RACES);
+                            query.findInBackground(new FindCallback<Race>() {
+                                @Override
+                                public void done(List<Race> objects, ParseException e) {
+                                    if(e != null)
+                                        Log.e(TAG, "Could not get cached races");
+                                    else {
+                                        Intent intent = new Intent(context, RaceDetailActivity.class);
+//                                        intent.putExtra(Race.class.getSimpleName(),objects);
+                                        context.startActivity(intent);
+                                    }
+                                }
+                            });
                         }
                     });
         }

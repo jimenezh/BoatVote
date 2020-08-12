@@ -95,6 +95,9 @@ public class Election extends ParseObject {
             races.add(r);
         }
 
+        // Pining
+        ParseObject.pinAllInBackground(this.getGoogleId(),races);
+
         ParseObject.saveAllInBackground(races, new SaveCallback() {
             @Override
             public void done(ParseException e) {
