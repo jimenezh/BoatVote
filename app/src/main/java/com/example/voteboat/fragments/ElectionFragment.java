@@ -40,7 +40,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Headers;
@@ -225,7 +227,7 @@ public class ElectionFragment extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         Log.i(TAG, "Location is " + location);
-                        if(location == null) {
+                        if (location == null) {
                             Snackbar.make(binding.getRoot(), "Could not get GPS location", Snackbar.LENGTH_LONG).show();
                             return;
                         }
@@ -294,13 +296,15 @@ public class ElectionFragment extends Fragment {
                             // Notify the adapter
                             adapter.notifyDataSetChanged();
                             // We check the ids of all elections in jsonArray to make sure we have it in the database
-                            checkIfElectionsInParse(objects, jsonArray);
+                            updateElectionsInParse(objects, jsonArray);
+                            // Check dates of elections
+                            checkIfPassed(objects);
                         }
                     }
                 });
     }
 
-    private void checkIfElectionsInParse(List<Election> objects, JSONArray jsonArray) {
+    private void updateElectionsInParse(List<Election> objects, JSONArray jsonArray) {
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 final Election election = Election.basicInformationFromJson(jsonArray.getJSONObject(i));
@@ -310,6 +314,22 @@ public class ElectionFragment extends Fragment {
                 }
             } catch (JSONException ex) {
                 Log.i(TAG, "checkIfElectionsInParse", ex);
+            }
+        }
+    }
+
+    private void checkIfPassed(List<Election> elections) {
+        for (Election election : elections) {
+            String strDate = election.getElectionDate();
+            try {
+                Date electionDate = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+                Date today = new Date();
+                if (today.after(electionDate)) {
+                    election.setElectionHasPassed();
+                    elections.remove(election);
+                }
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
             }
         }
     }
