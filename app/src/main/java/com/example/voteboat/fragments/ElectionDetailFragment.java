@@ -27,6 +27,7 @@ import com.example.voteboat.models.Race;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseRelation;
 
 import org.parceler.Parcels;
@@ -155,6 +156,9 @@ public class ElectionDetailFragment extends Fragment {
     }
 
     private void launchRacesActivity() {
+        // Pin to local datastore
+        pinRacesAndCandidates();
+        // Get the races and launch activity
         ParseRelation<Race> relation = election.getRaces();
         relation.getQuery()
                 .include("candidates")
@@ -172,6 +176,17 @@ public class ElectionDetailFragment extends Fragment {
                     }
                 });
 
+    }
+
+    private void pinRacesAndCandidates() {
+        try {
+            List<Race> races = election.getRaces().getQuery().find();
+            ParseObject.pinAllInBackground(races);
+            for(Race race : races)
+                ParseObject.pinAllInBackground(race.getCandidates().getQuery().find());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 

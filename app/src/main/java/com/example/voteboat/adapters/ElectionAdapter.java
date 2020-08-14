@@ -142,6 +142,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                 getElectionDetails(election, address, binding.tvTitle, binding.tvDate);
             else {
                 Snackbar.make(binding.getRoot(), "No internet connection", Snackbar.LENGTH_SHORT).show();
+                launchCachedRaceActivity(election);
             }
 
         }
@@ -161,19 +162,7 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
                         public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                             Log.e(TAG, "Could not get election details " + response, throwable);
                             Snackbar.make(binding.getRoot(), "Could not show details", Snackbar.LENGTH_SHORT).show();
-                            ParseQuery query = new ParseQuery<Race>(Race.class.getSimpleName()).fromPin(Election.KEY_RACES);
-                            query.findInBackground(new FindCallback<Race>() {
-                                @Override
-                                public void done(List<Race> objects, ParseException e) {
-                                    if(e != null)
-                                        Log.e(TAG, "Could not get cached races");
-                                    else {
-                                        Intent intent = new Intent(context, RaceDetailActivity.class);
-//                                        intent.putExtra(Race.class.getSimpleName(),objects);
-                                        context.startActivity(intent);
-                                    }
-                                }
-                            });
+                            launchCachedRaceActivity(election);
                         }
                     });
         }
@@ -312,6 +301,22 @@ public class ElectionAdapter extends RecyclerView.Adapter<ElectionAdapter.ViewHo
             states.put("Yukon Territory", "YT");
             return states.get(stateName).toLowerCase();
         }
+    }
+
+    protected void launchCachedRaceActivity(Election election) {
+        ParseQuery query = new ParseQuery<Race>(Race.class.getSimpleName()).fromPin(election.getGoogleId());
+        query.findInBackground(new FindCallback<Race>() {
+            @Override
+            public void done(List<Race> objects, ParseException e) {
+                if(e != null)
+                    Log.e(TAG, "Could not get cached races");
+                else {
+                    Intent intent = new Intent(context, RaceDetailActivity.class);
+                    intent.putExtra(Race.class.getSimpleName(), Parcels.wrap(new ArrayList<>(objects)));
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     // Clean all elements of the recycler
